@@ -304,3 +304,139 @@ ul.list-preview{
     margin-bottom: 10px;
     border: none;
 }
+
+
+/* Section langganan */
+
+section.langganan{
+    width: 100%;
+    height: 100dvh;
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+}
+
+.heading-langganan{
+    color: rgb(0, 0, 0);
+    font-size: 4rem;
+    font-weight: 500;
+}
+.deskripsi-langganan{
+    margin-top: 20px;
+    font-size: 1rem;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    color: rgb(0, 0, 0);
+    line-height: 1.5;
+}
+
+.pricing-container {
+    display: flex;
+    gap: 24px; /* Jarak antar kartu */
+    flex-wrap: wrap; /* Agar kartu responsif dan turun ke baris baru */
+    justify-content: center;
+    padding: 20px;
+}
+
+.card {
+    border-radius: 20px;;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    width: 280px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.2);
+    border: 1.5px solid black;
+}
+
+.card.popular {
+    background-color: rgba(255, 255, 255, 0.7); 
+    transform: scale(1.05);
+}
+
+.card.popular:hover {
+    transform: translateY(-10px) scale(1.05);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0;
+}
+
+.label {
+    background-color: blue;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.price {
+    margin: 20px 0;
+}
+
+.price .amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.price .currency, .price .period {
+    font-size: 1.1rem;
+    font-weight: normal;
+    color: #666;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin: 20px 0;
+}
+
+.features li {
+    color: #555;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.features li::before {
+    content: "✔";
+    color: #4CAF50;
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.btn-subscribe {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-subscribe:hover {
+    background-color: #2b6cb0;
+}
