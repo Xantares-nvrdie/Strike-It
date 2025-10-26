@@ -7,11 +7,15 @@
     <DiscountSection />
     <ReviewSection />
     <AppFooter />
+
+    <!-- Test Tailwind -->
+    <h1 class="text-7xl font-bold text-red-500">
+      Hello Tailwind + Vue 🎉
+    </h1>
   </div>
 </template>
 
 <script setup>
-// Mengimpor semua komponen yang baru kita buat
 import Navigation from './components/Navigation.vue'
 import LandingSection from './components/LandingSection.vue'
 import LocationPreview from './components/LocationPreview.vue'
@@ -22,7 +26,5 @@ import AppFooter from './components/Footer.vue'
 </script>
 
 <style>
-/* Anda dapat menempatkan gaya global (seperti reset CSS dari file style.css)
-  di sini atau di file style.css yang diimpor di main.js.
-*/
+/* CSS global optional */
 </style>
