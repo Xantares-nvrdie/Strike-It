@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 .outfit-font{
     font-family: "Outfit", sans-serif;
@@ -10,6 +11,8 @@
     font-weight: 800;
     font-style: normal;
 }
+=======
+>>>>>>> 97280d3 (initial commit)
 
 body {
     font-family: Arial, sans-serif;
@@ -17,9 +20,12 @@ body {
     background: linear-gradient(to bottom, #0768a0, #ffffff);
     overflow-x: hidden;
     position: relative;
+<<<<<<< HEAD
     font-family: "Outfit", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
+=======
+>>>>>>> 97280d3 (initial commit)
 }
 
 /* --- NAVIGATION BAR --- */
@@ -94,6 +100,10 @@ nav .profile img {
     /* background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(5px); */
     color: white;
+<<<<<<< HEAD
+=======
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+>>>>>>> 97280d3 (initial commit)
     border-radius: 20px;
     padding: 10px 20px;
     width: 400px;
@@ -105,7 +115,10 @@ nav .profile img {
 .profile-section .deskripsi h1 {
     font-size: 5em;
     margin-bottom: 20px;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 97280d3 (initial commit)
 }
 
 .btn-book, .btn-rent {
@@ -206,11 +219,16 @@ section.preview{
     height: 100dvh;
     background-color: rgb(255, 255, 255);
     text-align: center;
+<<<<<<< HEAD
     padding-top: 100px;
+=======
+    padding: 50px 20px;
+>>>>>>> 97280d3 (initial commit)
 }
 
 .heading-preview{
     color: rgb(0, 0, 0);
+<<<<<<< HEAD
     font-size: 4rem;
     font-weight: 500;
 }
@@ -218,6 +236,14 @@ section.preview{
     margin-top: 20px;
     font-size: 1rem;
     width: 40%;
+=======
+    font-size: 3rem;
+}
+.deskripsi-preview{
+    margin-top: 20px;
+    font-size: 1.2rem;
+    width: 50%;
+>>>>>>> 97280d3 (initial commit)
     margin-left: auto;
     margin-right: auto;
     color: rgb(0, 0, 0);
@@ -304,6 +330,7 @@ ul.list-preview{
     margin-bottom: 10px;
     border: none;
 }
+<<<<<<< HEAD
 
 
 /* Section langganan */
@@ -540,3 +567,5 @@ section.penilaian{
 }
 
 
+=======
+>>>>>>> 97280d3 (initial commit)
