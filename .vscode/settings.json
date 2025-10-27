@@ -1,4 +1,13 @@
 {
+  "files.associations": {
+    "*.css": "css",
+    "*.pcss": "postcss",
+    "*.postcss": "postcss"
+  },
+  "tailwindCSS.includeLanguages": {
+    "postcss": "css",
+    "css": "css"
+  },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "tsconfig.json": "tsconfig.*.json, env.d.ts",
@@ -9,5 +18,8 @@
     "source.fixAll": "explicit"
   },
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  }
 }

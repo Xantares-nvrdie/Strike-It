@@ -1,0 +1,704 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.outfit-font {
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100dvh;
+    background: linear-gradient(to bottom, #0768a0, #ffffff);
+    overflow-x: hidden;
+    position: relative;
+    font-family: "Outfit", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+/* --- NAVIGATION BAR --- */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    color: white;
+    font-weight: 600;
+}
+
+/* LANDING PAGE */
+nav .logo img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* Menu section */
+nav .menu {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+nav .menu li {
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+}
+
+nav .menu li:hover {
+    color: #122f4f;
+}
+
+/* Profile section */
+nav .profile {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+nav .profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-section {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 50px;
+    border-radius: 15px;
+    z-index: 2;
+    height: calc(100dvh - 80px);
+}
+
+.profile-section .deskripsi {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+    /* background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px); */
+    color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    width: 400px;
+    z-index: 999;
+    box-sizing: border-box;
+    margin-left: 5dvh;
+}
+
+.profile-section .deskripsi h1 {
+    font-size: 5em;
+    margin-bottom: 20px;
+
+}
+
+.btn-book,
+.btn-rent {
+    font-family: "Outfit", "sans-serif";
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin: 10px;
+}
+
+.btn-book:hover,
+.btn-rent:hover {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-book:active,
+.btn-rent:active {
+    transform: translateY(0);
+}
+
+
+.img-pemancing {
+    width: 70vw;
+    height: 70dvh;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    background-image: url('../assets/mancing2.png');
+}
+
+.btn-glass {
+    font-family: "Outfit", "sans-serif";
+    padding: 10px 5px;
+    width: 80px;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    /* Latar belakang yang lebih transparan */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    transition: all 0.3s ease;
+
+    /* Menggunakan backdrop-filter juga pada tombol */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.btn-glass:active {
+    transform: translateY(0);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30dvh;
+
+    /* Gunakan properti spesifik untuk menghindari konflik */
+    background-image: url('../assets/wave1.png');
+    background-repeat: repeat-x;
+    background-size: cover;
+
+    z-index: 2;
+}
+
+@keyframes waveAnimation {
+    0% {
+        background-position: 0 bottom;
+    }
+
+    100% {
+        background-position: 1000px bottom;
+    }
+}
+
+
+/* Section Preview (page 2 bang) */
+section.preview {
+    width: 100%;
+    height: 100dvh;
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+    padding-top: 100px;
+}
+
+.heading-preview {
+    color: rgb(0, 0, 0);
+    font-size: 4rem;
+    font-weight: 500;
+}
+
+.deskripsi-preview {
+    margin-top: 20px;
+    font-size: 1rem;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    color: rgb(0, 0, 0);
+    line-height: 1.5;
+}
+
+ul.list-preview {
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 50px;
+    padding: 0 20px;
+    overflow-x: auto;
+}
+
+.list-preview li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-preview {
+    font-family: "Outfit", "sans-serif";
+    align-items: center;
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    border: none;
+    background: rgba(3, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* non chromium atau safari biar aman */
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
+
+    font-style: bold;
+    font-size: 1.1rem;
+}
+
+.btn-prev img,
+.btn-next img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    margin: auto;
+}
+
+.btn-next,
+.btn-prev {
+    border: none;
+    border-radius: 20px;
+    width: 40px;
+    height: 30px;
+    background: rgba(3, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* non chromium atau safari biar aman */
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.container-img-preview {
+    display: flex;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 40px;
+}
+
+.container-img-preview img {
+    width: 50dvw;
+    height: 300px;
+    border-radius: 20px 20px 0 0;
+}
+
+.btn-book-preview {
+    font-family: "Outfit", "sans-serif";
+    width: 50dvw;
+    border-radius: 0 0 20px 20px;
+    padding: 7px;
+    background-color: blue;
+    font-size: 1.2rem;
+    color: white;
+    margin-bottom: 10px;
+    border: none;
+}
+
+
+/* Section langganan */
+
+section.langganan {
+    width: 100%;
+    height: 100dvh;
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+}
+
+.heading-langganan {
+    color: rgb(0, 0, 0);
+    font-size: 4rem;
+    font-weight: 500;
+}
+
+.deskripsi-langganan {
+    margin-top: 20px;
+    font-size: 1rem;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    color: rgb(0, 0, 0);
+    line-height: 1.5;
+}
+
+.pricing-container {
+    display: flex;
+    gap: 24px;
+    /* Jarak antar kartu */
+    flex-wrap: wrap;
+    /* Agar kartu responsif dan turun ke baris baru */
+    justify-content: center;
+    padding: 20px;
+}
+
+.card {
+    border-radius: 20px;
+    ;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-align: center;
+    width: 280px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.2);
+    border: 1.5px solid black;
+}
+
+.card.popular {
+    background-color: rgba(255, 255, 255, 0.7);
+    transform: scale(1.05);
+}
+
+.card.popular:hover {
+    transform: translateY(-10px) scale(1.05);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0;
+}
+
+.label {
+    background-color: blue;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.price {
+    margin: 20px 0;
+}
+
+.price .amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.price .currency,
+.price .period {
+    font-size: 1.1rem;
+    font-weight: normal;
+    color: #666;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin: 20px 0;
+}
+
+.features li {
+    color: #555;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.features li::before {
+    content: "✔";
+    color: #4CAF50;
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.btn-subscribe {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-subscribe:hover {
+    background-color: #2b6cb0;
+}
+
+
+/* Diskon section */
+
+section.diskon {
+    width: 100%;
+    height: 100dvh;
+    background-color: rgb(255, 255, 255);
+    text-align: center;
+    padding-top: 100px;
+}
+
+.heading-diskon {
+    color: rgb(0, 0, 0);
+    font-size: 4rem;
+    font-weight: 500;
+}
+
+.deskripsi-diskon {
+    margin-top: 20px;
+    font-size: 1rem;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    color: rgb(0, 0, 0);
+    line-height: 1.5;
+}
+
+.container-card-diskon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+    padding: 0 20px;
+    overflow-x: auto;
+}
+
+.card-diskon {
+    width: 300px;
+    height: 150px;
+    border-radius: 20px;
+    border: 1.5px solid rgb(142, 200, 223);
+    display: flex;
+    overflow: hidden;
+}
+
+.card-left {
+    background: linear-gradient(to bottom, #4a6cf7, #3060f0);
+    color: white;
+    font-weight: bold;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    font-size: 14px;
+    position: relative;
+    border-radius: 0 20px 20px 0;
+    height: 150px;
+    width: 50px;
+    font-weight: 200;
+}
+
+.card-right {
+    padding: 20px;
+    flex: 1;
+    text-align: left
+}
+
+.card-right .code {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #2f1212;
+}
+
+.card-right .diskon {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 800;
+}
+
+.card-right .info {
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+}
+/* Section Penilaian */
+section.penilaian {
+    width: 100%;
+    min-height: 100dvh; /* Mengganti height agar konten tidak terpotong */
+    background-color: #ffffff; /* Diubah menjadi background gelap */
+    text-align: left; /* Teks di kartu sebaiknya rata kiri */
+    padding-top: 100px;
+    padding-bottom: 100px; /* Tambahan padding di bawah */
+    box-sizing: border-box; /* Pastikan padding tidak menambah ukuran */
+}
+
+/* Penilaian Section */
+.heading-penilaian {
+    color: black;
+    font-size: 4rem;
+    font-weight: 500;
+    text-align: center; /* Judul tetap di tengah */
+}
+
+.container-card-penilaian {
+    margin-top: 50px;
+    max-width: 1200px; /* Tambahan: batasi lebar maksimum */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px; /* Tambahan padding di sisi */
+    column-count: 3; 
+    column-gap: 20px; /* Jarak antar kolom */
+}
+
+
+.card-penilaian {
+    background-color: rgba(77, 132, 191, 0.856); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); 
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;;
+    border-radius: 16px; /* Dibuat lebih bulat */
+    padding: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+
+    break-inside: avoid; /* Sangat penting! Mencegah kartu terpotong */
+    margin-bottom: 20px; /* Menggantikan 'gap' untuk jarak vertikal */
+    
+    position: relative; /* Diperlukan untuk ikon kutip */
+    overflow: hidden; 
+}
+
+.card-penilaian::after {
+    
+    content: '”';
+    position: absolute;
+    top: -20px;
+    right: 15px;
+    font-size: 160px;
+    color: rgba(255, 255, 255, 0.08);
+    font-family: 'Times New Roman', Times, serif;
+    line-height: 1;
+    z-index: 1; 
+}
+
+.card-penilaian-nama {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    color: #ffffff;
+    position: relative;
+    z-index: 2;
+}
+
+.card-penilaian-rating {
+    position: relative; /* Agar di atas ikon kutip */
+    z-index: 2;
+}
+
+.card-penilaian-rating ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+    display: flex;
+}
+
+.bintang {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    background-color: #f39c12;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.card-penilaian-komentar {
+    font-size: 0.9rem;
+    color: #e0e0e0;
+    line-height: 1.5;
+    margin: 0;
+    position: relative; 
+}
+
+
+
+@media (max-width: 900px) { 
+    .container-card-penilaian {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .container-card-penilaian {
+        column-count: 1; 
+    }
+
+    .profile-section .deskripsi {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 20px;
+        padding: 10px 20px;
+        width: 90%;
+        max-width: 400px;
+        z-index: 999;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}
+
+@media (max-width: 1024px) {
+    .profile-section {
+        position: relative;
+    }
+
+    .profile-section .deskripsi {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 20px;
+        padding: 10px 20px;
+        width: 90%;
+        max-width: 400px;
+        z-index: 999;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .img-pemancing {
+        width: 50vw;
+        height: 60dvh;
+    }
+}

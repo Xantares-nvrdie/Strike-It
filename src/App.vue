@@ -1,24 +1,24 @@
 <template>
   <div class="font-outfit antialiased">
-    <Navigation /> 
+    <Navigation />
     <main>
-      <LandingSection /> 
-      
+      <LandingSection />
+
       <LocationPreview />
       <PricingSection />
       <DiscountSection />
-      
-      <ReviewSection /> 
+
+      <ReviewSection />
     </main>
-    
+
     <Footer />
   </div>
 </template>
 
 <script setup>
 // 💡 IMPOR DISESUAIKAN DENGAN NAMA FILE DAN LOKASI ANDA
-import Navigation from './components/Navigation.vue'; 
-import LandingSection from './components/LandingSection.vue'; 
+import Navigation from './components/Navigation.vue';
+import LandingSection from './components/LandingSection.vue';
 import LocationPreview from './components/LocationPreview.vue';
 import PricingSection from './components/PricingSection.vue';
 import DiscountSection from './components/DiscountSection.vue';

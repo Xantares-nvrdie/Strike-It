@@ -1,41 +1,93 @@
 <template>
-    <nav class="flex justify-between items-center px-4 md:px-10 py-4 text-white font-semibold absolute top-0 left-0 w-full z-50">
+  <nav class="navbar">
     <div class="logo">
-        <img src="./assets/strikeit_logo.png" alt="Logo Strike It" class="w-12 h-12 object-contain">
+      <img src="../assets/strikeit_logo.png" alt="Logo Strike It" />
     </div>
 
-    <ul class="hidden lg:flex space-x-8">
-        <li><button class="btn-glass">Home</button></li>
-        <li><button class="btn-glass">Lokasi</button></li>
-        <li><button class="btn-glass">Langganan</button></li>
-        <li><button class="btn-glass">Penilaian</button></li>
+    <ul class="menu">
+      <li><button class="btn-glass">Home</button></li>
+      <li><button class="btn-glass">Lokasi</button></li>
+      <li><button class="btn-glass">Langganan</button></li>
+      <li><button class="btn-glass">Penilaian</button></li>
     </ul>
 
-    <ul class="flex items-center space-x-2">
-        <li><img src="./assets/saskeh.jpg" alt="Foto Profile" class="w-10 h-10 rounded-full object-cover"></li>
-        <li><button class="btn-glass !w-20">Profile</button></li>
+    <ul class="profile">
+      <li><img src="../assets/saskeh.jpg" alt="Foto Profile" /></li>
+      <li><button class="btn-glass">Profile</button></li>
     </ul>
-    </nav>
+  </nav>
 </template>
 
 <style scoped>
-/* Define the common glass button style */
-.btn-glass {
-    padding: 10px 5px;
-    width: 80px;
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 30px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(5px);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    color: white;
+    font-weight: 600;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 50;
 }
+
+.logo img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.menu li {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.menu li:hover {
+  color: #122f4f;
+}
+
+.profile {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.btn-glass {
+font-family: "Outfit", "sans-serif";
+  padding: 10px 16px;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  min-width: 80px;
+  text-align: center;
+}
+
 .btn-glass:hover {
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
 }
 </style>
