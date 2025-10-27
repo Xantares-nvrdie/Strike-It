@@ -67,7 +67,7 @@ const prev = () => {
 
       <div class="flex flex-col items-center p-4 mx-auto mt-10">
         <img 
-          src="../assets/preview.png" 
+          src="../../assets/preview.png" 
           alt="Preview Pemancingan" 
           class="object-cover w-full max-w-4xl transition duration-300 shadow-2xl h-72 rounded-t-2xl hover:shadow-3xl"
           @error="(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x400/9CA3AF/FFFFFF?text=Image+Not+Found'; }"

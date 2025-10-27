@@ -42,8 +42,8 @@ const viewAllEvents = () => {
                 Event & Perlombaan
             </h2>
             <p class="max-w-2xl mx-auto mt-5 text-lg leading-relaxed text-gray-600">
-Berbagai lomba dan event memancing seru dengan hadiah menarik menantimu!
-</p>
+              Berbagai lomba dan event memancing seru dengan hadiah menarik menantimu!
+            </p>
             </div>
             
             <div class="grid grid-cols-1 gap-8 md:grid-cols-3">

@@ -10,8 +10,8 @@
 </template>
 
 <script setup>
-import Navigation from './components/Navigation.vue';
-import Footer from './components/Footer.vue'; 
+import Navigation from './components/Layout/Navigation.vue';
+import Footer from './components/Layout/Footer.vue'; 
 
 </script>
 
