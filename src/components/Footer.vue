@@ -1,36 +1,89 @@
 <template>
-  <footer class="bg-gray-900 text-gray-300 py-12 px-6 font-['Outfit']">
-    <div class="flex flex-col items-center max-w-6xl mx-auto space-y-8 text-center">
+  <footer class="relative w-full py-12 text-white bg-[#003bb3] font-['Outfit']">
+    
+    <div class="absolute top-[-8rem] left-0 w-full h-32 bg-gradient-to-t from-[#003bb3] to-transparent z-10"></div>
 
-      <!-- Social Media -->
-      <div class="flex justify-center gap-6">
-        <a href="#" class="transition-colors hover:text-blue-400">
-          <i class="text-2xl fab fa-facebook-f"></i>
-        </a>
-        <a href="#" class="transition-colors hover:text-blue-400">
-          <i class="text-2xl fab fa-instagram"></i>
-        </a>
-        <a href="#" class="transition-colors hover:text-blue-400">
-          <i class="text-2xl fab fa-twitter"></i>
-        </a>
+    <div class="relative max-w-6xl px-6 mx-auto z-20">
+      
+      <div class="grid gap-8 text-sm md:grid-cols-3">
+        <div class="glass-box">
+          <h3 class="mb-3 text-lg font-semibold">Contact Us!</h3>
+          <p class="flex items-center gap-2">
+            <i class="text-blue-400 fas fa-phone"></i> +62 8xxx xxxx xxxx
+          </p>
+          <p class="flex items-center gap-2 mt-2">
+            <i class="text-blue-400 fas fa-map-marker-alt"></i> Jl. Raya Lembang No.46
+          </p>
+        </div>
+
+        <div class="glass-box">
+          <h3 class="mb-3 text-lg font-semibold">About Us!</h3>
+          <p class="text-sm leading-relaxed text-gray-200">
+            Kami adalah komunitas pemancing yang berdedikasi untuk menciptakan pengalaman memancing yang menyenangkan.
+            Kami percaya bahwa memancing adalah proses dan perjalanan, bukan sekadar hasil tangkapan.
+          </p>
+          <p class="mt-2 text-sm text-gray-300">
+            Misi kami adalah membantu Anda menciptakan kenangan berharga yang akan bertahan seumur hidup.
+          </p>
+        </div>
+
+        <div class="text-center glass-box md:text-left">
+          <h3 class="mb-3 text-lg font-semibold">Reach Us</h3>
+          <div class="flex justify-center gap-4 mt-2 md:justify-start">
+            <a href="#" class="icon-btn"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="icon-btn"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="icon-btn"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="icon-btn"><i class="fab fa-tiktok"></i></a>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Deskripsi -->
-      <p class="max-w-2xl text-sm leading-relaxed">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rerum necessitatibus sed sunt delectus accusamus est blanditiis nam esse quam voluptate laboriosam, voluptas minima nostrum incidunt nihil earum autem rem. Placeat.
-      </p>
-
-      <!-- Garis pemisah -->
-      <div class="w-full h-px bg-gray-700"></div>
-
-      <!-- Footer text -->
-      <span class="text-sm text-gray-500">
-        © 2024 <span class="font-semibold text-blue-400">Strike It</span>. All rights reserved.
-      </span>
+      <div class="mt-10 text-sm text-center text-gray-300">
+        © 2024 <span class="font-semibold text-white">Strike It</span>. All rights reserved.
+      </div>
     </div>
+
   </footer>
 </template>
 
 <script setup>
-// Tidak perlu logika JS jika hanya tampilan statis
+// Static footer — no script logic
+// Pastikan Anda sudah memuat Font Awesome icons di file index.html atau main.js Anda
+// jika Anda ingin ikon fas/fab muncul.
 </script>
+
+<style scoped>
+/* Style untuk .glass-box dan .icon-btn
+  Ini menggunakan CSS murni, bukan @apply, tapi hasilnya sama.
+*/
+.glass-box {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.5rem; /* rounded-3xl */
+  padding: 1.5rem; /* p-6 */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px); /* backdrop-blur-md */
+  transition: background-color 0.3s ease;
+}
+
+.glass-box:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* hover:bg-white/20 */
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem; /* w-10 */
+  height: 2.5rem; /* h-10 */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* border-white/30 */
+  border-radius: 9999px; /* rounded-full */
+  transition: background-color 0.3s ease;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2); /* hover:bg-white/20 */
+}
+</style>

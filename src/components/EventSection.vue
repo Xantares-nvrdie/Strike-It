@@ -4,22 +4,23 @@ import { ref } from 'vue';
 // --- DATA UNTUK POSTER ---
 // Ganti URL ini dengan path ke gambar poster Anda di dalam folder /assets/
 const events = ref([
-    {
-        id: 1,
-        imageUrl: '../assets/lomba-poster-1.png', // Ganti dengan path Anda
-        alt: 'Lomba Mancing Bakti Forkabi Untuk Negeri'
-    },
-    {
-        id: 2,
-        imageUrl: '../assets/lomba-poster-2.png', // Ganti dengan path Anda
-        alt: 'Lomba Mancing HUT RI Ke-74 Warga Garon'
-    },
-    {
-        id: 3,
-        imageUrl: '../assets/lomba-poster-3.png', // Ganti dengan path Anda
-        alt: 'Lomba Mancing Karang Taruna Tanimulya'
-    }
+  {
+    id: 1,
+    imageUrl: new URL('@/assets/poster1.png', import.meta.url).href,
+    alt: 'Lomba Mancing Bakti Forkabi Untuk Negeri'
+  },
+  {
+    id: 2,
+    imageUrl: new URL('@/assets/poster2.png', import.meta.url).href,
+    alt: 'Lomba Mancing HUT RI Ke-74 Warga Garon'
+  },
+  {
+    id: 3,
+    imageUrl: new URL('@/assets/poster3.png', import.meta.url).href,
+    alt: 'Lomba Mancing Karang Taruna Taanimulya'
+  }
 ]);
+
 
 // Fungsi ini akan dipanggil saat tombol di-klik
 const viewAllEvents = () => {
@@ -37,9 +38,12 @@ const viewAllEvents = () => {
         <div class="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
             
             <div class="mb-16 text-center">
-            <h2 class="text-4xl font-bold text-gray-900 md:text-5xl">
+            <h2 class="text-4xl font-medium text-black md:text-6xl">    
                 Event & Perlombaan
             </h2>
+            <p class="max-w-2xl mx-auto mt-5 text-lg leading-relaxed text-gray-600">
+Berbagai lomba dan event memancing seru dengan hadiah menarik menantimu!
+</p>
             </div>
             
             <div class="grid grid-cols-1 gap-8 md:grid-cols-3">

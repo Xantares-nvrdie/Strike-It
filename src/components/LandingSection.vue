@@ -1,6 +1,6 @@
 <template>
     <section
-        class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-blue-900 to-white">
+        class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
 
         <!-- Wave -->
         <div class="absolute bottom-0 left-0 w-full h-[30vh] z-20"
@@ -14,7 +14,7 @@
 
         <!-- Text section -->
         <div class="absolute z-40 w-full p-5 text-center text-white transform -translate-x-1/2 -translate-y-1/2 
-         top-1/2 left-1/2 sm:w-96 lg:w-[40rem] lg:left-32 lg:translate-x-0 rounded-2xl lg:text-left">
+        top-1/2 left-1/2 sm:w-96 lg:w-[40rem] lg:left-32 lg:translate-x-0 rounded-2xl lg:text-left">
             <h1 class="font-outfit font-extrabold text-5xl sm:text-6xl md:text-[5rem] mb-5 leading-tight">
                 Strike It!
             </h1>
@@ -27,11 +27,11 @@
             </p>
 
             <div class="flex flex-row justify-center gap-3 lg:justify-start">
-                <button class="btn-glass">
+                <button class="btn-glass size-1/3 text-[18px] hover:text-[#122f4f]">
                     Book Sekarang
                 </button>
 
-                <button class="btn-glass">
+                <button class="btn-glass size-1/3 text-[18px] hover:text-[#122f4f]">
                     Sewa Alat
                 </button>
             </div>

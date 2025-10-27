@@ -12,7 +12,6 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 12px rgba(15, 17, 20, 0.25);
-  font-size: 14px;
   font-weight: 500;
   min-width: 75px;
   text-align: center;

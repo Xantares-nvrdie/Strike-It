@@ -2,13 +2,7 @@
   <div class="font-outfit antialiased">
     <Navigation />
     <main>
-      <LandingSection />
-
-      <LocationPreview />
-      <PricingSection />
-      <DiscountSection />
-      <EventSection />
-      <ReviewSection />
+      <router-view />
     </main>
 
     <Footer />
@@ -17,12 +11,6 @@
 
 <script setup>
 import Navigation from './components/Navigation.vue';
-import LandingSection from './components/LandingSection.vue';
-import LocationPreview from './components/LocationPreview.vue';
-import PricingSection from './components/PricingSection.vue';
-import DiscountSection from './components/DiscountSection.vue';
-import ReviewSection from './components/ReviewSection.vue';
-import EventSection from './components/EventSection.vue';
 import Footer from './components/Footer.vue'; 
 
 </script>
