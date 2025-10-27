@@ -2,7 +2,6 @@
   <div class="font-outfit antialiased">
     <main>
       <LandingSection />
-
       <LocationPreview />
       <PricingSection />
       <DiscountSection />

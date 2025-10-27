@@ -34,6 +34,9 @@ const column3Reviews = computed(() => reviews.value.filter((_, i) => i % 3 === 2
     
     <div class="relative z-20 py-20 text-center">
       <h2 class="text-4xl font-medium text-black md:text-6xl">Penilaian</h2>
+      <p class="max-w-xl mx-auto mt-5 text-base leading-relaxed text-gray-600">
+        Terima kasih atas ulasan positif dari para pengguna setia Strike It!
+      </p>
     </div>
 
     <div class="relative w-full max-w-7xl mx-auto h-[50rem] overflow-hidden">

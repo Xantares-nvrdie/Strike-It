@@ -40,7 +40,7 @@
       </div>
 
       <div class="mt-10 text-sm text-center text-gray-300">
-        © 2024 <span class="font-semibold text-white">Strike It</span>. All rights reserved.
+        © 2025 <span class="font-semibold text-white">Strike It</span>. All rights reserved.
       </div>
     </div>
 

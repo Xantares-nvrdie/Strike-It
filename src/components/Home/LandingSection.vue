@@ -25,16 +25,16 @@
                 tangkapan.
                 Misi kami adalah membantu Anda menciptakan kenangan berharga yang akan bertahan seumur hidup.
             </p>
-
             <div class="flex flex-row justify-center gap-3 lg:justify-start">
-                <button class="btn-glass size-1/3 text-[18px] hover:text-[#122f4f]">
+                <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
                     Book Sekarang
                 </button>
-
-                <button class="btn-glass size-1/3 text-[18px] hover:text-[#122f4f]">
+                <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
                     Sewa Alat
                 </button>
             </div>
+
+
         </div>
 
 
