@@ -1,34 +1,42 @@
 <template>
-    <section class="relative w-screen h-screen bg-gradient-to-b from-blue-900 to-white flex justify-center items-center gap-5 p-12 overflow-hidden">
+    <section
+        class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-blue-900 to-white">
 
-    <!-- Wave -->
-    <div class="absolute bottom-0 left-0 w-full h-[30vh] z-20"
+        <!-- Wave -->
+        <div class="absolute bottom-0 left-0 w-full h-[30vh] z-20"
             :style="{ backgroundImage: 'url(/src/assets/wave1.png)', backgroundRepeat: 'repeat-x', backgroundSize: 'cover' }">
-    </div>
-
-    <!-- Pemancing image -->
-    <div class="w-[70vw] h-[70vh] z-10 bg-center bg-cover"
-            :style="{ backgroundImage: 'url(/src/assets/mancing2.png)' }">
-    </div>
-
-    <!-- Text section -->
-    <div class="absolute top-1/2 left-12 transform -translate-y-1/2 z-50 w-96 p-5 rounded-2xl text-white">
-        <h1 class="font-outfit font-extrabold text-[5rem] mb-5">Strike It</h1>
-        <p class="text-lg leading-relaxed mb-7 text-gray-100">
-        Kami adalah komunitas pemancing yang berdedikasi untuk menciptakan pengalaman memancing yang
-        menyenangkan. Kami percaya bahwa memancing adalah sebuah proses dan perjalanan, bukan sekadar hasil tangkapan.
-        Misi kami adalah membantu Anda menciptakan kenangan berharga yang akan bertahan seumur hidup.
-        </p>
-        
-        <div class="flex gap-3">
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg transition-transform transform hover:-translate-y-0.5">
-            Book Sekarang
-        </button>
-        <button class="bg-transparent border border-white/30 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium shadow-lg transition-transform transform hover:-translate-y-0.5">
-            Sewa Alat
-        </button>
         </div>
-    </div>
+
+        <!-- Pemancing image -->
+        <div class="w-[70vw] h-[70vh] z-1 bg-center bg-cover"
+            :style="{ backgroundImage: 'url(/src/assets/mancing2.png)' }">
+        </div>
+
+        <!-- Text section -->
+        <div class="absolute z-40 w-full p-5 text-center text-white transform -translate-x-1/2 -translate-y-1/2 
+         top-1/2 left-1/2 sm:w-96 lg:w-[40rem] lg:left-32 lg:translate-x-0 rounded-2xl lg:text-left">
+            <h1 class="font-outfit font-extrabold text-5xl sm:text-6xl md:text-[5rem] mb-5 leading-tight">
+                Strike It!
+            </h1>
+
+            <p class="w-full text-base leading-relaxed text-gray-100 sm:text-lg mb-7">
+                Kami adalah komunitas pemancing yang berdedikasi untuk menciptakan pengalaman memancing yang
+                menyenangkan. Kami percaya bahwa memancing adalah sebuah proses dan perjalanan, bukan sekadar hasil
+                tangkapan.
+                Misi kami adalah membantu Anda menciptakan kenangan berharga yang akan bertahan seumur hidup.
+            </p>
+
+            <div class="flex flex-row justify-center gap-3 lg:justify-start">
+                <button class="btn-glass">
+                    Book Sekarang
+                </button>
+
+                <button class="btn-glass">
+                    Sewa Alat
+                </button>
+            </div>
+        </div>
+
 
     </section>
 </template>
