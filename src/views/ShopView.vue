@@ -52,17 +52,13 @@ const reelProducts = ref([
         <div class="w-full p-2.5 flex flex-col justify-start items-stretch gap-20 relative z-30 mt-4">
         
             <div class="self-stretch flex flex-col lg:flex-row justify-start items-start gap-2.5">
-                
                 <FilterSidebar class="w-full lg:w-80 flex-shrink-0 sticky top-[12rem] z-20" />
-                
                 <main class="flex-1 min-w-0 inline-flex flex-col justify-start items-start gap-2.5">
-                
                     <ProductList title="Joran" :products="joranProducts" />
-                    
                     <ProductList title="Reels Pancing" :products="reelProducts" />
-                
                 </main>
             </div>
+            
         </div>
     </div>
 </template>
