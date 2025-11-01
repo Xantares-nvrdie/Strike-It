@@ -13,11 +13,11 @@
             <li class="text-gray-500 text-sm font-bold font-outfit leading-5">/</li>
         </ol>
         </nav>
-        
+
         <form class="w-full max-w-lg px-5 py-2.5 bg-linear-131 from-white/20 to-gray-50/20 ">
             <div class="flex w-full max-w-lg items-end gap-2">
                 <div class="flex-1 self-stretch inline-flex flex-col justify-start items-start gap-0.5">
-                    <label for="search-bar" class="justify-center text-neutral-600 text-sm font-medium font-['Outfit']">Cari</label>
+                    <label for="search-bar" class="justify-center text-neutral-600 text-sm font-medium font-outfit">Cari</label>
                     <input type="text" id="search-bar" placeholder="Masukkan barang apa yang dicari" class="self-stretch h-7 p-3.5 bg-linear-131 from-white rounded-[59px] shadow-[3.5256409645080566px_4.230769157409668px_16.147436141967773px_0px_rgba(0,0,0,0.13)] backdrop-blur-[5.29px] inline-flex justify-start items-center gap-5 w-full text-sky-900/50 text-xs sm:text-sm font-normal font-outfit border-none focus:ring-0">
                 </div>
                 <button type="submit" class="size- px-3 py-2 btn-glass rounded-xl flex justify-center items-center gap-[4.81px]">

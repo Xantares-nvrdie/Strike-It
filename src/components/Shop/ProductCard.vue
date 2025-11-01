@@ -17,7 +17,7 @@ defineProps({
         class="object-cover w-full h-48 rounded-2xl"
         />
 
-        <h3 class="mt-2 text-sm font-semibold leading-tight text-stone-900 font-['Outfit'] h-10">
+        <h3 class="mt-2 text-sm font-semibold leading-tight text-stone-900 font-outfit h-10">
         {{ product.name }}
         </h3>
 
@@ -57,7 +57,7 @@ defineProps({
         <button 
             type="button"
             class="w-[85%] px-3 py-2 text-sm font-medium text-white transition bg-gradient-to-tr 
-                from-blue-800 to-blue-500/90 rounded-lg font-['Outfit'] 
+                from-blue-800 to-blue-500/90 rounded-lg font-outfit 
                 hover:from-blue-700 hover:to-blue-400"
         >
             Tambah ke Keranjang

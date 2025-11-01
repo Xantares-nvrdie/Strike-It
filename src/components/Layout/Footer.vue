@@ -3,7 +3,7 @@
     
     <div class="absolute top-[-8rem] left-0 w-full h-32 bg-gradient-to-t from-[#003bb3] to-transparent z-10"></div>
 
-    <div class="relative max-w-6xl px-6 mx-auto z-20">
+    <div class="relative w-full px-6 z-20">
       
       <div class="grid gap-8 text-sm md:grid-cols-3">
         <div class="glass-box">

@@ -37,7 +37,7 @@
                             v-model="filterHarga.min"
                             type="number"
                             id="min-price"
-                            class="w-full p-2.5 pl-10 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                            class="w-full p-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                             placeholder="Min">
                     </div>
                     
@@ -51,11 +51,11 @@
                             v-model="filterHarga.max"
                             type="number"
                             id="max-price"
-                            class="w-full p-2.5 pl-10 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                            class="w-full p-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                             placeholder="Max">
                     </div>
                     
-                    </div>
+                </div>
             </div>
             
             <div class="flex flex-col gap-3">

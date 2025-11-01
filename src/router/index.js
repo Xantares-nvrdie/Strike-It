@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import AboutView from '../views/AboutView.vue';
 import ShopView from '../views/ShopView.vue';
+import ProductView from '@/views/ProductView.vue';
 // 2. Tentukan "peta" Anda
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/Shop', // Jika URL adalah '/' (halaman utama)
     name: 'Shop',
     component: ShopView // Tampilkan komponen HomeView
+  },
+  {
+    path: '/Details', // Jika URL adalah '/' (halaman utama)
+    name: 'Details',
+    component: ProductView // Tampilkan komponen HomeView
   }
 ];
 

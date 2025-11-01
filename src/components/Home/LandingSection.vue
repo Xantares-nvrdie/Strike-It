@@ -1,7 +1,5 @@
 <template>
-    <section
-        class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
-
+    <section class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
         <!-- Wave -->
         <div class="absolute bottom-0 left-0 w-full h-[30vh] z-20"
             :style="{ backgroundImage: 'url(/src/assets/wave1.png)', backgroundRepeat: 'repeat-x', backgroundSize: 'cover' }">

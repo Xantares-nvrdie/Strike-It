@@ -16,6 +16,9 @@ const navbarClass = computed(() => {
   // Kelas untuk style solid/default
   return 'sticky top-0 z-50 w-full h-16 shadow-md bg-white text-gray-800';
 });
+
+const isMainPage = computed(() => route.name === 'Home');
+
 </script>
 <template>
   <nav
@@ -25,13 +28,13 @@ const navbarClass = computed(() => {
       <img
         src="../../assets/strikeit_logo.png"
         alt="Logo Strike It"
-        class="w-[50px] h-[50px] object-contain"
+        class="w-[50px] h-[50px] object-contain bg-red-500"
       />
     </div>
 
-    <ul class="list-none flex gap-x-[30px]">
+    <ul v-if="isMainPage" class="list-none flex gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Home</button>
+        <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
         <button class="btn-glass group-hover:text-[#122f4f]">Lokasi</button>
@@ -43,6 +46,26 @@ const navbarClass = computed(() => {
         <button class="btn-glass group-hover:text-[#122f4f]">Penilaian</button>
       </li>
     </ul>
+
+    <!-- NAVBAR khusus untuk halaman Shop -->
+    <ul v-else class="list-none flex gap-x-[30px]">
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
+        <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
+      </li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
+        <button class="btn-glass group-hover:text-[#122f4f]">Booking</button>
+      </li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
+        <button class="btn-glass group-hover:text-[#122f4f]">Alat</button>
+      </li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
+        <button class="btn-glass group-hover:text-[#122f4f]">Komunitas</button>
+      </li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
+        <button class="btn-glass group-hover:text-[#122f4f]">Event</button>
+      </li>
+    </ul>
+
 
     <ul class="list-none flex items-center gap-x-2.5">
       <li>
