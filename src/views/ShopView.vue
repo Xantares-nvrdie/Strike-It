@@ -47,10 +47,9 @@ const reelProducts = ref([
 <template>
     <div class="relative w-full min-h-screen overflow-x-hidden bg-zinc-100">
         
-        <ShopHeader class="w-full sticky top-[65px] z-40 bg-zinc-100 py-4 shadow-md" />
+        <ShopHeader class="w-full sticky top-[65px] z-40 bg-zinc-100 py-4" />
 
         <div class="w-full p-2.5 flex flex-col justify-start items-stretch gap-20 relative z-30 mt-4">
-        
             <div class="self-stretch flex flex-col lg:flex-row justify-start items-start gap-2.5">
                 <FilterSidebar class="w-full lg:w-80 flex-shrink-0 sticky top-[12rem] z-20" />
                 <main class="flex-1 min-w-0 inline-flex flex-col justify-start items-start gap-2.5">
