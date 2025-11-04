@@ -26,7 +26,7 @@ const column3Reviews = computed(() => reviews.value.filter((_, i) => i % 3 === 2
 </script>
 
 <template>
-  <div class="relative w-full overflow-hidden antialiased bg-gray-50 font-outfit">
+  <div id="penilaian" class="relative w-full overflow-hidden antialiased bg-gray-50 font-outfit">
     
     <div 
       class="absolute top-0 left-0 z-10 w-full h-48 pointer-events-none bg-gradient-to-b from-gray-50 via-gray-50 to-transparent"

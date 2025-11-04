@@ -17,7 +17,7 @@ const prev = () => {
 </script>
 
 <template>
-  <div class="min-h-screen antialiased bg-gray-50 font-outfit">
+  <div id="preview" class="min-h-screen antialiased bg-gray-50 font-outfit">
     <section class="pt-24 pb-16 text-center bg-white">
       <div class="max-w-4xl px-4 mx-auto">
         <h2 class="text-4xl font-medium text-black md:text-6xl">

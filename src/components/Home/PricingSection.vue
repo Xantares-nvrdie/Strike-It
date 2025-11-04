@@ -1,5 +1,6 @@
 <template>
   <section
+    id="langganan"
     class="min-h-screen bg-white text-center pt-24 pb-16 font-['Outfit']"
   >
     <div class="px-4">

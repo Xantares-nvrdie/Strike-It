@@ -31,16 +31,29 @@ const toggleMenu = () => {
     <!-- Menu Desktop -->
     <ul v-if="isMainPage" class="hidden lg:flex list-none gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
+        <router-link to="/">
+          <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
+        </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Lokasi</button>
+        <router-link to="/#preview">
+          <button class="btn-glass group-hover:text-[#122f4f]">Lokasi</button>
+        </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Langganan</button>
+        <router-link to="/#langganan">
+          <button class="btn-glass group-hover:text-[#122f4f]">Langganan</button>
+        </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Penilaian</button>
+        <router-link to="/#diskon">
+          <button class="btn-glass group-hover:text-[#122f4f]">Diskon</button>
+        </router-link>
+      </li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
+        <router-link to="/#penilaian">
+          <button class="btn-glass group-hover:text-[#122f4f]">Penilaian</button>
+        </router-link>
       </li>
     </ul>
 

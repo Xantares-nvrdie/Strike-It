@@ -1,37 +1,58 @@
 import { createRouter, createWebHistory } from 'vue-router';
-// 1. Impor "views" (halaman) Anda
 import HomeView from '../views/HomeView.vue';
 import AboutView from '../views/AboutView.vue';
 import ShopView from '../views/ShopView.vue';
 import ProductView from '@/views/ProductView.vue';
-// 2. Tentukan "peta" Anda
+
+
 const routes = [
   {
     path: '/', // Jika URL adalah '/' (halaman utama)
     name: 'Home',
-    component: HomeView // Tampilkan komponen HomeView
+    component: HomeView 
   },
   {
-    path: '/about', // Jika URL adalah '/about'
+    path: '/about', 
     name: 'About',
-    component: AboutView // Tampilkan komponen AboutView
+    component: AboutView 
   },
   {
-    path: '/Shop', // Jika URL adalah '/' (halaman utama)
+    path: '/Shop',
     name: 'Shop',
-    component: ShopView // Tampilkan komponen HomeView
+    component: ShopView 
   },
   {
-    path: '/Details', // Jika URL adalah '/' (halaman utama)
+    path: '/Details',
     name: 'Details',
-    component: ProductView // Tampilkan komponen HomeView
+    component: ProductView 
   }
 ];
 
 // 3. Buat routernya
 const router = createRouter({
   history: createWebHistory(),
-  routes, // Berikan "peta" yang tadi Anda buat
+  routes,
+
+  scrollBehavior(to, from, savedPosition) {
+    // 1. Cek apakah tujuannya adalah "hash link" (ada #)
+    if (to.hash) {
+      return {
+        el: to.hash,        // 'el' menunjuk ke elemen dengan ID yg sama dgn hash
+        behavior: 'smooth', // Buat scroll-nya jadi halus
+      };
+    }
+
+    // 2. Jika kembali ke halaman sebelumnya (pakai tombol 'back' browser)
+    if (savedPosition) {
+      return savedPosition;
+    }
+
+    // 3. Jika pindah ke halaman baru (bukan hash link)
+    return { 
+      top: 0,               // Selalu scroll ke paling atas
+      behavior: 'smooth' 
+    };
+  }
 });
 
 export default router;

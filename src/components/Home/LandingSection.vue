@@ -1,6 +1,5 @@
 <template>
-    <section
-        class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
+    <section class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
 
         <div class="absolute bottom-0 left-0 w-full h-[25vh] sm:h-[28vh] md:h-[30vh] z-20" :style="{
             backgroundImage: 'url(/src/assets/wave1.png)',
@@ -26,12 +25,16 @@
                 Misi kami adalah membantu Anda menciptakan kenangan berharga yang akan bertahan seumur hidup.
             </p>
             <div class="flex flex-row justify-center gap-3 lg:justify-start">
-                <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
-                    Book Sekarang
-                </button>
-                <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
-                    Sewa Alat
-                </button>
+                <router-link to="/">
+                    <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
+                        Book Sekarang
+                    </button>
+                </router-link>
+                <router-link to="/Shop">
+                    <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
+                        Sewa Alat
+                    </button>
+                </router-link>
             </div>
         </div>
     </section>

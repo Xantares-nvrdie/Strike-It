@@ -1,5 +1,6 @@
 <template>
     <section
+        id="diskon"
         class="min-h-screen/2 bg-white text-center pt-24 pb-16 font-['Outfit']"
     >
         <div class="px-4 header-diskon">
