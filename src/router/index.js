@@ -3,8 +3,9 @@ import HomeView from '../views/HomeView.vue';
 import AboutView from '../views/AboutView.vue';
 import ShopView from '../views/ShopView.vue';
 import ProductView from '@/views/ProductView.vue';
-
-
+import LocationView from '@/views/LocationView.vue';
+import LocationDetailView from '@/views/LocationDetailView.vue';
+import BookingView from '@/views/BookingView.vue';
 const routes = [
   {
     path: '/', // Jika URL adalah '/' (halaman utama)
