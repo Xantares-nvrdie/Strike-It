@@ -15,17 +15,17 @@
         >
         <DiscountCard
             discount="15%"
-            code="MEMEQIQBAL"
+            code="AASNAAD998"
             usage="122 dari 130 kupon sudah terpakai"
         />
         <DiscountCard
             discount="15%"
-            code="MEMEQIQBALBAU"
+            code="ASD12229SDA"
             usage="122 dari 130 kupon sudah terpakai"
         />
         <DiscountCard
             discount="15%"
-            code="IQBALKONTOL"
+            code="ADAD9988"
             usage="122 dari 130 kupon sudah terpakai"
         />
         </div>
