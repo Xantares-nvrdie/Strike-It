@@ -52,7 +52,7 @@ const locations = ref([
       Berlokasi strategis di pusat kota.
     </p>
   </div>
-  <div class="flex justify-center items-center flex-col gap-12 mb-24">
+  <div class="flex justify-center items-center flex-col gap-5 mb-24">
     <LocationCard class="" v-for="location in locations" :key="location.city" :location="location" />
   </div>
 </template>
