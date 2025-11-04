@@ -1,38 +1,35 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
+import { Container } from 'postcss';
 
-// 1. Dapatkan rute yang sedang aktif
 const route = useRoute();
+const isMenuOpen = ref(false)
 
-// 2. Buat computed property untuk menentukan kelas CSS
 const navbarClass = computed(() => {
-  // Cek 'meta' dari rute yang aktif
   if (route.meta.navbarStyle === 'transparent') {
-    // Kelas untuk style transparan
     return 'sticky top-0 z-50 w-full h-16 bg-transparent text-white absolute';
   }
-  
-  // Kelas untuk style solid/default
+
+
   return 'sticky top-0 z-50 w-full h-16 shadow-md bg-white text-gray-800';
 });
 
 const isMainPage = computed(() => route.name === 'Home');
 
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value
+}
 </script>
+
 <template>
-  <nav
-    class="absolute top-0 left-0 z-50 flex items-center justify-between w-full px-10 py-4 font-semibold text-white"
-  >
+  <nav class="absolute top-0 left-0 z-50 flex items-center justify-between w-full px-10 py-4 font-semibold text-white">
     <div class="logo">
-      <img
-        src="../../assets/strikeit_logo.png"
-        alt="Logo Strike It"
-        class="w-[50px] h-[50px] object-contain bg-red-500"
-      />
+      <img src="../../assets/strikeit_logo.png" alt="Logo Strike It" class="w-[50px] h-[50px] object-contain" />
     </div>
 
-    <ul v-if="isMainPage" class="list-none flex gap-x-[30px]">
+    <!-- Menu Desktop -->
+    <ul v-if="isMainPage" class="hidden lg:flex list-none gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
         <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
       </li>
@@ -47,8 +44,8 @@ const isMainPage = computed(() => route.name === 'Home');
       </li>
     </ul>
 
-    <!-- NAVBAR khusus untuk halaman Shop -->
-    <ul v-else class="list-none flex gap-x-[30px]">
+    <!-- Menu Desktop untuk Shop -->
+    <ul v-else class="hidden lg:flex list-none gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
         <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
       </li>
@@ -66,22 +63,96 @@ const isMainPage = computed(() => route.name === 'Home');
       </li>
     </ul>
 
-
-    <ul class="list-none flex items-center gap-x-2.5">
+    <!-- Profile -->
+    <ul class="hidden lg:flex list-none items-center gap-x-2.5">
       <li>
-        <img
-          src="../../assets/saskeh.jpg"
-          alt="Foto Profile"
-          class="object-cover w-10 h-10 rounded-full"
-        />
+        <img src="../../assets/saskeh.jpg" alt="Foto Profile" class="object-cover w-10 h-10 rounded-full" />
       </li>
       <li>
         <button class="btn-glass">Profile</button>
       </li>
     </ul>
+
+    <!-- Tombol Hamburger (Mobile) -->
+    <button @click="toggleMenu"
+      class="lg:hidden flex flex-col justify-center items-center gap-[4px] w-10 h-10 rounded-md hover:bg-white/10 transition">
+      <span class="w-6 h-[2px] bg-white transition-all" :class="{ 'rotate-45 translate-y-[6px]': isMenuOpen }"></span>
+      <span class="w-6 h-[2px] bg-white" :class="{ 'opacity-0': isMenuOpen }"></span>
+      <span class="w-6 h-[2px] bg-white transition-all" :class="{ '-rotate-45 -translate-y-[6px]': isMenuOpen }"></span>
+    </button>
+
+    <!-- Menu Mobile -->
+    <transition name="fade">
+      <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden">
+        <!-- ====== CONTAINER ====== -->
+        <div
+          class="w-[85vw] bg-black/25 backdrop-blur-md rounded-2xl border-4 border-white/50 p-5 flex flex-col items-center gap-3 text-white">
+          <!-- ===== PROFILE BOX ===== -->
+          <div class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-center gap-2 py-4">
+            <img src='../../assets/saskeh.jpg' alt="Foto Profile"
+              class="object-cover w-[12dvh] h-[12dvh] rounded-full" />
+            <p class="font-semibold text-lg">User</p>
+            <span class="text-sm opacity-80">Lihat profil</span>
+          </div>
+
+          <!-- ===== NAVIGATION BOX ===== -->
+          <div class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-start gap-4 px-6 py-5">
+            <template v-if="isMainPage">
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-home"></i> Home
+              </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-map-marker-alt"></i> Lokasi
+              </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-credit-card"></i> Langganan
+              </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-star"></i> Penilaian
+              </button>
+            </template>
+
+            <template v-else>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-home"></i> Home
+              </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-calendar-check"></i> Booking
+              </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-fish"></i> Sewa Alat
+              </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-users"></i> Komunitas
+              </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <i class="fas fa-calendar"></i> Event
+              </button>
+            </template>
+          </div>
+
+          <!-- ===== LOGOUT BOX ===== -->
+          <div class="w-full">
+            <button
+              class="w-full bg-white/10 border-4 border-white/50 text-white rounded-2xl py-3 font-semibold hover:bg-white/20 transition">
+              <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
+
   </nav>
 </template>
 
 <style scoped>
-/* Sekarang kosong! */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>
