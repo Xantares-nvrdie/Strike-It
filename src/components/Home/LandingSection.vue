@@ -1,13 +1,17 @@
 <template>
-    <section class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
+    <section
+        class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
         <!-- Wave -->
-        <div class="absolute bottom-0 left-0 w-full h-[30vh] z-20"
-            :style="{ backgroundImage: 'url(/src/assets/wave1.png)', backgroundRepeat: 'repeat-x', backgroundSize: 'cover' }">
+        <div class="absolute bottom-0 left-0 w-full h-[25vh] sm:h-[28vh] md:h-[30vh] z-20" :style="{
+            backgroundImage: 'url(/src/assets/wave1.png)',
+            backgroundRepeat: 'repeat-x',
+            backgroundSize: 'cover'
+        }">
         </div>
 
-        <!-- Pemancing image -->
-        <div class="w-[70vw] h-[70vh] z-1 bg-center bg-cover"
-            :style="{ backgroundImage: 'url(/src/assets/mancing2.png)' }">
+        <!-- Gambar Pemancing -->
+        <div class="absolute bottom-0 lg:right-[10vw] md:right-[2vw] sm:right-[1vw] h-[80vh] sm:h-[85vh] md:h-[90vh] lg:h-[100vh] w-[110vw] sm:w-[80vw] md:w-[60vw] lg:w-[40vw] aspect-[3/4] bg-no-repeat bg-right bg-contain z-10"
+            :style="{ backgroundImage: 'url(/src/assets/mancing.png)' }">
         </div>
 
         <!-- Text section -->
@@ -17,7 +21,7 @@
                 Strike It!
             </h1>
 
-            <p class="w-full text-base leading-relaxed text-gray-100 sm:text-lg mb-7">
+            <p class="w-full text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-gray-100 mb-7">
                 Kami adalah komunitas pemancing yang berdedikasi untuk menciptakan pengalaman memancing yang
                 menyenangkan. Kami percaya bahwa memancing adalah sebuah proses dan perjalanan, bukan sekadar hasil
                 tangkapan.
