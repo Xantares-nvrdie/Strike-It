@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import ProductDetails from '@/components/Shop/ProductDetails.vue';
 import ShopHeader from '@/components/Shop/ShopHeader.vue';
 import ProductDetailsDescription from '@/components/Shop/ProductDetailsDescription.vue';

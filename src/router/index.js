@@ -6,6 +6,7 @@ import ProductView from '@/views/ProductView.vue';
 import LocationView from '@/views/LocationView.vue';
 import LocationDetailView from '@/views/LocationDetailView.vue';
 import BookingView from '@/views/BookingView.vue';
+import ProfileView from '@/views/ProfileView.vue';
 const routes = [
   {
     path: '/', // Jika URL adalah '/' (halaman utama)
@@ -31,6 +32,21 @@ const routes = [
     path: '/Shop/:categorySlug', 
     name: 'ShopCategory',
     component: ShopView
+  },
+  {
+    path: '/Location/Book', 
+    name: 'Book',
+    component: BookingView
+  },
+  {
+    path: '/Location', 
+    name: 'Location',
+    component: LocationDetailView
+  },
+  {
+    path: '/Profile', 
+    name: 'Profile',
+    component: ProfileView
   },
 ];
 

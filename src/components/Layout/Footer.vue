@@ -1,9 +1,9 @@
 <script setup>
   import { Icon } from '@iconify/vue';
 </script>
+
 <template>
   <footer class="relative w-full py-12 text-white bg-[#003bb3] font-['Outfit']">
-    
     <div class="absolute top-[-8rem] left-0 w-full h-32 bg-gradient-to-t from-[#003bb3] to-transparent z-10"></div>
 
     <div class="relative w-full px-6 z-20">
