@@ -15,7 +15,7 @@ defineProps({
                 {{ title }}
             </h2>
             <a href="#" class="flex items-center justify-start gap-2">
-                <span class="text-right justify-center text-stone-800 text-sm font-semibold font-outfit uppercase leading-5">Lihat semua</span>
+                <span class="text-right justify-center text-stone-800 text-sm font-semibold font-outfit uppercase leading-5">Lihat yang disukai</span>
                 <i class="w-3 h-3.5 text-right justify-center text-stone-800 text-sm font-black font-['Font_Awesome_5_Pro'] uppercase leading-4"></i>
             </a>
         </div>
@@ -26,7 +26,8 @@ defineProps({
                 :key="product.id"
                 class="flex flex-col items-center justify-start" 
                 >
-                <ProductCard :product="product" class="w-full" /> </li>
+                <ProductCard :product="product" class="w-full" />
+            </li>
         </ul>
     </section>
 </template>

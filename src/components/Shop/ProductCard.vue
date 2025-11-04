@@ -1,7 +1,17 @@
 <script setup>
+import { Icon } from '@iconify/vue';
+import { ref } from 'vue';
+
 defineProps({
   product: Object // Berisi { id, imageUrl, name, rating, sold, price, ... }
 });
+
+const isLoved = ref(false);
+
+function toggleLove() {
+    isLoved.value = !isLoved.value;
+}
+
 </script>
 
 <template>
@@ -60,14 +70,17 @@ defineProps({
                 from-blue-800 to-blue-500/90 rounded-lg font-outfit 
                 hover:from-blue-700 hover:to-blue-400"
         >
-            Tambah ke Keranjang
+            Lihat
         </button>
         <button 
             type="button"
-            class="p-2 text-gray-500 transition bg-white/40 rounded-xl hover:text-red-500"
-            aria-label="Tambah ke wishlist"
+            class="p-2 transition rounded-xl hover:text-red-500"
+            :class="isLoved ? 'text-red-500' : 'text-gray-500'"
+            aria-label="Tambah ke Suka"
+            @click="toggleLove"
         >
-            <i class="text-lg fas fa-heart">aspkdaskda</i>
+            <Icon v-if="!isLoved" icon="line-md:heart" width="24" height="24" />
+            <Icon v-else icon="line-md:heart-filled" width="24" height="24" />
         </button>
         </div>
     </article>
