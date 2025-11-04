@@ -1,3 +1,6 @@
+<script setup>
+  import { Icon } from '@iconify/vue';
+</script>
 <template>
   <footer class="relative w-full py-12 text-white bg-[#003bb3] font-['Outfit']">
     
@@ -30,10 +33,18 @@
         <div class="text-center glass-box md:text-left">
           <h3 class="mb-3 text-lg font-semibold">Reach Us</h3>
           <div class="flex justify-center gap-4 mt-2 md:justify-start">
-            <a href="#" class="icon-btn"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="icon-btn"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="icon-btn"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="icon-btn"><i class="fab fa-tiktok"></i></a>
+            <a href="#" class="icon-btn w-10 h-10">
+              <Icon icon="ic:round-facebook" class="z-10 w-full h-full"/>
+            </a>
+            <a href="#" class="icon-btn w-10 h-10">
+              <Icon icon="ri:instagram-line" class="z-10 w-full h-full"/>
+            </a>
+            <a href="#" class="icon-btn w-10 h-10">
+              <Icon icon="ri:twitter-x-fill" class="z-10 w-full h-full" />
+            </a>
+            <a href="#" class="icon-btn w-10 h-10">
+              <Icon icon="ic:sharp-tiktok" class="z-10 w-full h-full" />
+            </a>
           </div>
         </div>
 
@@ -47,16 +58,9 @@
   </footer>
 </template>
 
-<script setup>
-// Static footer — no script logic
-// Pastikan Anda sudah memuat Font Awesome icons di file index.html atau main.js Anda
-// jika Anda ingin ikon fas/fab muncul.
-</script>
+
 
 <style scoped>
-/* Style untuk .glass-box dan .icon-btn
-  Ini menggunakan CSS murni, bukan @apply, tapi hasilnya sama.
-*/
 .glass-box {
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -75,8 +79,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem; /* w-10 */
-  height: 2.5rem; /* h-10 */
+  width: 2.5rem;
+  height: 2.5rem;
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3); /* border-white/30 */
   border-radius: 9999px; /* rounded-full */
