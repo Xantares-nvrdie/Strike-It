@@ -1,7 +1,7 @@
 <template>
     <section
         class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
-        <!-- Wave -->
+
         <div class="absolute bottom-0 left-0 w-full h-[25vh] sm:h-[28vh] md:h-[30vh] z-20" :style="{
             backgroundImage: 'url(/src/assets/wave1.png)',
             backgroundRepeat: 'repeat-x',
@@ -9,14 +9,12 @@
         }">
         </div>
 
-        <!-- Gambar Pemancing -->
         <div class="absolute bottom-0 lg:right-[10vw] md:right-[2vw] sm:right-[1vw] h-[80vh] sm:h-[85vh] md:h-[90vh] lg:h-[100vh] w-[110vw] sm:w-[80vw] md:w-[60vw] lg:w-[40vw] aspect-[3/4] bg-no-repeat bg-right bg-contain z-10"
             :style="{ backgroundImage: 'url(/src/assets/mancing.png)' }">
         </div>
 
-        <!-- Text section -->
-        <div class="absolute z-40 w-full p-5 text-center text-white transform -translate-x-1/2 -translate-y-1/2 
-        top-1/2 left-1/2 sm:w-96 lg:w-[40rem] lg:left-32 lg:translate-x-0 rounded-2xl lg:text-left">
+        <div class="absolute z-40 w-full p-5 text-center text-white transform -translate-x-1/2 
+        top-[20vh] left-1/2 sm:w-96 lg:w-[40rem] lg:left-32 lg:translate-x-0 rounded-2xl lg:text-left">
             <h1 class="font-outfit font-extrabold text-5xl sm:text-6xl md:text-[5rem] mb-5 leading-tight">
                 Strike It!
             </h1>
@@ -35,11 +33,7 @@
                     Sewa Alat
                 </button>
             </div>
-
-
         </div>
-
-
     </section>
 </template>
 
