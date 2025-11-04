@@ -28,7 +28,115 @@ const joranProducts = ref([
     isForRent: true,
     isForSale: false
 },
-// ... tambahkan category: 'joran' ke sisanya
+{
+    id: 5,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+3',
+    name: 'Joran Pancing Telescopic 150cm',
+    rating: 3,
+    sold: 95,
+    price: 'Rp 220.000',
+    isForRent: false,
+    isForSale: true
+},
+{
+    id: 6,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+4',
+    name: 'Joran Spinning Abu Garcia Veritas 2.0',
+    rating: 4,
+    sold: 130,
+    price: 'Rp 600.000',
+    isForRent: true,
+    isForSale: true
+},
+{
+    id: 7,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+5',
+    name: 'Joran Pancing Fiber Glass 200cm',
+    rating: 2,
+    sold: 60,
+    price: 'Rp 180.000',
+    isForRent: false,
+    isForSale: true
+},
+{
+    id: 8,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+6',
+    name: 'Joran Pancing Telescopic 240cm',
+    rating: 5,
+    sold: 300,
+    price: 'Rp 750.000',
+    isForRent: true,
+    isForSale: true
+},
+{
+    id: 9,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+7',
+    name: 'Joran Pancing Spinning Carbon 210cm',
+    rating: 4,
+    sold: 220,
+    price: 'Rp 520.000',
+    isForRent: true,
+    isForSale: false
+},
+{
+    id: 10,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+8',
+    name: 'Joran Pancing Fiber Glass 180cm',
+    rating: 3,
+    sold: 110,
+    price: 'Rp 300.000',
+    isForRent: false,
+    isForSale: true
+},
+{
+    id: 11,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+9',
+    name: 'Joran Pancing Spinning Abu Garcia Veritas 1.5',
+    rating: 4,
+    sold: 150,
+    price: 'Rp 450.000',
+    isForRent: true,
+    isForSale: true
+},
+{
+    id: 12,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+10',
+    name: 'Joran Pancing Telescopic 210cm',
+    rating: 5,
+    sold: 280,
+    price: 'Rp 680.000',
+    isForRent: true,
+    isForSale: true
+},
+{    id: 13,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+11',
+    name: 'Joran Pancing Carbon Fiber 200cm',
+    rating: 4,
+    sold: 200,
+    price: 'Rp 550.000',
+    isForRent: true,
+    isForSale: false
+},
+{
+    id: 14,
+    category: 'joran',
+    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+12',
+    name: 'Joran Pancing Spinning 240cm Kuat',
+    rating: 5,
+    sold: 320,
+    price: 'Rp 800.000',
+    isForRent: true,
+    isForSale: true
+},
 ]);
 
 const reelProducts = ref([
@@ -97,13 +205,13 @@ const pageTitle = computed(() => {
                             title="Joran" 
                             :products="joranProducts" 
                             categorySlug="joran"
-                            displayMode="grid"
+                            displayMode="row"
                         />
                         <ProductList 
                             title="Reels Pancing" 
                             :products="reelProducts" 
                             categorySlug="reels" 
-                            displayMode="grid"
+                            displayMode="row"
                         />
                     </div>
                     
