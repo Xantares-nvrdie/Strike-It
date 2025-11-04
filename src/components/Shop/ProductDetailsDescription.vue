@@ -12,7 +12,7 @@ const reviesws = ref([
     {
         id: 1,
         username: "User1",
-        rating: 5,
+        rating: 1,
         date: "2024-06-15",
         comment: "Produk ini sangat bagus!",
     },

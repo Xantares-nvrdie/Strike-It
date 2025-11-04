@@ -67,7 +67,7 @@ defineProps({
             class="p-2 text-gray-500 transition bg-white/40 rounded-xl hover:text-red-500"
             aria-label="Tambah ke wishlist"
         >
-            <i class="text-lg fas fa-heart"></i>
+            <i class="text-lg fas fa-heart">aspkdaskda</i>
         </button>
         </div>
     </article>
