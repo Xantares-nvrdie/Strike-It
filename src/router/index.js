@@ -25,7 +25,12 @@ const routes = [
     path: '/Details',
     name: 'Details',
     component: ProductView 
-  }
+  },
+  {
+    path: '/Shop/:categorySlug', 
+    name: 'ShopCategory',
+    component: ShopView
+  },
 ];
 
 // 3. Buat routernya
