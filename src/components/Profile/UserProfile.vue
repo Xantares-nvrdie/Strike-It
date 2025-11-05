@@ -42,11 +42,11 @@ const getStatusClass = (status) => {
 </script>
 
 <template>
-    <section class="min-h-screen py-8 bg-yellow-400 flex flex-col justify-start items-center gap-6">
+    <section class="w-full h-full bg-zinc-200 flex flex-col justify-start gap-6 overflow-y-auto">
         
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-8 pb-40">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-8 py-8">
 
-            <div class="bg-blue-500 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-5">
+            <div class="bg-blue-500 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline-2 outline-white p-6 flex flex-col gap-5">
                 
                 <div class="flex flex-col items-center gap-3">
                 <img :src="user.avatar" alt="Avatar" class="w-24 h-24 rounded-full object-cover border-4 border-white/50 shadow-md">
