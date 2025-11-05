@@ -7,6 +7,7 @@ import LocationView from '@/views/LocationView.vue';
 import LocationDetailView from '@/views/LocationDetailView.vue';
 import BookingView from '@/views/BookingView.vue';
 import ProfileView from '@/views/ProfileView.vue';
+import HistoryView from '@/views/HistoryView.vue';
 const routes = [
   {
     path: '/', // Jika URL adalah '/' (halaman utama)
@@ -52,6 +53,12 @@ const routes = [
     path: '/profile', 
     name: 'Profile',
     component: ProfileView,
+    meta: { hideNavbar: true, hideFooter: true }
+  },
+  {
+    path: '/history', 
+    name: 'History',
+    component: HistoryView,
     meta: { hideNavbar: true, hideFooter: true }
   },
 ];

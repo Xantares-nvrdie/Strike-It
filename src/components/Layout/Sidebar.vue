@@ -5,9 +5,9 @@ import { Icon } from '@iconify/vue';
 
 // Definisikan item navigasi
 const navigationItems = ref([
-    { name: 'Profil', icon: 'heroicons:user-circle', path: '/Profile' },
-    { name: 'Riwayat', icon: 'heroicons:clock', path: '/Riwayat' },
-    { name: 'Komunitas', icon: 'heroicons:chat-bubble-left-right', path: '/Komunitas' },
+    { name: 'Profil', icon: 'heroicons:user-circle', path: '/profile' },
+    { name: 'Riwayat', icon: 'heroicons:clock', path: '/history' },
+    { name: 'Komunitas', icon: 'heroicons:chat-bubble-left-right', path: '/community' },
 ]);
 
 </script>
