@@ -19,32 +19,37 @@ const routes = [
     component: AboutView 
   },
   {
-    path: '/Shop',
+    path: '/shop',
     name: 'Shop',
     component: ShopView 
   },
   {
-    path: '/Details',
+    path: '/details',
     name: 'Details',
     component: ProductView 
   },
   {
-    path: '/Shop/:categorySlug', 
+    path: '/shop/:categorySlug', 
     name: 'ShopCategory',
     component: ShopView
   },
   {
-    path: '/Location/Book', 
+    path: '/location/place/book', 
     name: 'Book',
     component: BookingView
   },
   {
-    path: '/Location', 
-    name: 'Location',
+    path: '/location/place', 
+    name: 'LocationDetail',
     component: LocationDetailView
   },
   {
-    path: '/Profile', 
+    path: '/location', 
+    name: 'Location',
+    component: LocationView
+  },
+  {
+    path: '/profile', 
     name: 'Profile',
     component: ProfileView,
     meta: { hideNavbar: true, hideFooter: true }

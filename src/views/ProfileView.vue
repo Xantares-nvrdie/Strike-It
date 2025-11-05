@@ -1,7 +1,6 @@
 <script setup>
 import UserProfile from '@/components/Profile/UserProfile.vue';
 import Sidebar from '@/components/Layout/Sidebar.vue';
-import Footer from '@/components/Layout/Footer.vue';
 </script>
 
 
