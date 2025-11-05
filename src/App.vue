@@ -1,6 +1,6 @@
 <template>
   <div class="font-outfit antialiased">
-    <Navigation />
+    <Navigation v-if="!$route.meta.hideNavbar" />
     <main>
       <router-view />
     </main>

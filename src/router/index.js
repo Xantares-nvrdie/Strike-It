@@ -46,7 +46,8 @@ const routes = [
   {
     path: '/Profile', 
     name: 'Profile',
-    component: ProfileView
+    component: ProfileView,
+    meta: { hideNavbar: true }
   },
 ];
 
