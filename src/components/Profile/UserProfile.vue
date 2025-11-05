@@ -42,11 +42,11 @@ const getStatusClass = (status) => {
 </script>
 
 <template>
-    <section class=" w-full min-h-screen p-8 bg-zinc-100 flex flex-col justify-start items-center gap-6">
+    <section class="min-h-screen py-8 bg-green-800 flex flex-col justify-start items-center gap-6">
         
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full max-w-6xl mx-auto pb-40">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-8 pb-40">
 
-            <div class="bg-white/30 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-5">
+            <div class="bg-blue-500 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-5">
                 
                 <div class="flex flex-col items-center gap-3">
                 <img :src="user.avatar" alt="Avatar" class="w-24 h-24 rounded-full object-cover border-4 border-white/50 shadow-md">
@@ -95,7 +95,7 @@ const getStatusClass = (status) => {
                 </div>
             </div>
 
-            <div class="bg-white/30 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
+            <div class="bg-blue-500 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
                 <h2 class="text-2xl font-bold font-outfit text-stone-800">Detail Langganan</h2>
 
                 <div class="bg-blue-800/80 p-4 rounded-2xl text-white shadow-inner">
@@ -116,7 +116,7 @@ const getStatusClass = (status) => {
                 </div>
             </div>
 
-            <div class="bg-white/30 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
+            <div class="bg-blue-500 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
                 <h2 class="text-2xl font-bold font-outfit text-stone-800">Akun Pembayaran</h2>
 
                 <div class="bg-white/20 p-4 rounded-2xl flex justify-between items-center backdrop-blur-sm">
@@ -135,7 +135,7 @@ const getStatusClass = (status) => {
                 </div>
             </div>
 
-            <div class="bg-white/30 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
+            <div class="bg-blue-500 backdrop-blur-sm rounded-[37px] bg-blue-200 shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
                 
                 <div class="flex justify-between items-center">
                 <h2 class="text-2xl font-bold font-outfit text-stone-800">Transaksi anda</h2>

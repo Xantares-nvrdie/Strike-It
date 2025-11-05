@@ -47,7 +47,7 @@ const routes = [
     path: '/Profile', 
     name: 'Profile',
     component: ProfileView,
-    meta: { hideNavbar: true }
+    meta: { hideNavbar: true, hideFooter: true }
   },
 ];
 

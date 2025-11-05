@@ -16,3 +16,4 @@ import LocationHeader from '@/components/Booking/LocationHeader.vue';
   font-family: "Outfit", sans-serif;
 }
 </style>
+

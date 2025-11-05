@@ -1,7 +1,6 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { ref, computed } from 'vue';
-import { Container } from 'postcss';
 
 const route = useRoute();
 const isMenuOpen = ref(false)
