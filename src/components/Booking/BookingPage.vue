@@ -128,7 +128,7 @@ const getStepClass = (step) => {
 
       <div class="w-full flex justify-center">
         
-        <div v-if="currentStep === 1" class="bg-[#eeeeee] border-4 border-white rounded-2xl p-8 shadow-lg w-full max-w-4xl">
+        <div v-if="currentStep === 1" class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-8 w-full max-w-4xl">
           <h2 class="text-2xl font-semibold text-center text-gray-800 mb-2">Informasi Booking</h2>
           <p class="text-center text-gray-500 mb-8">Isi detail informasi di bawah ini</p>
           
@@ -174,7 +174,7 @@ const getStepClass = (step) => {
           </div>
         </div>
 
-        <div v-if="currentStep === 2" class="bg-[#eeeeee] border-4 border-white rounded-2xl p-8 shadow-lg w-full max-w-4xl">
+        <div v-if="currentStep === 2" class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-8 w-full max-w-4xl">
           <h2 class="text-2xl font-semibold text-center text-gray-800 mb-2">Pilih Kursi</h2>
           <p class="text-center text-gray-500 mb-8">Kindly follow the instructions below</p>
 
@@ -253,8 +253,8 @@ const getStepClass = (step) => {
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <div class="lg:col-span-2 space-y-8">
-              <div class="bg-[#eeeeee] border-4 border-white rounded-2xl p-6 shadow-lg">
-                <h3 class="text-xl font-semibold mb-6">Metode Pembayaran</h3>
+              <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-8 w-full max-w-4xl">
+                <h3 class="text-xl text-black font-semibold mb-6">Metode Pembayaran</h3>
                 <div class="space-y-4">
                   <label class="flex items-center p-4 border rounded-lg cursor-pointer" :class="{'border-blue-500 ring-2 ring-blue-500': paymentMethod === 'creditCard'}">
                     <input type="radio" v-model="paymentMethod" value="creditCard" class="form-radio text-blue-600">
@@ -297,8 +297,8 @@ const getStepClass = (step) => {
                 </div>
               </div>
 
-              <div class="bg-[#eeeeee] border-4 border-white rounded-2xl p-6 shadow-lg">
-                <h3 class="text-xl font-semibold mb-4">Voucher Booking</h3>
+              <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-8 w-full max-w-4xl">
+                <h3 class="text-xl text-black font-semibold mb-4">Voucher Booking</h3>
                 <div class="flex space-x-4">
                   <input v-model="voucherCode" type="text" class="flex-grow px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Masukkan kode anda disini">
                   <button class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300">
@@ -309,7 +309,7 @@ const getStepClass = (step) => {
             </div>
 
             <div class="lg:col-span-1">
-              <div class="bg-[#eeeeee] border-4 border-white rounded-2xl p-6 shadow-lg sticky top-8">
+              <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-8 w-full max-w-4xl">
                 <h3 class="text-xl font-semibold mb-6 border-b pb-4">Detail Pembayaran</h3>
                 <div class="space-y-4">
                   <div class="flex justify-between">
