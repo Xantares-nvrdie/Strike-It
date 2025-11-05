@@ -42,7 +42,7 @@ const getStatusClass = (status) => {
 </script>
 
 <template>
-    <section class="min-h-screen py-8 bg-green-800 flex flex-col justify-start items-center gap-6">
+    <section class="min-h-screen py-8 bg-yellow-400 flex flex-col justify-start items-center gap-6">
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-8 pb-40">
 

@@ -7,9 +7,10 @@ import Footer from '@/components/Layout/Footer.vue';
 
 <template>
     <div class="relative flex flex-row w-full min-h-screen overflow-x-hidden bg-zinc-100">
-            <Sidebar class=" z-30" />
-            <UserProfile class="flex-1" />
+            <Sidebar class="z-30 shrink-0" />
+            <UserProfile class="flex-1 w-full" />
     </div>
+    <!-- <Footer /> -->
 </template>
 
 
