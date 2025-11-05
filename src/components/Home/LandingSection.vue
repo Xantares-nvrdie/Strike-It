@@ -25,7 +25,7 @@
                 Misi kami adalah membantu Anda menciptakan kenangan berharga yang akan bertahan seumur hidup.
             </p>
             <div class="flex flex-row justify-center gap-3 lg:justify-start">
-                <router-link to="/">
+                <router-link to="/location">
                     <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
                         Book Sekarang
                     </button>

@@ -75,11 +75,6 @@ const toggleMenu = () => {
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
         <router-link to="/#">
-          <button class="btn-glass group-hover:text-[#122f4f]">Komunitas</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/#">
           <button class="btn-glass group-hover:text-[#122f4f]">Event</button>
         </router-link>
       </li>

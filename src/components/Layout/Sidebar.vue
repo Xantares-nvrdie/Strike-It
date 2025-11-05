@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue';
 
 // Definisikan item navigasi
 const navigationItems = ref([
+    { name: 'Beranda', icon: 'heroicons:home', path: '/' },
     { name: 'Profil', icon: 'heroicons:user-circle', path: '/profile' },
     { name: 'Riwayat', icon: 'heroicons:clock', path: '/history' },
     { name: 'Komunitas', icon: 'heroicons:chat-bubble-left-right', path: '/community' },
