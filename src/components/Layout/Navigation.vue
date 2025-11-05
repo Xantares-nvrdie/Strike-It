@@ -59,20 +59,30 @@ const toggleMenu = () => {
 
     <!-- Menu Desktop untuk Shop -->
     <ul v-else class="hidden lg:flex list-none gap-x-[30px]">
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">\
+        <router-link to="/">
+          <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
+        </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Booking</button>
+        <router-link to="/Location">
+          <button class="btn-glass group-hover:text-[#122f4f]">Booking</button>
+        </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Alat</button>
+        <router-link to="/Shop">
+          <button class="btn-glass group-hover:text-[#122f4f]">Alat</button>
+        </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Komunitas</button>
+        <router-link to="/#">
+          <button class="btn-glass group-hover:text-[#122f4f]">Komunitas</button>
+        </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <button class="btn-glass group-hover:text-[#122f4f]">Event</button>
+        <router-link to="/#">
+          <button class="btn-glass group-hover:text-[#122f4f]">Event</button>
+        </router-link>
       </li>
     </ul>
 
