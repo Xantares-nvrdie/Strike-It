@@ -3,6 +3,13 @@ import { ref } from 'vue';
 import PostCard from '@/components/Community/PostCard.vue';
 // Import Icon dari Iconify
 import { Icon } from '@iconify/vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function navigateToCreatePost() {
+  router.push('/community/create-post');
+}
 
 // Dummy data for posts
 const posts = ref([
@@ -38,15 +45,16 @@ const posts = ref([
 
 <template>
   <div class="min-h-screen bg-gray-100">
-    
+
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-4">
+      <div class="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+
+        <div class="lg:col-span-2 space-y-4 order-2 lg:order-none">
           <PostCard v-for="post in posts" :key="post.id" :post="post" />
         </div>
 
-        <aside class="lg:col-span-1 space-y-6">
+        <aside class="lg:col-span-1 space-y-6 order-1 lg:order-none">
           <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-6">
             <h3 class="text-base font-semibold text-gray-900 mb-4">
               Postingan Rekomendasi
@@ -56,8 +64,9 @@ const posts = ref([
               <li><a href="#" class="text-sm text-blue-600 hover:underline">Cabang bandung gacor banget euy!!!</a></li>
             </ul>
           </div>
-          
-          <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-[2rem] shadow-md flex items-center justify-center space-x-2">
+
+          <button
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer font-semibold py-3 px-4 rounded-[2rem] shadow-md flex items-center justify-center space-x-2" @click="navigateToCreatePost">
             <Icon icon="heroicons-solid:plus" class="h-5 w-5" />
             <span>Tulis postingan anda</span>
           </button>

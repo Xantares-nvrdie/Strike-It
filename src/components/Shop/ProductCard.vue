@@ -61,7 +61,7 @@ function toggleLove() {
                     </button>
                 </router-link>
 
-                <button type="button" class="transition rounded-xl hover:text-red-500 sm:pointer-events-auto"
+                <button type="button" class="tra    nsition rounded-xl hover:text-red-500 sm:pointer-events-auto"
                     :class="isLoved ? 'text-red-500' : 'text-gray-500'" aria-label="Tambah ke Suka"
                     @click.prevent.stop="toggleLove">
                     <Icon v-if="!isLoved" icon="line-md:heart" width="24" height="24" />
