@@ -1,6 +1,22 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { ref, computed } from 'vue';
+import { Icon } from '@iconify/vue';
+
+const navigationItems = ref([
+  { name: 'Beranda', icon: 'heroicons:home', path: '/' },
+  { name: 'Lokasi', icon: 'heroicons:map-pin', path: '/#preview' },
+  { name: 'Langganan', icon: 'heroicons:banknotes', path: '/#langganan' },
+  { name: 'Diskon', icon: 'heroicons:tag', path: '/#diskon' },
+  { name: 'Penilaian', icon: 'heroicons:chat-bubble-left-right', path: '/#penilaian' }
+]);
+
+const navigationItemsShop = ref([
+  { name: 'Beranda', icon: 'heroicons:home', path: '/' },
+  { name: 'Booking', icon: 'heroicons:bookmark', path: '/location' },
+  { name: 'Alat', icon: 'heroicons:shopping-bag', path: '/shop' },
+  { name: 'Event', icon: 'heroicons:calendar', path: '/event' }
+]);
 
 const route = useRoute();
 const isMenuOpen = ref(false)
@@ -103,7 +119,7 @@ const toggleMenu = () => {
       <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden">
         <!-- ====== CONTAINER ====== -->
         <div
-          class="w-[85vw] bg-black/25 backdrop-blur-md rounded-2xl border-4 border-white/50 p-5 flex flex-col items-center gap-3 text-white">
+          class="w-[85vw] bg-[#406691]/50 backdrop-blur-md rounded-2xl border-4 border-white/50 p-5 flex flex-col items-center gap-3 text-white">
           <!-- ===== PROFILE BOX ===== -->
           <div class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-center gap-2 py-4">
             <img src='../../assets/saskeh.jpg' alt="Foto Profile"
@@ -113,38 +129,22 @@ const toggleMenu = () => {
           </div>
 
           <!-- ===== NAVIGATION BOX ===== -->
-          <div class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-start gap-4 px-6 py-5">
+          <div
+            class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-start gap-4 px-6 py-5">
             <template v-if="isMainPage">
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-home"></i> Home
-              </button>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-map-marker-alt"></i> Lokasi
-              </button>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-credit-card"></i> Langganan
-              </button>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-star"></i> Penilaian
-              </button>
+              <router-link @click="toggleMenu" v-for="item in navigationItems" :key="item.name" :to="item.path"
+                class="btn-glass w-full flex items-center gap-3 justify-start">
+                <Icon :icon="item.icon" class="w-5 h-5" />
+                {{ item.name }}
+              </router-link>
             </template>
 
             <template v-else>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-home"></i> Home
-              </button>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-calendar-check"></i> Booking
-              </button>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-fish"></i> Sewa Alat
-              </button>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-users"></i> Komunitas
-              </button>
-              <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-calendar"></i> Event
-              </button>
+              <router-link @click="toggleMenu" v-for="item in navigationItemsShop" :key="item.name" :to="item.path"
+                class="btn-glass w-full flex items-center gap-3 justify-start">
+                <Icon :icon="item.icon" class="w-5 h-5" />
+                {{ item.name }}
+              </router-link>
             </template>
           </div>
 
