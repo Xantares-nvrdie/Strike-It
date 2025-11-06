@@ -37,11 +37,12 @@ defineProps({
           {{ location.description }}
         </p>
       </div>
-
-      <button
-        class="w-fit px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xl font-medium rounded-2xl shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300">
-        Lihat Lebih Lanjut
-      </button>
+      <router-link to="location/place">
+        <button
+          class="w-fit px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xl font-medium rounded-2xl shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300">
+          Lihat Lebih Lanjut
+        </button>
+    </router-link>
     </div>
   </div>
 </template>
