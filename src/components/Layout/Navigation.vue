@@ -116,17 +116,31 @@ const toggleMenu = () => {
           <div class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-start gap-4 px-6 py-5">
             <template v-if="isMainPage">
               <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-home"></i> Home
+                <router-link to="/">
+                  <i class="fas fa-home"></i> Beranda
+                </router-link>
               </button>
               <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-map-marker-alt"></i> Lokasi
+                <router-link to="/#preview">
+                  <i class="fas fa-map-marker-alt"></i> Lokasi
+                </router-link>
               </button>
               <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-credit-card"></i> Langganan
+                <router-link to="/#langganan">
+                  <i class="fas fa-credit-card"></i> Langganan
+                </router-link>
               </button>
               <button class="btn-glass w-full flex items-center gap-3 justify-start">
-                <i class="fas fa-star"></i> Penilaian
+                <router-link to="/#diskon">
+                  <i class="fas fa-star"></i> Diskon
+                </router-link>
               </button>
+              <button class="btn-glass w-full flex items-center gap-3 justify-start">
+                <router-link to="/#penilaian">
+                  <i class="fas fa-star"></i> Penilaian
+                </router-link>
+              </button>
+
             </template>
 
             <template v-else>
