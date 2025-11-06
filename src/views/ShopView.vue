@@ -1,10 +1,10 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';    
 import { useRoute } from 'vue-router';
 import ShopHeader from '../components/Shop/ShopHeader.vue';
 import FilterSidebar from '../components/Shop/FilterSidebar.vue';
 import ProductList from '../components/Shop/ProductList.vue';
-
+import { Icon } from '@iconify/vue';
 const joranProducts = ref([
 {
     id: 1,
@@ -187,6 +187,30 @@ const pageTitle = computed(() => {
     return 'Produk';
 });
 
+// FILTER MOBILE
+
+const isFilterOpen = ref(false);
+const openFilter = () => { isFilterOpen.value = true; };
+const closeFilter = () => { isFilterOpen.value = false; };
+
+const showScrollToTop = ref(false);
+
+const handleScroll = () => {
+    showScrollToTop.value = window.scrollY > 200; // Tampilkan setelah scroll 200px
+};
+
+const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
+
 </script>
 
 <template>
@@ -196,9 +220,18 @@ const pageTitle = computed(() => {
 
         <div class="w-full p-2.5 flex flex-col justify-start items-stretch gap-20 relative z-30 mt-4">
             <div class="self-stretch flex flex-col lg:flex-row justify-start items-start gap-2.5">
-                <FilterSidebar class="w-full lg:w-80 flex-shrink-0 sticky top-[12rem] z-20" />
                 
-                <main class="flex-1 min-w-0 inline-flex flex-col justify-start items-start gap-2.5">
+                <FilterSidebar class="hidden lg:block w-full lg:w-80 flex-shrink-0 sticky top-[12rem] z-20" />
+                
+                <main class="flex-1 min-w-0 inline-flex flex-col justify-start items-start gap-2.5 w-full">
+                    
+                    <div
+                        @click="openFilter"
+                        class="lg:hidden w-full h-16 p-4 bg-white rounded-xl shadow-md flex items-center justify-between cursor-pointer transition-all duration-200 hover:shadow-lg"
+                    >
+                        <span class="text-xl font-semibold text-gray-800">Filter</span>
+                        <Icon icon="heroicons:adjustments-horizontal-20-solid" class="w-6 h-6 text-gray-600" />
+                    </div>
                     
                     <div v-if="!currentCategory" class="w-full flex flex-col gap-2.5">
                         <ProductList 
@@ -229,6 +262,40 @@ const pageTitle = computed(() => {
             </div>
             
         </div>
+
+        <div 
+            v-if="isFilterOpen" 
+            @click="closeFilter" 
+            class="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+        ></div>
+        
+        <div
+            class="lg:hidden fixed top-[65px] left-0 h-[calc(100vh-65px)] w-[90vw] max-w-md bg-zinc-100 z-50 overflow-y-auto shadow-xl transition-transform duration-300 ease-out"
+            :class="isFilterOpen ? 'translate-x-0' : '-translate-x-full'"
+        >
+            <div class="p-4"> 
+                <FilterSidebar @close="closeFilter" />
+            </div>
+        </div>
+
+        <transition name="fade">
+            <button
+                v-if="showScrollToTop"
+                @click="scrollToTop"
+                class="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 z-50 flex items-center justify-center"
+            >
+                <Icon icon="heroicons:arrow-up-20-solid" class="w-6 h-6" />
+            </button>
+        </transition>
     </div>
 </template>
 
+<style scoped>
+/* Transisi untuk tombol scroll-to-top */
+.fade-enter-active, .fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+    opacity: 0;
+}
+</style>

@@ -12,10 +12,10 @@
         <div class="glass-box">
           <h3 class="mb-3 text-lg font-semibold">Contact Us!</h3>
           <p class="flex items-center gap-2">
-            <i class="text-blue-400 fas fa-phone"></i> +62 8xxx xxxx xxxx
+            <i class="text-blue-400 fas fa-phone"></i> +62 822 9000 5464
           </p>
           <p class="flex items-center gap-2 mt-2">
-            <i class="text-blue-400 fas fa-map-marker-alt"></i> Jl. Raya Lembang No.46
+            <i class="text-blue-400 fas fa-map-marker-alt"></i> Jl. Dr. Setiabudi No.229, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154
           </p>
         </div>
 

@@ -11,6 +11,8 @@ import HistoryView from '@/views/HistoryView.vue';
 import CommunityView from '@/views/CommunityView.vue';
 import PostDetailView from '@/views/PostDetailView.vue';
 import CreatePostView from '@/views/CreatePostView.vue';
+import EventView from '@/views/EventView.vue';
+import CheckoutView from '@/views/CheckoutView.vue';   
 
 const routes = [
   {
@@ -27,6 +29,11 @@ const routes = [
     path: '/shop',
     name: 'Shop',
     component: ShopView 
+  },
+  {
+    path: '/shop/checkout',
+    name: 'Checkout',
+    component: CheckoutView 
   },
   {
     path: '/details',
@@ -66,6 +73,12 @@ const routes = [
     meta: { hideNavbar: true, hideFooter: true }
   },
   {
+    path: '/event', 
+    name: 'Event',
+    component: EventView,
+    meta: { hideNavbar: true, hideFooter: true }
+  },
+  {
     path: '/community', 
     name: 'Community',
     component: CommunityView
@@ -75,11 +88,11 @@ const routes = [
     name: 'CommunityPost',
     component: PostDetailView
   },
-    {
+  {
     path: '/community/create-post', 
     name: 'CommunityCreatePost',
     component: CreatePostView
-  }
+  },
 ];
 
 // 3. Buat routernya

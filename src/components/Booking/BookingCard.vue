@@ -76,10 +76,11 @@ const formattedSelectedDate = computed(() => {
                 untuk {{ duration }} jam
             </p>
         </div>
-
-        <button
-            class="w-full bg-blue-600 text-white text-xl font-medium py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-colors">
-            Lanjutkan booking
-        </button>
+        <router-link to="/location/place/book">
+            <button
+                class="w-full bg-blue-600 text-white text-xl font-medium py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-colors">
+                Lanjutkan booking
+            </button>
+        </router-link>
     </div>
 </template>

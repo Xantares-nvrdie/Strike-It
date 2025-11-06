@@ -1,10 +1,21 @@
 <template>
-    <aside class="p-6 bg-white rounded-3xl shadow-lg flex flex-col gap-5">
+    <aside class="p-6 bg-white rounded-3xl shadow-lg flex flex-col gap-5 h-full">
         <form class="flex flex-col w-full gap-5" @submit.prevent="tampilkanHasil" @reset.prevent="resetFilter">
             
             <div class="flex items-center justify-between pb-4 border-b border-gray-100">
                 <h2 class="text-xl font-bold text-gray-900">Filter</h2>
-                <button type="reset" class="text-base font-bold text-blue-600 transition-colors hover:text-blue-700">Hapus</button>
+                
+                <div class="flex items-center gap-4">
+                    <button type="reset" class="text-base font-bold text-blue-600 transition-colors hover:text-blue-700">Hapus</button>
+
+                    <button 
+                        type="button" 
+                        @click="emit('close')" 
+                        class="lg:hidden p-1 text-gray-500 hover:text-gray-800"
+                    >
+                        <Icon icon="heroicons:x-mark-20-solid" class="w-6 h-6" />
+                    </button>
+                </div>
             </div>
             
             <div class="flex flex-col gap-3">
@@ -18,8 +29,8 @@
                         :class="[
                             'px-4 py-2 text-sm font-medium rounded-lg transition-colors border',
                             selectedAlat.includes(jenis)
-                                ? 'bg-blue-600 text-white border-blue-600' // <-- STATE AKTIF (BIRU)
-                                : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:border-gray-300' // <-- STATE NORMAL
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
                         ]"
                     >
                         {{ jenis }}
@@ -28,33 +39,28 @@
             </div>
             
             <div class="flex flex-col gap-3">
+                <h3 class="text-lg font-semibold text-gray-800">Harga</h3>
                 <div class="flex items-center gap-2">
                     <div class="relative flex-1">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <i class="fas fa-dollar-sign text-gray-400"></i>
-                        </span>
-                        <input 
-                            v-model="filterHarga.min"
+                        <input
                             type="number"
-                            id="min-price"
-                            class="w-full p-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                            placeholder="Min">
+                            v-model.number="filterHarga.min"
+                            placeholder="Min"
+                            class="w-full pl-8 pr-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <Icon icon="heroicons:currency-dollar-20-solid" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     </div>
-                    
-                    <span class="text-gray-400">-</span>
-                    
+                    <span class="text-gray-500">-</span>
                     <div class="relative flex-1">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <i class="fas fa-dollar-sign text-gray-400"></i>
-                        </span>
-                        <input 
-                            v-model="filterHarga.max"
+                        <input
                             type="number"
-                            id="max-price"
-                            class="w-full p-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
-                            placeholder="Max">
+                            v-model.number="filterHarga.max"
+                            placeholder="Max"
+                            class="w-full pl-8 pr-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
+                        />
+                        <Icon icon="heroicons:currency-dollar-20-solid" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     </div>
-                    
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">Cari</button>
                 </div>
             </div>
             
@@ -69,8 +75,8 @@
                         :class="[
                             'px-4 py-2 text-sm font-medium rounded-lg transition-colors border',
                             selectedStatus === stat
-                                ? 'bg-blue-600 text-white border-blue-600' // <-- STATE AKTIF (BIRU)
-                                : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:border-gray-300' // <-- STATE NORMAL
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
                         ]"
                     >
                         {{ stat }}
@@ -90,59 +96,46 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, defineEmits } from 'vue'
+import { Icon } from '@iconify/vue'; 
 
-// --- Data untuk v-for ---
-const jenisAlat = ['Joran', 'Umpan', 'Kail', 'Reels Pancing']
+const emit = defineEmits(['close'])
+
+// --- Data ---
+const jenisAlat = ['Joran', 'Umpan', 'Kail', 'Senar', 'Reels Pancing'] // Diperbarui sesuai screenshot
 const status = ['Sewa', 'Beli']
+const selectedAlat = ref([])
+const selectedStatus = ref(null)
+const filterHarga = reactive({ min: null, max: null })
 
-// --- State untuk melacak apa yang dipilih ---
-const selectedAlat = ref([]) // Pakai array agar bisa multi-select
-const selectedStatus = ref(null) // Pakai null/string agar single-select
-
-const filterHarga = reactive({
-    min: null,
-    max: null
-})
-
-// --- Fungsi untuk Toggle Multi-Select (Jenis Alat) ---
+// --- Fungsi ---
 function toggleAlat(alat) {
     const index = selectedAlat.value.indexOf(alat)
     if (index > -1) {
-        // Jika sudah ada -> Hapus dari array
         selectedAlat.value.splice(index, 1)
     } else {
-        // Jika belum ada -> Tambahkan ke array
         selectedAlat.value.push(alat)
     }
 }
-
-// --- Fungsi untuk Toggle Single-Select (Status) ---
 function selectStatus(stat) {
-    if (selectedStatus.value === stat) {
-        // Jika diklik lagi -> Batal pilih
-        selectedStatus.value = null
-    } else {
-        // Pilih yang baru
-        selectedStatus.value = stat
-    }
+    selectedStatus.value = stat
 }
 
-// --- Fungsi untuk Submit Form ---
 function tampilkanHasil() {
     console.log('Filter dikirim:', {
         alat: selectedAlat.value,
         status: selectedStatus.value,
         harga: filterHarga
     })
+    emit('close') // Tutup sidebar setelah filter diterapkan
 }
 
-// --- Fungsi untuk Reset Form ---
 function resetFilter() {
     filterHarga.min = null
     filterHarga.max = null
     selectedAlat.value = []
     selectedStatus.value = null
     console.log('Filter direset')
+    // Jangan emit 'close' di sini agar user bisa reset dan lanjut mengedit tanpa panel tertutup
 }
 </script>

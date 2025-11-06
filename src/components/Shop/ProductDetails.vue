@@ -1,7 +1,8 @@
 <script setup>
     import { ref } from 'vue'
     import { Icon } from '@iconify/vue';
-    const isAvailable = ref(true)
+import router from '@/router';
+    const isAvailable = ref(true) // <-- Ini sudah ada
 
     const thumbnailImages = ref([
         'images/poster1.png',
@@ -20,8 +21,9 @@
 
 <template>
     <section class="w-full min-h-screen p-5 flex flex-col justify-start items-start bg-zinc-100">
-        <div class="w-full p-5 bg-zinc-100 flex flex-row justify-center items-center gap-10 rounded-lg">
-            <div class="flex-1 bg-zinc-100 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)] p-5 rounded-lg flex flex-col justify-center">
+        <div class="w-full p-5 bg-zinc-100 flex flex-col lg:flex-row justify-center items-center gap-10 rounded-lg">
+            
+            <div class="flex-1 w-full bg-zinc-100 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)] p-5 rounded-lg flex flex-col justify-center">
                 <img :src="mainImage" alt="Product" class="max-w-[513px] max-h-[497px] w-full object-cover mx-auto rounded-lg">
                 
                 <div class="flex flex-row items-center mt-10 gap-4 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)] overflow-x-auto whitespace-nowrap px-4 py-2 bg-zinc-100">
@@ -36,14 +38,17 @@
                     >
                 </div>
             </div>
-            <div class="flex-1 bg-blue-200 p-5 rounded-lg text-black">
+
+            <div class="flex-1 w-full bg-blue-200 p-5 rounded-lg text-black">
                 <h1 class="text-2xl font-medium" >Joran Pancing Predator X87813PP</h1>
                 <span class="text-5xl font-medium">Rp.3.000.000,00</span>
+                
                 <ul class="list-disc ml-5 mt-4 space-y-2">
                     <li>Spesifikasi Joran</li>
                     <li>Spesifikasi Joran</li>
                     <li>Spesifikasi Joran</li>
                 </ul>
+                
                 <div class="mt-2.5">
                     <p v-if="isAvailable" class="inline-flex items-center gap-2">
                         <Icon icon="tabler:checkbox" width="24" height="24" class="text-green-400"/>
@@ -58,25 +63,33 @@
                         </span>
                     </p>
                 </div>
-                <div class="flex flex-row gap-4 mt-4">
+
+                <div class="flex flex-col sm:flex-row gap-4 mt-4">
                     <input 
                         type="number"
-                        id="min-price"
-                        class="w-[100px] p-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                        id="quantity"
+                        class="w-full sm:w-[100px] p-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
                         placeholder="Quantity"
+                        value="1"
                     >
-                    <button 
-                        type="submit"
-                        class="w-full px-4 py-2 bg-gradient-to-tr from-blue-800 to-blue-500/90 rounded-xl inline-flex justify-center items-center gap-2.5 text-white text-base font-medium font-['Outfit'] hover:from-blue-700 hover:to-blue-400 transition duration-300"
-                    >
-                        Sewa
-                    </button>
-                    <button 
-                        type="submit"
-                        class="w-full px-4 py-2 bg-gradient-to-tr from-blue-800 to-blue-500/90 rounded-xl inline-flex justify-center items-center gap-2.5 text-white text-base font-medium font-['Outfit'] hover:from-blue-700 hover:to-blue-400 transition duration-300"
-                    >
-                        Beli
-                    </button>
+                    
+                    <router-link 
+                        to="/shop/checkout" class="w-full" >
+                        <button 
+                            type="button" class="w-full px-4 py-2 bg-gradient-to-tr from-blue-800 to-blue-500/90 rounded-xl inline-flex justify-center items-center gap-2.5 text-white text-base font-medium font-['Outfit'] hover:from-blue-700 hover:to-blue-400 transition duration-300"
+                        >
+                            Sewa
+                        </button>
+                    </router-link> 
+                    
+                    <router-link 
+                        to="/shop/checkout" class="w-full" >
+                        <button 
+                            type="button" class="w-full px-4 py-2 bg-gradient-to-tr from-blue-800 to-blue-500/90 rounded-xl inline-flex justify-center items-center gap-2.5 text-white text-base font-medium font-['Outfit'] hover:from-blue-700 hover:to-blue-400 transition duration-300"
+                        >
+                            Beli
+                        </button>
+                    </router-link> 
                 </div>
             </div>
         </div>

@@ -64,14 +64,18 @@ function toggleLove() {
     </div>
 
         <div class="flex flex-col items-center justify-center w-full mt-4 space-y-2">
-        <button 
-            type="button"
-            class="w-[85%] px-3 py-2 text-sm font-medium text-white transition bg-gradient-to-tr 
-                from-blue-800 to-blue-500/90 rounded-lg font-outfit 
-                hover:from-blue-700 hover:to-blue-400"
-        >
-            Lihat
-        </button>
+            <router-link 
+                to="/details"
+                class="w-[85%]" >
+                <button 
+                    type="button"
+                    class="w-full px-3 py-2 text-sm font-medium text-white transition bg-gradient-to-tr 
+                        from-blue-800 to-blue-500/90 rounded-lg font-outfit 
+                        hover:from-blue-700 hover:to-blue-400"
+                    >
+                    Lihat
+                </button>
+            </router-link>
         <button 
             type="button"
             class="p-2 transition rounded-xl hover:text-red-500"
