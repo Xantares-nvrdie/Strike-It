@@ -64,12 +64,12 @@ const toggleMenu = () => {
         </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/Location">
+        <router-link to="/location">
           <button class="btn-glass group-hover:text-[#122f4f]">Booking</button>
         </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/Shop">
+        <router-link to="/shop">
           <button class="btn-glass group-hover:text-[#122f4f]">Alat</button>
         </router-link>
       </li>
