@@ -20,13 +20,12 @@ const navigationItemsShop = ref([
 
 const route = useRoute();
 const isMenuOpen = ref(false)
+const isProfileOpen = ref(false) // <-- BARU: State untuk expand/collapse profile
 
 const navbarClass = computed(() => {
   if (route.meta.navbarStyle === 'transparent') {
     return 'sticky top-0 z-50 w-full h-16 bg-transparent text-white absolute';
   }
-
-
   return 'sticky top-0 z-50 w-full h-16 shadow-md bg-white text-gray-800';
 });
 
@@ -34,6 +33,10 @@ const isMainPage = computed(() => route.name === 'Home');
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
+}
+
+const toggleProfileMenu = () => { // <-- BARU: Fungsi untuk toggle profile
+  isProfileOpen.value = !isProfileOpen.value
 }
 </script>
 
@@ -43,7 +46,6 @@ const toggleMenu = () => {
       <img src="../../assets/strikeit_logo.png" alt="Logo Strike It" class="w-[50px] h-[50px] object-contain" />
     </div>
 
-    <!-- Menu Desktop -->
     <ul v-if="isMainPage" class="hidden lg:flex list-none gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
         <router-link to="/">
@@ -72,9 +74,8 @@ const toggleMenu = () => {
       </li>
     </ul>
 
-    <!-- Menu Desktop untuk Shop -->
     <ul v-else class="hidden lg:flex list-none gap-x-[30px]">
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">\
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
         <router-link to="/">
           <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
         </router-link>
@@ -96,17 +97,29 @@ const toggleMenu = () => {
       </li>
     </ul>
 
-    <!-- Profile -->
-    <ul class="hidden lg:flex list-none items-center gap-x-2.5">
-      <li>
-        <img src="../../assets/saskeh.jpg" alt="Foto Profile" class="object-cover w-10 h-10 rounded-full" />
-      </li>
-      <li>
-        <button class="btn-glass">Profile</button>
-      </li>
-    </ul>
+    <div class="hidden lg:block w-48 btn-glass text-white font-semibold relative">
+      <button @click="toggleProfileMenu"
+        class="flex items-center justify-center gap-2 px-2 py-2 w-full rounded-lg hover:bg-white/10 transition-colors">
+        <img src="../../assets/saskeh.jpg" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
+        <span class="text-lg">salim</span>
+      </button>
 
-    <!-- Tombol Hamburger (Mobile) -->
+      <transition name="fade">
+        <div v-if="isProfileOpen" class="absolute top-full right-0 mt-2 w-full btn-glass p-2">
+          <div class="flex flex-col gap-1.5">
+            <router-link to="/profile"
+              class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-black/15 hover:bg-white/20 transition-colors">
+              Profile
+            </router-link>
+            <button
+              class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-black/15 hover:bg-white/20 transition-colors">
+              Log Out
+            </button>
+          </div>
+        </div>
+      </transition>
+    </div>
+
     <button @click="toggleMenu"
       class="lg:hidden flex flex-col justify-center items-center gap-[4px] w-10 h-10 rounded-md hover:bg-white/10 transition">
       <span class="w-6 h-[2px] bg-white transition-all" :class="{ 'rotate-45 translate-y-[6px]': isMenuOpen }"></span>
@@ -114,23 +127,20 @@ const toggleMenu = () => {
       <span class="w-6 h-[2px] bg-white transition-all" :class="{ '-rotate-45 -translate-y-[6px]': isMenuOpen }"></span>
     </button>
 
-    <!-- Menu Mobile -->
     <transition name="fade">
       <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden">
-        <!-- ====== CONTAINER ====== -->
         <div
-          class="w-[85vw] bg-[#406691]/50 backdrop-blur-md rounded-2xl border-4 border-white/50 p-5 flex flex-col items-center gap-3 text-white">
-          <!-- ===== PROFILE BOX ===== -->
-          <div class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-center gap-2 py-4">
+          class="w-[85vw] bg-[#406691]/50 backdrop-blur-md rounded-[3rem] border-4 border-white/50 p-5 flex flex-col items-center gap-3 text-white">
+          <div
+            class="w-full bg-white/10 rounded-[1.5rem] border-4 border-white/50 flex flex-col items-center gap-2 py-4">
             <img src='../../assets/saskeh.jpg' alt="Foto Profile"
               class="object-cover w-[12dvh] h-[12dvh] rounded-full" />
             <p class="font-semibold text-lg">User</p>
             <span class="text-sm opacity-80">Lihat profil</span>
           </div>
 
-          <!-- ===== NAVIGATION BOX ===== -->
           <div
-            class="w-full bg-white/10 rounded-2xl border-4 border-white/50 flex flex-col items-start gap-4 px-6 py-5">
+            class="w-full bg-white/10 rounded-[1.5rem] border-4 border-white/50 flex flex-col items-start gap-4 px-6 py-5">
             <template v-if="isMainPage">
               <router-link @click="toggleMenu" v-for="item in navigationItems" :key="item.name" :to="item.path"
                 class="btn-glass w-full flex items-center gap-3 justify-start">
@@ -148,10 +158,9 @@ const toggleMenu = () => {
             </template>
           </div>
 
-          <!-- ===== LOGOUT BOX ===== -->
           <div class="w-full">
             <button
-              class="w-full bg-white/10 border-4 border-white/50 text-white rounded-2xl py-3 font-semibold hover:bg-white/20 transition">
+              class="w-full bg-white/10 border-4 border-white/50 text-white rounded-[1.5rem] py-3 font-semibold hover:bg-white/20 transition">
               <i class="fas fa-sign-out-alt mr-2"></i> Keluar
             </button>
           </div>
