@@ -49,7 +49,8 @@ const locations = ref([
       Detail Lokasi
     </h1>
     <p class="max-w-2xl mx-auto mt-5 text-lg leading-relaxed text-gray-600">
-      Berlokasi strategis di pusat kota.
+      Jelajahi berbagai cabang lokasi memancing Strike It! di seluruh Indonesia. Temukan tempat
+      terbaik untuk menikmati hobi memancing Anda.
     </p>
   </div>
   <div class="flex justify-center items-center flex-col gap-5 mb-24">

@@ -72,18 +72,18 @@ function handleTouchEnd(e) {
 <template>
     <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
 
-        <div class="w-full bg-[#eeeeee] rounded-3xl border-4 border-white shadow-xl p-4 md:p-8 lg:p-12">
+        <div class="w-full bg-zinc-100  rounded-3xl shadow-xl p-4 md:p-8 lg:p-12">
 
             <div class="text-center mb-8 md:mb-12">
                 <h1 class="text-4xl font-medium text-[#1e2f42] md:text-6xl">
                     STRIKE IT!
                 </h1>
                 <p class="max-w-2xl mx-auto mt-1 text-lg leading-relaxed text-gray-600">
-                    Cabang Olahraga Voli
+                    Cabang Tempat
                 </p>
             </div>
 
-            <div class="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
 
                 <div class="lg:col-span-2 flex flex-col gap-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -119,9 +119,11 @@ function handleTouchEnd(e) {
                     </div>
                 </div>
 
-                <div class="lg:col-span-1 flex flex-col gap-8">
-                    <BookingCard />
-                    <LocationMapCard />
+                <div class="lg:col-span-1">
+                    <div class="sticky top-24 flex flex-col gap-4">
+                        <BookingCard />
+                        <LocationMapCard />
+                    </div>
                 </div>
             </div>
 

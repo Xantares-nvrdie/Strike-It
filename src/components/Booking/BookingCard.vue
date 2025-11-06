@@ -37,7 +37,7 @@ const formattedSelectedDate = computed(() => {
 </script>
 
 <template>
-    <div class="bg-[#eeeeee] border-white border-4 rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
+    <div class="bg-zinc-100 border-white border-4 rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
         <h3 class="text-3xl font-medium text-center text-gray-900">
             Mulai Booking
         </h3>

@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';    
 import { useRoute } from 'vue-router';
-import ShopHeader from '../components/Shop/ShopHeader.vue';
 import FilterSidebar from '../components/Shop/FilterSidebar.vue';
 import ProductList from '../components/Shop/ProductList.vue';
 import { Icon } from '@iconify/vue';
@@ -215,16 +214,10 @@ onUnmounted(() => {
 
 <template>
     <div class="relative w-full flex-col min-h-screen overflow-x-hidden bg-zinc-100">
-        
-        <ShopHeader class="w-full sticky top-[65px] z-40 bg-zinc-100 py-4" />
-
         <div class="w-full p-2.5 flex flex-col justify-start items-stretch gap-20 relative z-30 mt-4">
             <div class="self-stretch flex flex-col lg:flex-row justify-start items-start gap-2.5">
-                
                 <FilterSidebar class="hidden lg:block w-full lg:w-80 flex-shrink-0 sticky top-[12rem] z-20" />
-                
-                <main class="flex-1 min-w-0 py-9 inline-flex flex-col justify-start items-start gap-2.5 w-full">
-                    
+                <main class="flex-1 min-w-0 py-9 inline-flex flex-col  justify-start items-center gap-2.5 w-full">    
                     <div
                         @click="openFilter"
                         class="lg:hidden w-full h-16 p-4 bg-white rounded-xl shadow-md flex items-center justify-between cursor-pointer transition-all duration-200 hover:shadow-lg"
@@ -232,7 +225,13 @@ onUnmounted(() => {
                         <span class="text-xl font-semibold text-gray-800">Filter</span>
                         <Icon icon="heroicons:adjustments-horizontal-20-solid" class="w-6 h-6 text-gray-600" />
                     </div>
-                    
+                    <h1 class="text-4xl font-medium text-black md:text-6xl">
+                        Toko Strike It!
+                    </h1>
+                    <p class="max-w-2xl mx-auto mt-5 text-lg text-center leading-relaxed text-gray-600">
+                        Jelajahi koleksi perlengkapan memancing terbaik kami yang dirancang untuk memenuhi
+                        kebutuhan setiap pemancing, dari pemula hingga profesional.
+                    </p>
                     <div v-if="!currentCategory" class="w-full flex-col gap-2.5">
                         <ProductList 
                             title="Joran" 

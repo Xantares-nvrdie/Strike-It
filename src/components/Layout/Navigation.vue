@@ -20,7 +20,7 @@ const navigationItemsShop = ref([
 
 const route = useRoute();
 const isMenuOpen = ref(false)
-const isProfileOpen = ref(false) // <-- BARU: State untuk expand/collapse profile
+const isProfileOpen = ref(false) // State untuk expand/collapse profile
 
 const navbarClass = computed(() => {
   if (route.meta.navbarStyle === 'transparent') {
@@ -35,13 +35,23 @@ const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-const toggleProfileMenu = () => { // <-- BARU: Fungsi untuk toggle profile
+const toggleProfileMenu = () => { // Fungsi untuk toggle profile
   isProfileOpen.value = !isProfileOpen.value
 }
 </script>
 
 <template>
-  <nav class="absolute top-0 left-0 z-50 flex items-center justify-between w-full px-10 py-4 font-semibold text-white">
+  <nav :class="[
+    // Kelas yang selalu ada
+    'z-50', 'flex', 'items-center', 'justify-between', 'w-full', 'px-10', 'py-4', 'font-semibold',
+    
+    // Kelas kondisional
+    {
+      'absolute top-0 left-0 text-white': isMainPage,
+      'top-0 bg-[#003bb3] left-0 relative text-white': !isMainPage // <-- Background biru jika bukan main page
+    }
+  ]">
+    
     <div class="logo">
       <img src="../../assets/strikeit_logo.png" alt="Logo Strike It" class="w-[50px] h-[50px] object-contain" />
     </div>
@@ -99,7 +109,7 @@ const toggleProfileMenu = () => { // <-- BARU: Fungsi untuk toggle profile
 
     <div class="hidden lg:block w-48 btn-glass text-white font-semibold relative">
       <button @click="toggleProfileMenu"
-        class="flex items-center justify-center gap-2 px-2 py-2 w-full rounded-lg hover:bg-white/10 transition-colors">
+        class="flex items-center justify-center gap-2 w-full rounded-lg transition-colors">
         <img src="../../assets/saskeh.jpg" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
         <span class="text-lg">salim</span>
       </button>
@@ -131,6 +141,7 @@ const toggleProfileMenu = () => { // <-- BARU: Fungsi untuk toggle profile
       <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden">
         <div
           class="w-[85vw] bg-[#406691]/50 backdrop-blur-md rounded-[3rem] border-4 border-white/50 p-5 flex flex-col items-center gap-3 text-white">
+          
           <div
             class="w-full bg-white/10 rounded-[1.5rem] border-4 border-white/50 flex flex-col items-center gap-2 py-4">
             <img src='../../assets/saskeh.jpg' alt="Foto Profile"

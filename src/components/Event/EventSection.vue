@@ -64,10 +64,14 @@ const events = ref([
 
 <template>
     <section class="w-full bg-gray-50 py-16">
-        <div class="max-w-6xl mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center text-gray-900 mb-10">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-12">
+        <h1 class="text-4xl font-medium text-black md:text-6xl">
             Event & Perlombaan
-        </h2>
+        </h1>
+        <p class="max-w-2xl mx-auto mt-5 text-lg leading-relaxed text-gray-600">
+            Temukan berbagai event dan perlombaan mancing seru yang bisa kamu ikuti untuk menguji
+            keterampilan dan keberuntunganmu.
+        </p>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <EventCard
             v-for="event in events"

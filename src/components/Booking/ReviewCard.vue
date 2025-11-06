@@ -38,10 +38,10 @@ defineProps({
             "{{ review.comment }}"
         </p>
 
-        <div class="mt-4 text-right">
+        <!-- <div class="mt-4 text-right">
             <button class="text-sm font-medium text-blue-600 hover:underline">
                 Baca lebih lanjut
             </button>
-        </div>
+        </div> -->
     </div>
 </template>

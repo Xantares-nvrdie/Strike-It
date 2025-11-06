@@ -28,7 +28,8 @@ const routes = [
   {
     path: '/shop',
     name: 'Shop',
-    component: ShopView 
+    component: ShopView,
+    meta: { hideFooter: true }
   },
   {
     path: '/shop/checkout',
@@ -48,7 +49,8 @@ const routes = [
   {
     path: '/location/place/book', 
     name: 'Book',
-    component: BookingView
+    component: BookingView,
+    meta: { hideFooter: true }
   },
   {
     path: '/location/place', 
@@ -58,7 +60,8 @@ const routes = [
   {
     path: '/location', 
     name: 'Location',
-    component: LocationView
+    component: LocationView,
+    meta: { hideFooter: true }
   },
   {
     path: '/profile', 

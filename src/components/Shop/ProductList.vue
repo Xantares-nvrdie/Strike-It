@@ -107,7 +107,7 @@ function goToPage(pageNumber) {
                     :disabled="currentPage === 1"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg shadow-sm hover:bg-gray-50 disabled:opacity-50"
                 >
-                    &laquo; Prev
+                    <icon icon="heroicons:arrow-left-20-solid" class="w-4 h-4" />
                 </button>
                 
                 <button
@@ -128,7 +128,7 @@ function goToPage(pageNumber) {
                     :disabled="currentPage === totalPages"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg shadow-sm hover:bg-gray-50 disabled:opacity-50"
                 >
-                    Next &raquo;
+                    <icon icon="heroicons:arrow-right-20-solid" class="w-4 h-4" />
                 </button>
             </div>
         </div>
