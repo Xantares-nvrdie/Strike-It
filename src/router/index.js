@@ -11,7 +11,7 @@ import HistoryView from '@/views/HistoryView.vue';
 import CommunityView from '@/views/CommunityView.vue';
 import PostDetailView from '@/views/PostDetailView.vue';
 import CreatePostView from '@/views/CreatePostView.vue';
-
+import EventView from '@/views/EventView.vue';
 const routes = [
   {
     path: '/', // Jika URL adalah '/' (halaman utama)
@@ -66,6 +66,12 @@ const routes = [
     meta: { hideNavbar: true, hideFooter: true }
   },
   {
+    path: '/event', 
+    name: 'Event',
+    component: EventView,
+    meta: { hideNavbar: true, hideFooter: true }
+  },
+  {
     path: '/community', 
     name: 'Community',
     component: CommunityView
@@ -75,11 +81,11 @@ const routes = [
     name: 'CommunityPost',
     component: PostDetailView
   },
-    {
+  {
     path: '/community/create-post', 
     name: 'CommunityCreatePost',
     component: CreatePostView
-  }
+  },
 ];
 
 // 3. Buat routernya
