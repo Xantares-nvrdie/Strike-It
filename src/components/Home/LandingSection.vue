@@ -30,7 +30,7 @@
                         Book Sekarang
                     </button>
                 </router-link>
-                <router-link to="/Shop">
+                <router-link to="/shop">
                     <button class="btn-glass w-40 h-12 text-lg hover:text-[#122f4f]">
                         Sewa Alat
                     </button>

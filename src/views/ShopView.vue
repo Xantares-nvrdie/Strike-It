@@ -214,7 +214,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="relative w-full min-h-screen overflow-x-hidden bg-zinc-100">
+    <div class="relative w-full flex-col min-h-screen overflow-x-hidden bg-zinc-100">
         
         <ShopHeader class="w-full sticky top-[65px] z-40 bg-zinc-100 py-4" />
 
@@ -223,7 +223,7 @@ onUnmounted(() => {
                 
                 <FilterSidebar class="hidden lg:block w-full lg:w-80 flex-shrink-0 sticky top-[12rem] z-20" />
                 
-                <main class="flex-1 min-w-0 inline-flex flex-col justify-start items-start gap-2.5 w-full">
+                <main class="flex-1 min-w-0 py-9 inline-flex flex-col justify-start items-start gap-2.5 w-full">
                     
                     <div
                         @click="openFilter"
@@ -233,7 +233,7 @@ onUnmounted(() => {
                         <Icon icon="heroicons:adjustments-horizontal-20-solid" class="w-6 h-6 text-gray-600" />
                     </div>
                     
-                    <div v-if="!currentCategory" class="w-full flex flex-col gap-2.5">
+                    <div v-if="!currentCategory" class="w-full flex-col gap-2.5">
                         <ProductList 
                             title="Joran" 
                             :products="joranProducts" 

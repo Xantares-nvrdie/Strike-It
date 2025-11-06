@@ -57,7 +57,7 @@ function goToPage(pageNumber) {
 </script>
 
 <template>
-    <section class="w-full p-5 bg-linear-131 mt-5 from-white/20 to-gray-50/20 rounded-[37px] shadow-[5px_6px_22.899999618530273px_0px_rgba(0,0,0,0.13)] outline outline-[2.50px] outline-offset-[-2.50px] outline-white backdrop-blur-sm flex flex-col justify-start items-center gap-4">
+    <section class="w-full p-3 sm:p-5 bg-linear-131 mt-5 from-white/20 to-gray-50/20 rounded-[37px] shadow-[5px_6px_22.899999618530273px_0px_rgba(0,0,0,0.13)] outline outline-[2.50px] outline-offset-[-2.50px] outline-white backdrop-blur-sm flex flex-col justify-start items-center gap-4">
         
         <div class="inline-flex items-center self-stretch justify-between">
             <h2 class="h-7 justify-start text-stone-800 text-2xl font-bold font-outfit capitalize leading-7">
@@ -88,7 +88,7 @@ function goToPage(pageNumber) {
         
         <!-- Mode ROW (Tampilan 'Landing Page' / '/shop') -->
         <div v-else-if="displayMode === 'row'" class="w-full p-2.5">
-            <ul class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <ul class="w-full grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <li 
                     v-for="product in rowProducts"
                     :key="product.id"
