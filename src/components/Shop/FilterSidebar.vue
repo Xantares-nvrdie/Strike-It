@@ -46,7 +46,7 @@
                             type="number"
                             v-model.number="filterHarga.min"
                             placeholder="Min"
-                            class="w-full pl-8 pr-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full pl-8 pr-2 py-2 border border-gray-300 text-black rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                         />
                         <Icon icon="heroicons:currency-dollar-20-solid" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     </div>
@@ -56,11 +56,10 @@
                             type="number"
                             v-model.number="filterHarga.max"
                             placeholder="Max"
-                            class="w-full pl-8 pr-2 py-2 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
+                            class="w-full pl-8 pr-2 py-2 border border-gray-300 text-black rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
                         />
                         <Icon icon="heroicons:currency-dollar-20-solid" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     </div>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">Cari</button>
                 </div>
             </div>
             

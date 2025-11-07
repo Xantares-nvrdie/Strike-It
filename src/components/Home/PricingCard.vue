@@ -1,3 +1,24 @@
+<script setup>
+import { defineProps, defineEmits } from "vue"; // 1. Tambahkan 'defineEmits'
+
+const props = defineProps({
+    title: String,
+    subtitle: String,
+    price: String,
+    features: Array,
+    isPopular: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+// 2. Definisikan event 'subscribe'
+const emit = defineEmits(['subscribe']);
+
+// 3. Hapus semua logika modal (isModalOpen, openModal, dll.)
+// 4. Hapus 'import { ref }' dan 'import { Icon }'
+</script>
+
 <template>
     <div
         :class="[
@@ -36,6 +57,7 @@
         </ul>
 
         <button
+            @click="emit('subscribe')"
             class="w-full px-6 py-3 font-bold text-white transition duration-300 bg-blue-600 rounded-xl hover:bg-blue-700"
         >
             Langganan disini
@@ -43,18 +65,3 @@
         </div>
     </div>
 </template>
-
-<script setup>
-import { defineProps } from "vue";
-
-const props = defineProps({
-    title: String,
-    subtitle: String,
-    price: String,
-    features: Array,
-    isPopular: {
-        type: Boolean,
-        default: false,
-    },
-});
-</script>

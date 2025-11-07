@@ -7,7 +7,7 @@ import { Icon } from "@iconify/vue";
 const homeItem = ref({
     name: "Kembali ke Beranda",
     icon: "heroicons:home",
-    path: "/",
+    path: "/home",
 });
 
 // Definisikan item navigasi utama (tanpa Beranda)
@@ -36,7 +36,7 @@ const handleLogout = () => {
         class="flex items-center gap-3 mb-10 px-2 justify-center md:justify-start"
         >
         <img
-            src="https://placehold.co/40x40/003BB3/FFFFFF?text=SI"
+            src="../../assets/logo_hitam.png"
             alt="Logo"
             class="w-10 h-10 rounded-full object-cover flex-shrink-0"
         />

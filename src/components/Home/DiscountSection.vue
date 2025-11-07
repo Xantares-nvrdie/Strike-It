@@ -27,7 +27,7 @@ const discounts = ref([
 // --- LOGIKA KARUSEL DITAMBAHKAN ---
 
 // 2. State untuk melacak kartu aktif dan swipe
-const activeIndex = ref(0);
+const activeIndex = ref(1);
 const touchStartX = ref(0);
 const touchStartY = ref(0);
 

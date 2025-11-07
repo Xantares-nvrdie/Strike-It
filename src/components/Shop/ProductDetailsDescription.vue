@@ -89,26 +89,6 @@ const reviesws = ref([
                 mendeteksi getaran umpan dan sambaran ikan terkecil sekalipun, serta
                 kekuatan yang cukup untuk menaklukkan ikan predator.
                 </p>
-
-                <div
-                class="flex flex-col md:flex-row items-start justify-start gap-5 mt-4"
-                >
-                    <div class="flex-1 w-full">
-                        <img
-                        class="w-full h-auto shadow-md rounded-xl"
-                        src="https://placehold.co/711x529"
-                        alt="Gambar deskripsi 1"
-                        />
-                    </div>
-
-                    <div class="flex-1 w-full">
-                        <img
-                        class="w-full h-auto shadow-md rounded-xl"
-                        src="https://placehold.co/711x529"
-                        alt="Gambar deskripsi 2"
-                        />
-                    </div>
-                </div>
             </div>
 
             <div v-else-if="activeTab === 'penilaian'" class="w-full">

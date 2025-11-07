@@ -14,7 +14,7 @@ function navigateToCreatePost() {
 const posts = ref([
   {
     id: 1,
-    author: { name: 'Joran_Melengkung', avatar: 'https://images.unsplash.com/photo-1517365830460-955e33302308?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+    author: { name: 'Joran_Melengkung', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
     time: '8 menit lalu',
     title: 'Umpan putih andalan untuk ikan mas lagi susah makan?',
     content: 'Para suhu, mohon pencerahannya dong. Biasanya pakai umpan putih dasar amis wangi jalan, tapi seminggu ini boncos terus di kolam harian. Ada rekomendasi essen atau oplosan lain yang lagi gacor?',

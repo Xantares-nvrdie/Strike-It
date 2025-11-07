@@ -17,9 +17,9 @@ function toggleLove() {
 <template>
     <router-link to="/details" class="block w-full sm:pointer-events-none">
         <article class="bg-white/30 backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22.9px_rgba(0,0,0,0.13)] 
-                   outline outline-[2.5px] outline-offset-[-2.5px] outline-white 
-                   flex flex-col items-center text-start hover:scale-105 hover:shadow-lg p-5 w-full gap-1 lg:gap-3">
-            <img :src="product.imageUrl" :alt="product.name" class="object-cover w-full h-26 sm:h-48 rounded-2xl" />
+                    outline outline-[2.5px] outline-offset-[-2.5px] outline-white 
+                    flex flex-col items-center text-start hover:shadow-lg p-5 w-full gap-1 lg:gap-3">
+                <img :src="product.imageUrl" :alt="product.name" class="object-cover w-full h-26 sm:h-48 rounded-2xl" />
 
             <h3 class="mt-2 text-sm sm:text-center font-semibold leading-tight text-stone-900 font-outfit min-h-10">
                 {{ product.name }}
@@ -55,8 +55,8 @@ function toggleLove() {
 
                 <router-link to="/details" class="w-[85%] hidden sm:block sm:pointer-events-auto">
                     <button type="button" class="w-full px-3 py-2 text-sm font-medium text-white transition bg-gradient-to-tr 
-                               from-blue-800 to-blue-500/90 rounded-lg font-outfit 
-                               hover:from-blue-700 hover:to-blue-400">
+                                from-blue-800 to-blue-500/90 rounded-lg font-outfit 
+                                hover:from-blue-700 hover:to-blue-400">
                         Lihat
                     </button>
                 </router-link>

@@ -5,17 +5,17 @@ import { Icon } from '@iconify/vue';
 
 const navigationItems = ref([
   { name: 'Beranda', icon: 'heroicons:home', path: '/' },
-  { name: 'Lokasi', icon: 'heroicons:map-pin', path: '/#preview' },
-  { name: 'Langganan', icon: 'heroicons:banknotes', path: '/#langganan' },
-  { name: 'Diskon', icon: 'heroicons:tag', path: '/#diskon' },
-  { name: 'Penilaian', icon: 'heroicons:chat-bubble-left-right', path: '/#penilaian' }
+  { name: 'Lokasi', icon: 'heroicons:map-pin', path: '/home/#preview' },
+  { name: 'Langganan', icon: 'heroicons:banknotes', path: '/home/#langganan' },
+  { name: 'Diskon', icon: 'heroicons:tag', path: '/home/#diskon' },
+  { name: 'Penilaian', icon: 'heroicons:chat-bubble-left-right', path: '/home/#penilaian' }
 ]);
 
 const navigationItemsShop = ref([
-  { name: 'Beranda', icon: 'heroicons:home', path: '/' },
+  { name: 'Beranda', icon: 'heroicons:home', path: '/home' },
   { name: 'Booking', icon: 'heroicons:bookmark', path: '/location' },
   { name: 'Alat', icon: 'heroicons:shopping-bag', path: '/shop' },
-  { name: 'Event', icon: 'heroicons:calendar', path: '/event' }
+  { name: 'Acara', icon: 'heroicons:calendar', path: '/event' }
 ]);
 
 const route = useRoute();
@@ -58,27 +58,27 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
 
     <ul v-if="isMainPage" class="hidden lg:flex list-none gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/">
+        <router-link to="/home">
           <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
         </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/#preview">
+        <router-link to="/home/#preview">
           <button class="btn-glass group-hover:text-[#122f4f]">Lokasi</button>
         </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/#langganan">
+        <router-link to="/home/#langganan">
           <button class="btn-glass group-hover:text-[#122f4f]">Langganan</button>
         </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/#diskon">
+        <router-link to="/home/#diskon">
           <button class="btn-glass group-hover:text-[#122f4f]">Diskon</button>
         </router-link>
       </li>
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/#penilaian">
+        <router-link to="/home/#penilaian">
           <button class="btn-glass group-hover:text-[#122f4f]">Penilaian</button>
         </router-link>
       </li>
@@ -86,7 +86,7 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
 
     <ul v-else class="hidden lg:flex list-none gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/">
+        <router-link to="/home">
           <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
         </router-link>
       </li>

@@ -81,7 +81,7 @@ const getStatusClass = (status) => {
             id="review" 
             rows="4" 
             placeholder="Tulis ulasan Anda di sini..."
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            class="w-full p-3 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
             ></textarea>
         </div>
 

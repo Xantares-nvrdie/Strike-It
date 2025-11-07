@@ -2,15 +2,15 @@
 import { ref } from 'vue'
 import { Icon } from '@iconify/vue';
 import router from '@/router';
-    const isAvailable = ref(true) // <-- Ini sudah ada
+    const isAvailable = ref(true)
 
     const thumbnailImages = ref([
-        'images/poster1.png',
-        'images/poster1.png',
-        'images/poster1.png',
-        'images/poster1.png',
-        'images/poster1.png',
-        'images/poster1.png',
+        new URL('../../assets/alatimg/joran1.png', import.meta.url).href,
+        new URL('../../assets/alatimg/joran2.png', import.meta.url).href,
+        new URL('../../assets/alatimg/joran3.png', import.meta.url).href,
+        new URL('../../assets/alatimg/joran4.png', import.meta.url).href,
+        new URL('../../assets/alatimg/joran1.png', import.meta.url).href,
+        new URL('../../assets/alatimg/joran2.png', import.meta.url).href,
     ]);
     
     const mainImage = ref(thumbnailImages.value[0]);
@@ -20,9 +20,8 @@ import router from '@/router';
 </script>
 
 <template>
-    <section class="w-full min-h-screen p-5 flex flex-col justify-start items-start bg-zinc-100">
-        <div class="w-full p-5 bg-zinc-100 flex flex-col lg:flex-row justify-center items-center gap-10 rounded-lg">
-            
+    <section class="w-full min-h-screen flex flex-col justify-start items-start bg-zinc-100">
+        <div class="w-full p-5 bg-zinc-100 flex flex-col lg:flex-row justify-center items-center gap-10 rounded-lg">    
             <div class="flex-1 w-full bg-zinc-100 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)] p-5 rounded-lg flex flex-col justify-center">
                 <img :src="mainImage" alt="Product" class="max-w-[513px] max-h-[497px] w-full object-cover mx-auto rounded-lg">
                 
@@ -39,14 +38,14 @@ import router from '@/router';
                 </div>
             </div>
 
-            <div class="flex-1 w-full bg-blue-200 p-5 rounded-lg text-black">
+            <div class="flex-1 w-full bg-zinc-200 p-5 rounded-lg text-black">
                 <h1 class="text-2xl font-medium" >Joran Pancing Predator X87813PP</h1>
                 <span class="text-3xl font-bold md:text-5xl">Rp.3.000.000</span>
                 
                 <ul class="list-disc ml-5 mt-4 space-y-2">
-                    <li>Spesifikasi Joran</li>
-                    <li>Spesifikasi Joran</li>
-                    <li>Spesifikasi Joran</li>
+                    <li>Power Nano Fiber</li>
+                    <li>Carbon Solid IM8</li>
+                    <li>8-17 lbs</li>
                 </ul>
                 
                 <div class="mt-2.5">

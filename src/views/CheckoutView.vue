@@ -25,17 +25,14 @@ const selectedPayment = ref('bank_transfer');
 
 // --- Data 'Pesanan Anda' ---
 const order = ref({
-  // ==========================================================
-  // UBAH INI KE 'sewa' UNTUK MELIHAT FORM LOKASI PENGAMBILAN
-  // ==========================================================
-  transactionType: 'beli', // <-- Diatur ke 'beli' untuk demo
+  transactionType: 'beli', 
 
   items: [
     {
       id: 1,
       name: 'Joran Pancing Predator X87813PP',
       quantity: 1,
-      image: 'https://placehold.co/100x100/E2E8F0/4A5568?text=Produk' 
+      image: new URL('../assets/alatimg/joran1.png', import.meta.url).href
     }
   ],
   total: 'Rp3.000.000,00'
@@ -64,8 +61,8 @@ const submitCheckout = () => {
 
       <div class="flex flex-col lg:flex-row gap-8 items-start">
 
-        <div class="flex-1 w-full bg-white p-6 md:p-8 rounded-2xl shadow-lg">
-          <h2 class="text-2xl font-semibold mb-6">Billing Detail</h2>
+        <div class="flex-1 w-full text-black bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+          <h2 class="text-2xl  font-semibold mb-6">Billing Detail</h2>
           
           <form @submit.prevent="submitCheckout" class="space-y-5">
             
@@ -176,7 +173,7 @@ const submitCheckout = () => {
               <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">
                 Informasi Tambahan
               </label>
-              <textarea id="notes" rows="4" v-model="billingDetails.notes" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Catatan tentang order anda"></textarea>
+              <textarea id="notes" rows="4" v-model="billingDetails.notes" class="w-full p-3 border  border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Catatan tentang order anda"></textarea>
             </div>
 
             <div class="flex items-center">
@@ -191,7 +188,7 @@ const submitCheckout = () => {
 
         <div class="w-full lg:w-2/5">
           <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg space-y-6">
-            <h2 class="text-2xl font-semibold">Pesanan Anda</h2>
+            <h2 class="text-2xl text-black font-semibold">Pesanan Anda</h2>
 
             <div class="space-y-4">
               <div class="flex justify-between items-center text-sm font-medium text-gray-500 mb-2">
@@ -219,7 +216,7 @@ const submitCheckout = () => {
 
             <div classtr="border-t border-gray-200 pt-4 flex justify-between items-center">
               <span class="text-lg font-semibold text-gray-900">Order Total</span>
-              <span class="text-xl font-bold text-gray-900">{{ order.total }}</span>
+              <span class="text-xl pl-2 font-bold text-gray-900">{{ order.total }}</span>
             </div>
 
             <div class="border-t border-gray-200 pt-6 space-y-4">
@@ -227,9 +224,9 @@ const submitCheckout = () => {
                 <label class="flex items-start cursor-pointer">
                   <input type="radio" name="paymentMethod" value="bank_transfer" v-model="selectedPayment" class="h-5 w-5 text-blue-600 mt-0.5">
                   <div classs="ml-3">
-                    <span class="font-semibold text-gray-800 ml-3">Direct Bank Transfer</span>
+                    <span class="font-semibold text-gray-800 ml-3">Bank Transfer</span>
                     <p class="text-sm text-gray-600 mt-2">
-                      Make your payment directly into our bank account...
+                      Transfer langsung ke rekening bank kami. Silakan gunakan ID pesanan Anda sebagai referensi pembayaran.
                     </p>
                   </div>
                 </label>
@@ -244,8 +241,9 @@ const submitCheckout = () => {
                 <label class="flex items-center cursor-pointer">
                   <input type="radio" name="paymentMethod" value="qris" v-model="selectedPayment" class="h-5 w-5 text-blue-600">
                   <span class="ml-3 font-semibold text-gray-800">QRIS</span>
-                  <a href="#" class="ml-2 text-xs text-blue-600 hover:underline">(What's QRIS?)</a>
-                  <Icon icon="logos:paypal" class="w-14 ml-auto" />
+                  <img
+                      src="../assets/paymentimg/QRIS_Logo.svg"
+                      alt="QRIS" class="h-6 ml-auto">  
                 </label>
               </div>
             </div>

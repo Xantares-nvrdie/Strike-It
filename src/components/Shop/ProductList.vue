@@ -65,17 +65,29 @@ function goToPage(pageNumber) {
             </h2>
             
             <RouterLink 
+                v-if="displayMode === 'row'"
                 :to="`/shop/${categorySlug}`" 
-                class= "flex items-center justify-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm 
+                class="flex items-center justify-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm 
                         text-stone-800 text-xs font-semibold font-outfit uppercase 
                         transition-all hover:bg-gray-100 hover:shadow-md group"
             >
                 Lihat Semua
                 <Icon icon="heroicons:arrow-right-20-solid" class="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </RouterLink>
-        </div>
+
+            <RouterLink 
+                v-else-if="displayMode === 'grid'"
+                to="/shop" 
+                class="flex items-center justify-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm 
+                        text-stone-800 text-xs font-semibold font-outfit uppercase 
+                        transition-all hover:bg-gray-100 hover:shadow-md group"
+            >
+                <Icon icon="heroicons:arrow-left-20-solid" class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
+                Kembali
+            </RouterLink>
+
+            </div>
         
-        <!-- Mode GRID (Tampilan 'Lihat Semua' / Halaman Kategori) -->
         <ul v-if="displayMode === 'grid'" class="w-full p-2.5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <li 
                 v-for="product in gridProducts"
@@ -86,7 +98,6 @@ function goToPage(pageNumber) {
             </li>
         </ul>
         
-        <!-- Mode ROW (Tampilan 'Landing Page' / '/shop') -->
         <div v-else-if="displayMode === 'row'" class="w-full p-2.5">
             <ul class="w-full grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <li 
@@ -99,7 +110,6 @@ function goToPage(pageNumber) {
             </ul>
         </div>
 
-        <!-- 4. BUAT PAGINATION MENJADI DINAMIS -->
         <div v-if="displayMode === 'grid' && totalPages > 1" class="flex items-center justify-center w-full mt-4">
             <div class="flex items-center gap-2">
                 <button 

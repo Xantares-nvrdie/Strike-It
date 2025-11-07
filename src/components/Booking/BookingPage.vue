@@ -285,14 +285,12 @@ const getStepClass = (step) => {
                     <span class="ml-4 text-lg font-medium text-gray-800">Kartu Kredit</span>
                     <div class="ml-auto flex space-x-2">
 
-                      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Visa_Inc._logo.svg" alt="Visa"
-                        class="h-6">
-                      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg"
-                        alt="Mastercard" class="h-6">
+                      <img src="../../assets/paymentimg/visa.jpeg" alt="Visa" class="h-6">
+                      <img src="../../assets/paymentimg/mastercard.png"alt="Mastercard" class="h-6">
                     </div>
                   </label>
 
-                  <div v-if="paymentMethod === 'creditCard'" class="pl-4 sm:pl-8 space-y-4 pt-4">
+                  <div v-if="paymentMethod === 'creditCard'" clsass="pl-4 sm:pl-8 space-y-4 pt-4">
                     <div>
                       <label class="block text-sm font-medium text-gray-700">Nomor Kartu</label>
                       <input type="text"
@@ -327,10 +325,15 @@ const getStepClass = (step) => {
                     <span class="ml-4 text-lg font-medium text-gray-800">QRIS</span>
 
                     <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/QRIS_logo.svg/1200px-QRIS_logo.svg.png"
+                      src="../../assets/paymentimg/QRIS_Logo.svg"
                       alt="QRIS" class="h-6 ml-auto">
                   </label>
                   <div v-if="paymentMethod === 'qris'" class="pl-4 sm:pl-8 pt-4">
+                    <img 
+                      src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ContohDataPembayaran" 
+                      alt="Contoh QR Code Pembayaran"
+                      class="w-48 h-48 mx-auto mb-4 rounded-lg shadow-md border border-gray-200"
+                    >
                     <p class="text-gray-600">Silakan scan kode QR yang akan muncul setelah Anda menekan tombol "Bayar".
                     </p>
                   </div>
@@ -382,7 +385,7 @@ const getStepClass = (step) => {
                 </div>
 
                 <button @click="handlePayment"
-                  class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 mt-6">
+                  class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 mt-6">
                   Bayar Rp. {{ grandTotal.toLocaleString('id-ID') }}
                 </button>
                 <button @click="goToStep(2)"

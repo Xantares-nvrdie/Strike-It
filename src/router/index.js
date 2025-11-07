@@ -18,7 +18,12 @@ import RegisterView from '@/components/Login/Register.vue';
 
 const routes = [
   {
-    path: '/', // Jika URL adalah '/' (halaman utama)
+    path: '/home',
+    name: 'Home',
+    component: HomeView 
+  },
+  {
+    path: '/home',
     name: 'Home',
     component: HomeView 
   },

@@ -73,7 +73,7 @@ const goToCommunity = () => {
               @click="goToCommunity"
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm"
             >
-              Cancel
+              Kembali
             </button>
             <button
               type="submit"
