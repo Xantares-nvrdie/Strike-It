@@ -77,7 +77,7 @@ const handleClearFilters = () => {
         @click="handleClearFilters"
         class="text-sm font-medium text-blue-600 hover:text-blue-800"
       >
-        Clear
+        Hapus
       </button>
     </div>
 
