@@ -33,16 +33,16 @@
         <div class="text-center glass-box md:text-left">
           <h3 class="mb-3 text-lg font-semibold">Reach Us</h3>
           <div class="flex justify-center gap-4 mt-2 md:justify-start">
-            <a href="#" class="icon-btn w-10 h-10">
+            <a href="https://web.facebook.com/" class="icon-btn w-10 h-10">
               <Icon icon="ic:round-facebook" class="z-10 w-full h-full"/>
             </a>
-            <a href="#" class="icon-btn w-10 h-10">
+            <a href="https://www.instagram.com/" class="icon-btn w-10 h-10">
               <Icon icon="ri:instagram-line" class="z-10 w-full h-full"/>
             </a>
-            <a href="#" class="icon-btn w-10 h-10">
+            <a href="https://x.com/" class="icon-btn w-10 h-10">
               <Icon icon="ri:twitter-x-fill" class="z-10 w-full h-full" />
             </a>
-            <a href="#" class="icon-btn w-10 h-10">
+            <a href="https://tiktok.com/" class="icon-btn w-10 h-10">
               <Icon icon="ic:sharp-tiktok" class="z-10 w-full h-full" />
             </a>
           </div>
