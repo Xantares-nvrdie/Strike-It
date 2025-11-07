@@ -13,6 +13,8 @@ import PostDetailView from '@/views/PostDetailView.vue';
 import CreatePostView from '@/views/CreatePostView.vue';
 import EventView from '@/views/EventView.vue';
 import CheckoutView from '@/views/CheckoutView.vue';   
+import LoginView from '@/components/Login/Login.vue';
+import RegisterView from '@/components/Login/Register.vue';
 
 const routes = [
   {
@@ -101,6 +103,18 @@ const routes = [
     path: '/community/create-post', 
     name: 'CommunityCreatePost',
     component: CreatePostView,
+    meta: { hideNavbar: true, hideFooter: true }
+  },
+  {
+    path: '/login', 
+    name: 'Login',
+    component: LoginView,
+    meta: { hideNavbar: true, hideFooter: true }
+  },
+  {
+    path: '/register', 
+    name: 'Register',
+    component: RegisterView,
     meta: { hideNavbar: true, hideFooter: true }
   },
 ];
