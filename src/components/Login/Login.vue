@@ -25,7 +25,7 @@ const handleLogin = () => {
   // Jika sukses, arahkan ke halaman utama
   // (Untuk sekarang, kita arahkan ke '/' sebagai contoh)
   alert('Login Berhasil! (Placeholder)');
-  router.push('/'); 
+  router.push('/home'); 
 };
 
 // Fungsi untuk navigasi ke halaman register
@@ -38,6 +38,15 @@ const goToRegister = () => {
   <div class="flex min-h-screen w-screen items-center justify-center bg-zinc-100 p-4">
     <div class="w-full max-w-md">
       
+      <div class="mb-4 text-center">
+        <router-link 
+          to="/home" 
+          class="inline-flex items-center text-sm font-medium text-gray-600 transition-colors hover:text-blue-600"
+        >
+          <Icon icon="heroicons:arrow-left-20-solid" class="mr-1 h-5 w-5" />
+          Kembali ke Beranda
+        </router-link>
+      </div>
       <div class="bg-white rounded-3xl shadow-xl p-8 md:p-10">
         
         <div class="text-center">

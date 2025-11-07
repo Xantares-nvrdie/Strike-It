@@ -15,12 +15,14 @@ import EventView from '@/views/EventView.vue';
 import CheckoutView from '@/views/CheckoutView.vue';   
 import LoginView from '@/components/Login/Login.vue';
 import RegisterView from '@/components/Login/Register.vue';
+import IndexView from '@/views/IndexView.vue';
 
 const routes = [
   {
-    path: '/home',
-    name: 'Home',
-    component: HomeView 
+    path: '/',
+    name: 'Index',
+    component: IndexView,
+    meta: { hideFooter: true, hideNavbar: true }
   },
   {
     path: '/home',
