@@ -5,7 +5,6 @@ import BookingCard from '@/components/Booking/BookingCard.vue';
 import LocationMapCard from '@/components/Booking/LocationMapCard.vue';
 import ReviewCard from '@/components/Booking/ReviewCard.vue';
 
-// (Data review Anda tetap sama)
 const reviews = ref([
     {
         id: 1,
@@ -25,7 +24,6 @@ const reviews = ref([
         rating: 4,
         comment: 'Saya baru pertama kali mancing di sini...'
     },
-    // ... sisa review Anda
 ]);
 
 
@@ -70,11 +68,11 @@ function handleTouchEnd(e) {
 </script>
 
 <template>
-    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        <div class="w-full bg-zinc-100  rounded-3xl shadow-xl p-4 md:p-8 lg:p-12">
+        <div class="lg:col-span-2 w-full bg-zinc-100 rounded-3xl shadow-xl p-4 md:p-8 lg:p-12 flex flex-col gap-8">
 
-            <div class="text-center mb-8 md:mb-12">
+            <div class="text-center mb-0 md:mb-4">
                 <h1 class="text-4xl font-medium text-[#1e2f42] md:text-6xl">
                     STRIKE IT!
                 </h1>
@@ -83,9 +81,8 @@ function handleTouchEnd(e) {
                 </p>
             </div>
 
-            <div class="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
-
-                <div class="lg:col-span-2 flex flex-col gap-8">
+            <div class="hidden md:flex flex-col gap-8">
+                <div class="flex flex-col gap-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <img src="../../assets/locationimg/jakarta.jpg" alt="Main Location"
                             class="w-full h-auto object-cover rounded-2xl shadow-lg col-span-2">
@@ -109,7 +106,7 @@ function handleTouchEnd(e) {
                                 yang hilang dari memancing di era pasca-kompetisi.</p>
                         </div>
                     </div>
-                    <div class="bg-[#eeeeee] border-white border-4 rounded-2xl shadow-xl p-6 md:p-8">
+                    <div class="bg-zinc-100 border-white border-4 rounded-2xl shadow-xl p-6 md:p-8">
                         <h3 class="text-3xl font-medium text-center text-gray-900 mb-6">
                             Penilaian Tempat
                         </h3>
@@ -118,14 +115,7 @@ function handleTouchEnd(e) {
                         </div>
                     </div>
                 </div>
-
-                <div class="lg:col-span-1">
-                    <div class="sticky top-24 flex flex-col gap-4">
-                        <BookingCard />
-                        <LocationMapCard />
-                    </div>
                 </div>
-            </div>
 
             <div class="block md:hidden space-y-4">
                 <div class="relative w-full">
@@ -174,7 +164,6 @@ function handleTouchEnd(e) {
                         </div>
 
                         <div v-if="activeTab === 'location'">
-
                             <LocationMapCard />
                         </div>
 
@@ -188,7 +177,15 @@ function handleTouchEnd(e) {
                 </div>
             </div>
         </div>
-        
+
+        <div class="hidden lg:block lg:col-span-1">
+            <div class="sticky top-8 flex flex-col gap-8">
+                <BookingCard />
+                <LocationMapCard />
+            </div>
+        </div>
+
+
         <div v-if="isBookingModalOpen" @click="isBookingModalOpen = false"
             class="md:hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
 

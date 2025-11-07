@@ -1,15 +1,14 @@
 <script setup>
-import CommunityHeader from '@/components/Community/CommunityHeader.vue';
-import PostDetail from '@/components/Community/PostDetail.vue';
+import Sidebar from "@/components/Layout/Sidebar.vue";
+import PostDetail from "@/components/Community/PostDetail.vue";
 </script>
 
 <template>
-    <div class="relative w-full min-h-screen overflow-x-hidden bg-zinc-100">
-        <CommunityHeader class="w-full sticky top-[65px] z-40 bg-zinc-100 py-4" />
-        <PostDetail class="py-[100px] pt-[100px] mb-[100px]" />
-    </div>
+  <div class="relative flex flex-row w-screen min-h-screen bg-zinc-100">
+    <Sidebar class="shrink-0" />
+    <PostDetail class="ml-16 md:ml-64 flex-1 py-[64px]" />
+  </div>
 </template>
-
 
 <style>
 .font-outfit {

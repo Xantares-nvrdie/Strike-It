@@ -5,13 +5,13 @@ import Sidebar from '@/components/Layout/Sidebar.vue';
 
 
 <template>
-    <div class="relative flex flex-row w-screen min-h-screen bg-zinc-100">
+    <div class="relative flex flex-row w-screen min-h-screen overflow-x-hidden bg-zinc-200">
+            
             <Sidebar class="shrink-0" />
-            <UserProfile class="flex-1" />
+            
+            <UserProfile class="ml-16 md:ml-64 flex-1" />
     </div>
-    </template>
-
-
+</template>
 
 <style scoped>
 

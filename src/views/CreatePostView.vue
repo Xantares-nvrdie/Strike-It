@@ -1,12 +1,13 @@
 <script setup>
+import Sidebar from '@/components/Layout/Sidebar.vue';
 import CreatePost from '@/components/Community/CreatePost.vue';
 </script>
 
 <template>
-    <div class="relative w-full min-h-screen overflow-x-hidden bg-zinc-100">
-        
-        <CreatePost class="py-[100px] pt-[100px] mb-[100px]" />
-    </div>
+  <div class="relative flex flex-row w-screen min-h-screen bg-zinc-100">
+    <Sidebar class="shrink-0" />
+    <CreatePost class="ml-16 md:ml-64 flex-1" />
+  </div>
 </template>
 
 

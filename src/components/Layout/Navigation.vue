@@ -110,7 +110,7 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
     <div class="hidden lg:block w-48 btn-glass text-white font-semibold relative">
       <button @click="toggleProfileMenu"
         class="flex items-center justify-center gap-2 w-full rounded-lg transition-colors">
-        <img src="../../assets/saskeh.jpg" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
+        <img src="../../assets/user.png" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
         <span class="text-lg">salim</span>
       </button>
 
@@ -144,10 +144,12 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
           
           <div
             class="w-full bg-white/10 rounded-[1.5rem] border-4 border-white/50 flex flex-col items-center gap-2 py-4">
-            <img src='../../assets/saskeh.jpg' alt="Foto Profile"
+            <img src='../../assets/user.png' alt="Foto Profile"
               class="object-cover w-[12dvh] h-[12dvh] rounded-full" />
             <p class="font-semibold text-lg">User</p>
-            <span class="text-sm opacity-80">Lihat profil</span>
+            <router-link to="/profile" class="btn-glass w-[] text-center flex items-center gap-3 justify-start">
+              <span class="text-sm opacity-80 text-decoration-line">Lihat profil</span>
+            </router-link>
           </div>
 
           <div

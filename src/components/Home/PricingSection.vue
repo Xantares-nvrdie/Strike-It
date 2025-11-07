@@ -11,49 +11,69 @@
       </p>
     </div>
 
-    <div class="flex flex-wrap justify-center gap-6 px-4 mt-12">
-      <PricingCard
-        title="Kawan Mancing"
-        subtitle="Mancing cerdas. Kantong puas."
-        price="75.000"
-        :features="[
-          'Anda dapat menghentikan atau membatalkan kapan saja.',
-          'Diskon 10% untuk sewa alat pancing.',
-          'Voucher makan di restoran/kantin.',
-          'Pemberian umpan dasar gratis saat kedatangan.',
-        ]"
-      />
+    <div
+      class="
+        flex 
+        gap-6 
+        px-4 
+        mt-12
+        overflow-x-auto 
+        snap-x 
+        snap-mandatory
+        md:flex-wrap 
+        md:justify-center 
+        md:overflow-visible
+      "
+    >
+      <div class="flex-shrink-0 w-11/12 snap-center md:w-auto">
+        <PricingCard
+          title="Kawan Mancing"
+          subtitle="Mancing cerdas. Kantong puas."
+          price="75.000"
+          :features="[
+            'Anda dapat menghentikan atau membatalkan kapan saja.',
+            'Diskon 10% untuk sewa alat pancing.',
+            'Voucher makan di restoran/kantin.',
+            'Pemberian umpan dasar gratis saat kedatangan.',
+          ]"
+        />
+      </div>
 
-      <PricingCard
-        title="Juragan Mancing"
-        subtitle="Untuk Para Hobiis Sejati, Pilihan Paling Populer."
-        price="100.000"
-        :features="[
-          'Anda dapat menghentikan atau membatalkan kapan saja.',
-          'Diskon 10% untuk sewa alat pancing.',
-          'Diskon 20% untuk pembelian umpan.',
-          'Pemberian umpan dasar gratis saat kedatangan.',
-          'Kesempatan mengikuti turnamen bulanan secara gratis.',
-        ]"
-        is-popular
-      />
+      <div class="flex-shrink-0 w-11/12 snap-center md:w-auto">
+        <PricingCard
+          title="Juragan Mancing"
+          subtitle="Untuk Para Hobiis Sejati, Pilihan Paling Populer."
+          price="100.000"
+          :features="[
+            'Anda dapat menghentikan atau membatalkan kapan saja.',
+            'Diskon 10% untuk sewa alat pancing.',
+            'Diskon 20% untuk pembelian umpan.',
+            'Pemberian umpan dasar gratis saat kedatangan.',
+            'Kesempatan mengikuti turnamen bulanan secara gratis.',
+          ]"
+          is-popular
+        />
+      </div>
 
-      <PricingCard
-        title="Jawara Mancing"
-        subtitle="Pengalaman Terbaik, Tanpa Batas dan Tanpa Kompromi."
-        price="150.000"
-        :features="[
-          'Anda dapat menghentikan atau membatalkan kapan saja.',
-          'Diskon 10% untuk sewa alat pancing.',
-          'Diskon 20% untuk pembelian umpan.',
-          'Kesempatan mengikuti turnamen bulanan secara gratis.',
-          'Satu sesi konsultasi mingguan dengan pemandu mancing profesional.',
-        ]"
-      />
+      <div class="flex-shrink-0 w-11/12 snap-center md:w-auto">
+        <PricingCard
+          title="Jawara Mancing"
+          subtitle="Pengalaman Terbaik, Tanpa Batas dan Tanpa Kompromi."
+          price="150.000"
+          :features="[
+            'Anda dapat menghentikan atau membatalkan kapan saja.',
+            'Diskon 10% untuk sewa alat pancing.',
+            'Diskon 20% untuk pembelian umpan.',
+            'Kesempatan mengikuti turnamen bulanan secara gratis.',
+            'Satu sesi konsultasi mingguan dengan pemandu mancing profesional.',
+          ]"
+        />
+      </div>
     </div>
   </section>
 </template>
 
 <script setup>
 import PricingCard from "./PricingCard.vue";
+// Tidak perlu import apa-apa lagi!
 </script>

@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import PostCard from '@/components/Community/PostCard.vue';
-// Import Icon dari Iconify
 import { Icon } from '@iconify/vue';
 import { useRouter } from 'vue-router';
 
@@ -40,6 +39,60 @@ const posts = ref([
     tags: ['piranti', 'rekomendasi', 'baitcasting'],
     stats: { views: 123, comments: 15, likes: 155 },
   },
+  {
+    id: 3,
+    author: { name: 'Pemua_Casting', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+    time: '5 jam lalu',
+    title: 'Rekomendasi Reel Baitcasting Budget 500 ribuan?',
+    content: 'Numpang tanya master-master, saya baru mau coba teknik baitcasting. Ada rekomendasi reel BC yang bagus buat pemula dengan budget sekitar 500rb? Yang penting smooth dan awet buat belajar.',
+    tags: ['piranti', 'rekomendasi', 'baitcasting'],
+    stats: { views: 123, comments: 15, likes: 155 },
+  },
+  {
+    id: 3,
+    author: { name: 'Pemua_Casting', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+    time: '5 jam lalu',
+    title: 'Rekomendasi Reel Baitcasting Budget 500 ribuan?',
+    content: 'Numpang tanya master-master, saya baru mau coba teknik baitcasting. Ada rekomendasi reel BC yang bagus buat pemula dengan budget sekitar 500rb? Yang penting smooth dan awet buat belajar.',
+    tags: ['piranti', 'rekomendasi', 'baitcasting'],
+    stats: { views: 123, comments: 15, likes: 155 },
+  },
+  {
+    id: 3,
+    author: { name: 'Pemua_Casting', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+    time: '5 jam lalu',
+    title: 'Rekomendasi Reel Baitcasting Budget 500 ribuan?',
+    content: 'Numpang tanya master-master, saya baru mau coba teknik baitcasting. Ada rekomendasi reel BC yang bagus buat pemula dengan budget sekitar 500rb? Yang penting smooth dan awet buat belajar.',
+    tags: ['piranti', 'rekomendasi', 'baitcasting'],
+    stats: { views: 123, comments: 15, likes: 155 },
+  },
+  {
+    id: 3,
+    author: { name: 'Pemua_Casting', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+    time: '5 jam lalu',
+    title: 'Rekomendasi Reel Baitcasting Budget 500 ribuan?',
+    content: 'Numpang tanya master-master, saya baru mau coba teknik baitcasting. Ada rekomendasi reel BC yang bagus buat pemula dengan budget sekitar 500rb? Yang penting smooth dan awet buat belajar.',
+    tags: ['piranti', 'rekomendasi', 'baitcasting'],
+    stats: { views: 123, comments: 15, likes: 155 },
+  },
+  {
+    id: 3,
+    author: { name: 'Pemua_Casting', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+    time: '5 jam lalu',
+    title: 'Rekomendasi Reel Baitcasting Budget 500 ribuan?',
+    content: 'Numpang tanya master-master, saya baru mau coba teknik baitcasting. Ada rekomendasi reel BC yang bagus buat pemula dengan budget sekitar 500rb? Yang penting smooth dan awet buat belajar.',
+    tags: ['piranti', 'rekomendasi', 'baitcasting'],
+    stats: { views: 123, comments: 15, likes: 155 },
+  },
+  {
+    id: 3,
+    author: { name: 'Pemua_Casting', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+    time: '5 jam lalu',
+    title: 'Rekomendasi Reel Baitcasting Budget 500 ribuan?',
+    content: 'Numpang tanya master-master, saya baru mau coba teknik baitcasting. Ada rekomendasi reel BC yang bagus buat pemula dengan budget sekitar 500rb? Yang penting smooth dan awet buat belajar.',
+    tags: ['piranti', 'rekomendasi', 'baitcasting'],
+    stats: { views: 123, comments: 15, likes: 155 },
+  },
 ]);
 </script>
 
@@ -48,13 +101,13 @@ const posts = ref([
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div class="flex flex-col lg:grid lg:grid-cols-3 gap-8">
+      <div class="flex flex-col lg:grid lg:grid-cols-3 gap-8 lg:items-start">
 
         <div class="lg:col-span-2 space-y-4 order-2 lg:order-none">
           <PostCard v-for="post in posts" :key="post.id" :post="post" />
         </div>
 
-        <aside class="lg:col-span-1 space-y-6 order-1 lg:order-none">
+        <aside class="lg:col-span-1 space-y-6 order-1 lg:order-none lg:sticky top-[88px]">
           <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-6">
             <h3 class="text-base font-semibold text-gray-900 mb-4">
               Postingan Rekomendasi
@@ -71,6 +124,7 @@ const posts = ref([
             <span>Tulis postingan anda</span>
           </button>
         </aside>
+
       </div>
     </main>
   </div>

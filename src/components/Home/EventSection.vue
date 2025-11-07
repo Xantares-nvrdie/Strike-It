@@ -25,9 +25,6 @@ const events = ref([
 // Fungsi ini akan dipanggil saat tombol di-klik
 const viewAllEvents = () => {
     console.log('Tombol "Lihat Semua Event" di-klik!');
-  // Di aplikasi nyata, Anda mungkin akan menggunakan Vue Router di sini
-  // untuk pindah halaman.
-  // Contoh: router.push('/semua-event')
 }
 </script>
 
@@ -65,12 +62,14 @@ const viewAllEvents = () => {
             </div>
             
             <div class="mt-16 text-center">
-            <button 
-                @click="viewAllEvents"
-                class="px-10 py-4 text-sm font-bold tracking-wider text-white uppercase transition duration-300 ease-in-out bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-            >
-                Lihat Semua Event dan Perlombaan
-            </button>
+            <router-link to="/event">
+              <button 
+                  @click="viewAllEvents"
+                  class="px-10 py-4 text-sm font-bold tracking-wider text-white uppercase transition duration-300 ease-in-out bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              >
+                  Lihat Semua Event dan Perlombaan
+              </button>
+            </router-link>
             </div>
             
         </div>

@@ -57,7 +57,7 @@ const submitCheckout = () => {
 </script>
 
 <template>
-  <section class="min-h-screen w-full bg-gray-100 p-4 md:p-8">
+  <section class="min-h-screen w-screen bg-gray-100 p-4 md:p-8">
     <div class="max-w-7xl mx-auto">
       
       <h1 class="text-3xl font-bold text-gray-900 mb-6">Checkout</h1>

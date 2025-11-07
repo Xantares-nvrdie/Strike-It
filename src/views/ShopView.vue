@@ -161,7 +161,6 @@ const reelProducts = ref([
     isForRent: false,
     isForSale: true
 },
-// ... tambahkan category: 'reels' ke sisanya
 ]);
 
 const allProducts = ref([
@@ -213,10 +212,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="relative w-full flex-col min-h-screen overflow-x-hidden bg-zinc-100">
-        <div class="w-full p-2.5 flex flex-col justify-start items-stretch gap-20 relative z-30 mt-4">
+    <div class="relative w-screen flex-col min-h-screen bg-zinc-100">
+        <div class="w-full p-2.5 flex flex-col justify-start items-stretch gap-20 relative z-30">
             <div class="self-stretch flex flex-col lg:flex-row justify-start items-start gap-2.5">
-                <FilterSidebar class="hidden lg:block w-full lg:w-80 flex-shrink-0 sticky top-[12rem] z-20" />
+                <FilterSidebar class="hidden lg:block w-full lg:w-80 flex-shrink-0 sticky top-32 z-20" />
                 <main class="flex-1 min-w-0 py-9 inline-flex flex-col  justify-start items-center gap-2.5 w-full">    
                     <div
                         @click="openFilter"

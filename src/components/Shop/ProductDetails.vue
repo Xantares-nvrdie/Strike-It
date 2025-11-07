@@ -1,6 +1,6 @@
 <script setup>
-    import { ref } from 'vue'
-    import { Icon } from '@iconify/vue';
+import { ref } from 'vue'
+import { Icon } from '@iconify/vue';
 import router from '@/router';
     const isAvailable = ref(true) // <-- Ini sudah ada
 
@@ -41,7 +41,7 @@ import router from '@/router';
 
             <div class="flex-1 w-full bg-blue-200 p-5 rounded-lg text-black">
                 <h1 class="text-2xl font-medium" >Joran Pancing Predator X87813PP</h1>
-                <span class="text-5xl font-medium">Rp.3.000.000,00</span>
+                <span class="text-3xl font-bold md:text-5xl">Rp.3.000.000</span>
                 
                 <ul class="list-disc ml-5 mt-4 space-y-2">
                     <li>Spesifikasi Joran</li>

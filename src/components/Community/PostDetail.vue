@@ -24,7 +24,7 @@ const comments = ref([
 <template>
   <div class="min-h-screen bg-gray-100">
 
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-6 sm:p-8">
         <div class="flex justify-between items-start">

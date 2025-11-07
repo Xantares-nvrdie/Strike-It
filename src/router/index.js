@@ -34,17 +34,20 @@ const routes = [
   {
     path: '/shop/checkout',
     name: 'Checkout',
-    component: CheckoutView 
+    component: CheckoutView,
+    meta: { hideFooter: true }
   },
   {
     path: '/details',
     name: 'Details',
-    component: ProductView 
+    component: ProductView,
+    meta: { hideFooter: true }
   },
   {
     path: '/shop/:categorySlug', 
     name: 'ShopCategory',
-    component: ShopView
+    component: ShopView,
+    meta: { hideFooter: true }
   },
   {
     path: '/location/place/book', 
@@ -55,7 +58,8 @@ const routes = [
   {
     path: '/location/place', 
     name: 'LocationDetail',
-    component: LocationDetailView
+    component: LocationDetailView,
+    meta: { hideFooter: true }
   },
   {
     path: '/location', 
@@ -84,17 +88,20 @@ const routes = [
   {
     path: '/community', 
     name: 'Community',
-    component: CommunityView
+    component: CommunityView,
+    meta: { hideNavbar: true, hideFooter: true }
   },
   {
     path: '/community/post/:id', 
     name: 'CommunityPost',
-    component: PostDetailView
+    component: PostDetailView,
+    meta: { hideNavbar: true, hideFooter: true }
   },
   {
     path: '/community/create-post', 
     name: 'CommunityCreatePost',
-    component: CreatePostView
+    component: CreatePostView,
+    meta: { hideNavbar: true, hideFooter: true }
   },
 ];
 

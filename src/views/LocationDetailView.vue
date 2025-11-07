@@ -3,7 +3,7 @@ import LocationDetail from '../components/Booking/LocationDetail.vue';
 </script>
 
 <template>
-    <div class="relative w-full min-h-screen overflow-x-hidden bg-zinc-100">
+    <div class="relative w-screen min-h-screen bg-zinc-100">
         <LocationDetail class="w-full bg-zinc-100" />
     </div>
 </template>

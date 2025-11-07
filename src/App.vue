@@ -1,10 +1,7 @@
 <template>
   <div class="font-outfit antialiased">
     <Navigation v-if="!$route.meta.hideNavbar" />
-    <main>
       <router-view />
-    </main>
-
     <Footer v-if="!$route.meta.hideFooter" />
   </div>
 </template>

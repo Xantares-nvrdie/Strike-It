@@ -53,7 +53,7 @@ const reviesws = ref([
     >
         <div
             role="tablist"
-            class="flex flex-col items-center justify-center gap-8 sm:flex-row md:gap-14"
+            class="flex flex-row items-center justify-center gap-8 sm:flex-row md:gap-14"
         >
             <button
                 role="tab"

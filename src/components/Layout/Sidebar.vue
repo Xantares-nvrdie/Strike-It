@@ -1,62 +1,122 @@
 <script setup>
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
-import { Icon } from '@iconify/vue';
+import { ref } from "vue";
+import { RouterLink } from "vue-router";
+import { Icon } from "@iconify/vue";
 
-// Definisikan item navigasi
-const navigationItems = ref([
-    { name: 'Beranda', icon: 'heroicons:home', path: '/' },
-    { name: 'Profil', icon: 'heroicons:user-circle', path: '/profile' },
-    { name: 'Riwayat', icon: 'heroicons:clock', path: '/history' },
-    { name: 'Komunitas', icon: 'heroicons:chat-bubble-left-right', path: '/community' },
+// Definisikan item Beranda secara terpisah
+const homeItem = ref({
+    name: "Kembali ke Beranda",
+    icon: "heroicons:home",
+    path: "/",
+});
+
+// Definisikan item navigasi utama (tanpa Beranda)
+const mainNavigationItems = ref([
+    { name: "Profil", icon: "heroicons:user-circle", path: "/profile" },
+    { name: "Riwayat", icon: "heroicons:clock", path: "/history" },
+    {
+        name: "Komunitas",
+        icon: "heroicons:chat-bubble-left-right",
+        path: "/community",
+    },
 ]);
 
+// Tambahkan fungsi handleLogout agar tombol berfungsi
+const handleLogout = () => {
+    console.log("Logout diklik!");
+  // Ganti dengan logika logout Anda
+};
 </script>
 
 <template>
-    <aside class="w-64 h-screen p-6 flex flex-col bg-zinc-100">
-        
-        <!-- Bagian Logo -->
-        <div class="flex items-center gap-3 mb-10 px-2">
-        <img src="https://placehold.co/40x40/003BB3/FFFFFF?text=SI" alt="Logo" class="w-10 h-10 rounded-full object-cover">
-        <span class="text-2xl font-bold font-outfit text-stone-900">Strike It!</span>
+    <aside
+        class="h-full fixed p-4 md:p-6 flex flex-col bg-zinc-100 w-20 md:w-64 transition-all duration-300"
+    >
+        <div
+        class="flex items-center gap-3 mb-10 px-2 justify-center md:justify-start"
+        >
+        <img
+            src="https://placehold.co/40x40/003BB3/FFFFFF?text=SI"
+            alt="Logo"
+            class="w-10 h-10 rounded-full object-cover flex-shrink-0"
+        />
+        <span
+            class="text-2xl font-bold font-outfit text-stone-900 hidden md:block"
+            >Strike It!</span
+        >
         </div>
 
-        <!-- Navigasi Utama -->
-        <nav class="flex flex-col flex-1 space-y-3">
+        <nav class="flex flex-col flex-1 justify-between">
         <RouterLink
-            v-for="item in navigationItems"
-            :key="item.name"
-            :to="item.path"
-            class="flex items-center justify-between p-3.5 bg-white rounded-xl transition-all text-stone-700 hover:bg-blue-50 hover:text-blue-700 group"
+            :to="homeItem.path"
+            class="flex items-center p-3.5 bg-white rounded-xl transition-all text-stone-700 hover:bg-blue-300 hover:text-zinc-100 group"
             active-class="bg-blue-500 !text-white hover:bg-blue-700"
         >
             <div class="flex items-center gap-3">
-                <Icon :icon="item.icon" class="w-5 h-5" />
-                <span class="font-medium font-outfit text-lg">{{ item.name }}</span>
+            <Icon
+                :icon="homeItem.icon"
+                class="w-6 h-6 md:w-5 md:h-5 flex-shrink-0"
+            />
+            <span
+                class="font-medium font-outfit text-center text-lg hidden md:block"
+                >{{ homeItem.name }}</span
+            >
+            <Icon
+                icon="heroicons:chevron-right-20-solid"
+                class="w-5 h-5 transition-transform group-hover:translate-x-0.5 hidden md:block"
+            />
             </div>
-            <Icon icon="heroicons:chevron-right-20-solid" class="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
         </RouterLink>
-        </nav>
 
-        <!-- Bagian Bawah (Keluar) -->
-        <div>
-        <button
-            @click="handleLogout"
-            class="flex items-center justify-between w-full p-3.5 bg-white rounded-xl transition-all text-stone-700 hover:bg-red-50 hover:text-red-700 group"
-        >
+        <div class="flex flex-col space-y-3">
+            <RouterLink
+            v-for="item in mainNavigationItems"
+            :to="item.path"
+            class="flex items-center p-3.5 bg-white rounded-xl transition-all text-stone-700 hover:bg-blue-300 hover:text-zinc-100 group justify-center md:justify-between"
+            active-class="bg-blue-500 !text-white hover:bg-blue-700"
+            >
             <div class="flex items-center gap-3">
-            <Icon icon="heroicons:arrow-left-on-rectangle-20-solid" class="w-5 h-5" />
-            <span class="font-medium font-outfit text-lg">Keluar</span>
+                <Icon
+                :icon="item.icon"
+                class="w-6 h-6 md:w-5 md:h-5 flex-shrink-0"
+                />
+                <span class="font-medium font-outfit text-lg hidden md:block">{{
+                item.name
+                }}</span>
             </div>
-            <Icon icon="heroicons:chevron-right-20-solid" class="w-5 h-5" />
-        </button>
+            <Icon
+                icon="heroicons:chevron-right-20-solid"
+                class="w-5 h-5 transition-transform group-hover:translate-x-0.5 hidden md:block"
+            />
+            </RouterLink>
         </div>
+
+        <div class="mt-6">
+            <button
+            @click="handleLogout"
+            class="flex items-center w-full p-3.5 bg-white rounded-xl transition-all text-stone-700 hover:bg-red-50 hover:text-red-700 group justify-center md:justify-between"
+            >
+            <div class="flex items-center gap-3">
+                <Icon
+                icon="heroicons:arrow-left-on-rectangle-20-solid"
+                class="w-6 h-6 md:w-5 md:h-5 flex-shrink-0"
+                />
+                <span class="font-medium font-outfit text-lg hidden md:block"
+                >Keluar</span
+                >
+            </div>
+            <Icon
+                icon="heroicons:chevron-right-20-solid"
+                V
+                class="w-5 h-5 hidden md:block"
+            />
+            </button>
+        </div>
+        </nav>
     </aside>
 </template>
 
 <style scoped>
-/* Menambahkan style khusus untuk active-class agar ikon juga berubah warna */
 .router-link-active {
     color: white;
 }

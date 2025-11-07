@@ -3,8 +3,12 @@
     <h3 class="text-3xl font-medium text-center text-gray-900">
       Lokasi
     </h3>
-    <div class="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-      <span class="text-gray-500">Placeholder Peta Google</span>
+    <div class="w-full h-32 bg-gray-200 rounded-lg overflow-hidden">
+      <img 
+        src="../../assets/placeholdermap.png" 
+        alt="Lokasi peta"
+        class="w-full h-full object-cover"
+      >
     </div>
   </div>
 </template>
