@@ -4,17 +4,17 @@ import { ref } from 'vue';
 const events = ref([
   {
     id: 1,
-    imageUrl: new URL('@/assets/poster1.png', import.meta.url).href,
+    imageUrl: new URL('@/assets/eventimg/poster1.png', import.meta.url).href,
     alt: 'Lomba Mancing Bakti Forkabi Untuk Negeri'
   },
   {
     id: 2,
-    imageUrl: new URL('@/assets/poster2.png', import.meta.url).href,
+    imageUrl: new URL('@/assets/eventimg/poster2.png', import.meta.url).href,
     alt: 'Lomba Mancing HUT RI Ke-74 Warga Garon'
   },
   {
     id: 3,
-    imageUrl: new URL('@/assets/poster3.png', import.meta.url).href,
+    imageUrl: new URL('@/assets/eventimg/poster3.png', import.meta.url).href,
     alt: 'Lomba Mancing Karang Taruna Taanimulya'
   }
 ]);
