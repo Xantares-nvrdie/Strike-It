@@ -76,7 +76,7 @@ function goToPage(pageNumber) {
         </div>
         
         <!-- Mode GRID (Tampilan 'Lihat Semua' / Halaman Kategori) -->
-        <ul v-if="displayMode === 'grid'" class="w-full p-2.5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <ul v-if="displayMode === 'grid'" class="w-full p-2.5 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <li 
                 v-for="product in gridProducts"
                 :key="product.id"
