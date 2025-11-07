@@ -15,7 +15,7 @@ defineProps({
             <img 
                 :src="event.imageUrl" 
                 :alt="event.title" 
-                class="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-full h-75 object-cover transition-transform duration-300 group-hover:scale-105"
             >
             
             <div class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">

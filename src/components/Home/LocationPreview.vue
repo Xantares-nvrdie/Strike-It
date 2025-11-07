@@ -1,30 +1,36 @@
 <script setup>
   import {ref, computed} from 'vue';
 
+  import jakarta from '../../assets/locationimg/jakarta.jpg';
+  import bandung from '../../assets/locationimg/bandung.png';
+  import bekasi from '../../assets/locationimg/bekasi.png';
+  import banten from '../../assets/locationimg/banten.png';
+  import surabaya from '../../assets/locationimg/surabaya.png';
+
   const locations = ref([
   {
   name: "Jakarta",
-  img: "https://placehold.co/800x400/E14949/FFFFFF?text=Jakarta" 
+  img: jakarta, 
   },
   {
     name: "Bandung",
-  img: "https://placehold.co/800x400/4A90E2/FFFFFF?text=Bandung" 
+  img: bandung,
   },
   {
     name: "Bekasi",
-  img: "https://placehold.co/800x400/50E3C2/FFFFFF?text=Bekasi" 
+  img: bekasi, 
   },
   {
     name: "Bogor",
-  img: "https://placehold.co/800x400/F5A623/FFFFFF?text=Bogor" 
+  img: jakarta,
   },
   {
     name: "Banten",
-  img: "https://placehold.co/800x400/7ED321/FFFFFF?text=Banten" 
+  img: banten,
   },
   {
     name: "Surabaya",
-  img: "https://placehold.co/800x400/9013FE/FFFFFF?text=Surabaya" 
+  img: surabaya,
   }
   ]);
 

@@ -4,11 +4,19 @@ import { useRoute } from 'vue-router';
 import FilterSidebar from '../components/Shop/FilterSidebar.vue';
 import ProductList from '../components/Shop/ProductList.vue';
 import { Icon } from '@iconify/vue';
+
+import joran1 from '../assets/alatimg/joran1.png';
+import joran2 from '../assets/alatimg/joran2.png';
+import joran3 from '../assets/alatimg/joran3.png';
+import reels1 from '../assets/alatimg/reels1.png';
+import reels2 from '../assets/alatimg/reels2.png';
+import reels3 from '../assets/alatimg/reels3.png';
+
 const joranProducts = ref([
 {
     id: 1,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+1',
+    imageUrl: joran1,
     name: 'Joran Pancing Shimano FX Spinning 210cm',
     rating: 4,
     sold: 245,
@@ -19,7 +27,7 @@ const joranProducts = ref([
 {
     id: 2,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+2',
+    imageUrl: joran2,
     name: 'Joran Carbon Fiber 180cm Kuat',
     rating: 5,
     sold: 178,
@@ -30,7 +38,7 @@ const joranProducts = ref([
 {
     id: 5,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+3',
+    imageUrl: joran3,
     name: 'Joran Pancing Telescopic 150cm',
     rating: 3,
     sold: 95,
@@ -41,7 +49,7 @@ const joranProducts = ref([
 {
     id: 6,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+4',
+    imageUrl: joran2,
     name: 'Joran Spinning Abu Garcia Veritas 2.0',
     rating: 4,
     sold: 130,
@@ -52,7 +60,7 @@ const joranProducts = ref([
 {
     id: 7,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+5',
+    imageUrl: joran1,
     name: 'Joran Pancing Fiber Glass 200cm',
     rating: 2,
     sold: 60,
@@ -63,7 +71,7 @@ const joranProducts = ref([
 {
     id: 8,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+6',
+    imageUrl: joran3,
     name: 'Joran Pancing Telescopic 240cm',
     rating: 5,
     sold: 300,
@@ -74,7 +82,7 @@ const joranProducts = ref([
 {
     id: 9,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+7',
+    imageUrl: joran2,
     name: 'Joran Pancing Spinning Carbon 210cm',
     rating: 4,
     sold: 220,
@@ -85,7 +93,7 @@ const joranProducts = ref([
 {
     id: 10,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+8',
+    imageUrl: joran1,
     name: 'Joran Pancing Fiber Glass 180cm',
     rating: 3,
     sold: 110,
@@ -96,7 +104,7 @@ const joranProducts = ref([
 {
     id: 11,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+9',
+    imageUrl: joran3,
     name: 'Joran Pancing Spinning Abu Garcia Veritas 1.5',
     rating: 4,
     sold: 150,
@@ -107,7 +115,7 @@ const joranProducts = ref([
 {
     id: 12,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+10',
+    imageUrl: joran1,
     name: 'Joran Pancing Telescopic 210cm',
     rating: 5,
     sold: 280,
@@ -117,7 +125,7 @@ const joranProducts = ref([
 },
 {    id: 13,
     category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+11',
+    imageUrl: joran2,
     name: 'Joran Pancing Carbon Fiber 200cm',
     rating: 4,
     sold: 200,
@@ -125,24 +133,13 @@ const joranProducts = ref([
     isForRent: true,
     isForSale: false
 },
-{
-    id: 14,
-    category: 'joran',
-    imageUrl: 'https://placehold.co/220x200/3B82F6/FFFFFF?text=Joran+12',
-    name: 'Joran Pancing Spinning 240cm Kuat',
-    rating: 5,
-    sold: 320,
-    price: 'Rp 800.000',
-    isForRent: true,
-    isForSale: true
-},
 ]);
 
 const reelProducts = ref([
 {
     id: 3,
     category: 'reels',
-    imageUrl: 'https://placehold.co/220x200/10B981/FFFFFF?text=Reel+1',
+    imageUrl: reels1,
     name: 'Reel Pancing Shimano Sienna 4000',
     rating: 5,
     sold: 512,
@@ -153,7 +150,18 @@ const reelProducts = ref([
 {
     id: 4,
     category: 'reels',
-    imageUrl: 'https://placehold.co/220x200/10B981/FFFFFF?text=Reel+2',
+    imageUrl: reels2,
+    name: 'Reel Daiwa Crossfire 3000',
+    rating: 4,
+    sold: 320,
+    price: 'Rp 420.000',
+    isForRent: false,
+    isForSale: true
+},
+{
+    id: 4,
+    category: 'reels',
+    imageUrl: reels3,
     name: 'Reel Daiwa Crossfire 3000',
     rating: 4,
     sold: 320,

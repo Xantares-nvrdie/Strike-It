@@ -7,7 +7,7 @@ import Navigation from '@/components/Layout/Navigation.vue';
 <template>
     <div class="font-outfit antialiased w-screen h-screen bg-zinc-100">
         <Navigation />
-        <EventSection class="pt-32" />
+        <EventSection class="pt-10" />
     </div>
         
 </template>

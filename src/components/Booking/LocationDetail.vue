@@ -4,12 +4,13 @@ import { Icon } from '@iconify/vue';
 import BookingCard from '@/components/Booking/BookingCard.vue';
 import LocationMapCard from '@/components/Booking/LocationMapCard.vue';
 import ReviewCard from '@/components/Booking/ReviewCard.vue';
-
+import avatarImg from '../../assets/saskeh.jpg';
+import avatarImg2 from '../../assets/user.png';
 const reviews = ref([
     {
         id: 1,
         username: 'CatLover92',
-        avatarUrl: 'https://via.placeholder.com/40/FFB6C1/800000?text=CL',
+        avatarUrl: avatarImg,
         date: '22 Jul',
         isCurrentUser: false,
         rating: 5,
@@ -18,7 +19,7 @@ const reviews = ref([
     {
         id: 2,
         username: 'PetParent7',
-        avatarUrl: 'https://via.placeholder.com/40/90EE90/2F4F4F?text=PP',
+        avatarUrl: avatarImg2,
         date: '22 Jul',
         isCurrentUser: false,
         rating: 4,

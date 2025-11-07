@@ -7,7 +7,7 @@ import jakartaImg from '@/assets/locationimg/jakarta.jpg';
 import bandungImg from '@/assets/locationimg/bandung.png';
 import bekasiImg from '@/assets/locationimg/bekasi.png';
 import bantenImg from '@/assets/locationimg/banten.png';
-import tangerangImg from '@/assets/locationimg/tangerang.png';
+import surabayaImg from '@/assets/locationimg/surabaya.png';
 
 const locations = ref([
   {
@@ -38,13 +38,13 @@ const locations = ref([
     city: 'Tangerang',
     address: 'Jl. Pegangsaan Timur No 55',
     description: 'Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Karena benar-benar berada di lokasi liar, aksesnya bisa jadi sulit dan tidak ada jaminan akan mendapatkan ikan. Akan tetapi, di sinilah letak petualangannya, memberikan kepuasan luar biasa saat berhasil mendaratkan ikan asli penghuni perairan tersebut.',
-    imageUrl: tangerangImg
+    imageUrl: surabayaImg
   }
 ])
 </script>
 
 <template>
-  <div class="text-center my-16">
+  <div class="text-center my-10">
     <h1 class="text-4xl font-medium text-black md:text-6xl">
       Detail Lokasi
     </h1>
