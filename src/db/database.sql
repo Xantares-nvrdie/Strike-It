@@ -359,6 +359,8 @@ Berat: 240g\n',
 15,
 2);
 
+
+
 -- Insert user sample data
 INSERT INTO users (name, email, password, bio, avatar_img, date_birth, id_payment_method, id_membership) VALUES
 ('Joran_Melengkung', 'joran_melengkung@example.com', 'password123', 'Pecinta mancing sejati.', 'avatar/joran_melengkung.png', '1990-05-15', 1, 1),
