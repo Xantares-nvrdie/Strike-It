@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRouter } from 'vue-router';
+import api from '@/services/api';
 
 // Menggunakan router untuk navigasi
 const router = useRouter();
@@ -10,11 +11,14 @@ const router = useRouter();
 const email = ref('');
 const password = ref('');
 const rememberMe = ref(false);
+const isLoading = ref(false); // Untuk status loading tombol
+const errorMessage = ref(''); // Untuk menampilkan pesan error
 
 // Fungsi untuk submit login
-const handleLogin = () => {
-  // --- LOGIKA LOGIN ANDA DI SINI ---
-  // (Contoh: panggil API, validasi, dll.)
+const handleLogin = async () => {
+
+  errorMessage.value = '';
+  isLoading.value = true;
 
   console.log('Login attempt:', {
     email: email.value,
@@ -22,10 +26,34 @@ const handleLogin = () => {
     remember: rememberMe.value,
   });
 
-  // Jika sukses, arahkan ke halaman utama
-  // (Untuk sekarang, kita arahkan ke '/' sebagai contoh)
-  alert('Login Berhasil! (Placeholder)');
-  router.push('/home'); 
+  try {
+    // 1. Panggil API Login ke Backend Fastify
+    const response = await api.login(email.value, password.value);
+
+    // 2. Ambil data dari response
+    const { token, user } = response.data;
+
+    // 3. Simpan Token & User ke LocalStorage (Browser)
+    // Ini PENTING agar user tetap login saat refresh halaman
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+
+    // 4. Redirect ke halaman Home
+    // alert(`Login Berhasil! Selamat datang ${user.name}`); // Opsional
+    router.push('/home'); 
+
+  } catch (error) {
+    // 5. Tangkap Error dari Backend (Misal: Password salah)
+    console.error('Login Error:', error);
+    if (error.response && error.response.data) {
+      errorMessage.value = error.response.data.message; // Pesan dari backend
+    } else {
+      errorMessage.value = 'Terjadi kesalahan pada server.';
+    }
+  } finally {
+    // Matikan status loading
+    isLoading.value = false;
+  }
 };
 
 // Fungsi untuk navigasi ke halaman register

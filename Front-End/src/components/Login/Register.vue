@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRouter } from 'vue-router';
+import api from '@/services/api';
 
 // Menggunakan router untuk navigasi
 const router = useRouter();
@@ -10,28 +11,45 @@ const router = useRouter();
 const name = ref('');
 const email = ref('');
 const password = ref('');
-const confirmPassword = ref('');
+const isLoading = ref(false);
+const errorMessage = ref('');
+const successMessage = ref('');
 
 // Fungsi untuk submit register
-const handleRegister = () => {
-  // Validasi password sederhana
-    if (password.value !== confirmPassword.value) {
-        alert('Password dan Konfirmasi Password tidak cocok!');
-        return;
-    }
+const handleRegister = async () => {
+    // Reset pesan
+    errorMessage.value = '';
+    successMessage.value = '';
+    isLoading.value = true;
 
-    // --- LOGIKA REGISTER ANDA DI SINI ---
-    // (Contoh: panggil API, buat user baru, dll.)
-
-    console.log('Register attempt:', {
+    try {
+        // 1. Panggil API Register
+        // Sesuai backend: butuh name, email, password
+        await api.register({
         name: name.value,
         email: email.value,
-        password: password.value,
-    });
+        password: password.value
+        });
 
-  // Jika sukses, arahkan ke halaman login
-    alert('Registrasi Berhasil! Silakan login.');
-  router.push('/login'); // Ganti '/login' dengan path Anda
+        // 2. Jika sukses
+        successMessage.value = 'Registrasi berhasil! Mengalihkan ke halaman login...';
+        
+        // Tunggu 2 detik biar user baca pesan, lalu pindah ke login
+        setTimeout(() => {
+        router.push('/login');
+        }, 2000);
+
+    } catch (error) {
+        // 3. Tangkap error (misal: Email sudah terdaftar)
+        console.error('Register Error:', error);
+        if (error.response && error.response.data) {
+        errorMessage.value = error.response.data.message;
+        } else {
+        errorMessage.value = 'Gagal mendaftar. Silakan coba lagi.';
+        }
+    } finally {
+        isLoading.value = false;
+    }
 };
 
 // Fungsi untuk navigasi ke halaman login

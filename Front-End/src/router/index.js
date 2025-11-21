@@ -44,31 +44,38 @@ const routes = [
     path: '/shop/checkout',
     name: 'Checkout',
     component: CheckoutView,
-    meta: { hideFooter: true }
+    // TAMBAHAN: Halaman checkout butuh login
+    meta: { hideFooter: true, requiresAuth: true } 
   },
   {
-    path: '/details',
+    // UPDATE: Tambah :id agar bisa fetch detail produk (misal /product/1)
+    path: '/product/:id', 
     name: 'Details',
     component: ProductView,
-    meta: { hideFooter: true }
+    meta: { hideFooter: true },
+    props: true 
   },
   {
-    path: '/shop/:categorySlug', 
+    path: '/shop/category/:categorySlug', // UPDATE: Biar lebih rapi strukturnya
     name: 'ShopCategory',
     component: ShopView,
     meta: { hideFooter: true }
   },
   {
-    path: '/location/place/book', 
+    // UPDATE: Booking butuh ID lokasi & Login
+    path: '/location/:id/book', 
     name: 'Book',
     component: BookingView,
-    meta: { hideFooter: true }
+    meta: { hideFooter: true, requiresAuth: true },
+    props: true
   },
   {
-    path: '/location/place', 
+    // UPDATE: Tambah :id untuk detail lokasi
+    path: '/location/:id', 
     name: 'LocationDetail',
     component: LocationDetailView,
-    meta: { hideFooter: true }
+    meta: { hideFooter: true },
+    props: true
   },
   {
     path: '/location', 
@@ -80,13 +87,15 @@ const routes = [
     path: '/profile', 
     name: 'Profile',
     component: ProfileView,
-    meta: { hideNavbar: true, hideFooter: true }
+    // TAMBAHAN: Profile wajib login
+    meta: { hideNavbar: true, hideFooter: true, requiresAuth: true }
   },
   {
     path: '/history', 
     name: 'History',
     component: HistoryView,
-    meta: { hideNavbar: true, hideFooter: true }
+    // TAMBAHAN: History wajib login
+    meta: { hideNavbar: true, hideFooter: true, requiresAuth: true }
   },
   {
     path: '/event', 
@@ -110,46 +119,59 @@ const routes = [
     path: '/community/create-post', 
     name: 'CommunityCreatePost',
     component: CreatePostView,
-    meta: { hideNavbar: true, hideFooter: true }
+    // TAMBAHAN: Buat post wajib login
+    meta: { hideNavbar: true, hideFooter: true, requiresAuth: true }
   },
   {
     path: '/login', 
     name: 'Login',
     component: LoginView,
-    meta: { hideNavbar: true, hideFooter: true }
+    meta: { hideNavbar: true, hideFooter: true, guestOnly: true } // guestOnly: user login gaboleh kesini
   },
   {
     path: '/register', 
     name: 'Register',
     component: RegisterView,
-    meta: { hideNavbar: true, hideFooter: true }
+    meta: { hideNavbar: true, hideFooter: true, guestOnly: true }
   },
 ];
 
-// 3. Buat routernya
 const router = createRouter({
   history: createWebHistory(),
   routes,
-
   scrollBehavior(to, from, savedPosition) {
-    // 1. Cek apakah tujuannya adalah "hash link" (ada #)
     if (to.hash) {
       return {
-        el: to.hash,        // 'el' menunjuk ke elemen dengan ID yg sama dgn hash
-        behavior: 'smooth', // Buat scroll-nya jadi halus
+        el: to.hash,        
+        behavior: 'smooth', 
       };
     }
-
-    // 2. Jika kembali ke halaman sebelumnya (pakai tombol 'back' browser)
     if (savedPosition) {
       return savedPosition;
     }
-
-    // 3. Jika pindah ke halaman baru (bukan hash link)
     return { 
-      top: 0,               // Selalu scroll ke paling atas
+      top: 0,                
       behavior: 'smooth' 
     };
+  }
+});
+
+// --- NAVIGATION GUARDS (PENTING) ---
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token');
+  const isAuthenticated = !!token; // True jika ada token
+
+  // 1. Jika halaman butuh login (requiresAuth) tapi user belum login
+  if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
+    next({ name: 'Login' }); // Tendang ke Login
+  } 
+  // 2. Jika halaman khusus tamu (Login/Register) tapi user SUDAH login
+  else if (to.matched.some(record => record.meta.guestOnly) && isAuthenticated) {
+    next({ name: 'Home' }); // Tendang ke Home
+  } 
+  // 3. Lanjut normal
+  else {
+    next();
   }
 });
 
