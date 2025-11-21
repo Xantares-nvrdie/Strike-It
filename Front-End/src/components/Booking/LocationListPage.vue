@@ -3,42 +3,37 @@ import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 
 import LocationCard from '@/components/Booking/LocationCard.vue';
-import jakartaImg from '@/assets/locationimg/jakarta.jpg';
-import bandungImg from '@/assets/locationimg/bandung.png';
-import bekasiImg from '@/assets/locationimg/bekasi.png';
-import bantenImg from '@/assets/locationimg/banten.png';
-import surabayaImg from '@/assets/locationimg/surabaya.png';
 
 const locations = ref([
   {
     city: 'Jakarta',
     address: 'Jl. Kh Hasyim Ashari No.125',
     description: 'Suasananya asri dan dikelilingi pepohonan. Karena merupakan fasilitas publik, kelengkapan fasilitasnya tidak seperti kolam pemancingan komersial, namun tetap menjadi favorit untuk bersantai.',
-    imageUrl: jakartaImg
+    imageUrl: '/locationimg/jakarta.jpg' 
   },
   {
     city: 'Bandung',
     address: 'Jl. Diponegoro No.22, Citarum',
-    description: 'Atmosfernya penuh semangat kompetisi, dengan para pemancing serius yang fokus memantau ujung jorannya. Karena tujuannya adalah perlombaan untuk mendapatkan ikan terberat, fasilitasnya lebih fungsional dan kurang ditujukan untuk rekreasi keluarga. Namun, tempat ini menjadi surga bagi mereka yang mencari tantangan dan sensasi adrenalin saat umpan disambar ikan babon.',
-    imageUrl: bandungImg
+    description: 'Atmosfernya penuh semangat kompetisi, dengan para pemancing serius yang fokus memantau ujung jorannya. Karena tujuannya adalah perlombaan untuk mendapatkan ikan terberat, fasilitasnya lebih fungsional.',
+    imageUrl: '/locationimg/bandung.png'
   },
   {
     city: 'Bekasi',
     address: 'Jl. Pramuka No.59',
-    description: 'Suasananya dirancang untuk rekreasi keluarga, sering kali dilengkapi saung lesehan di atas air dan alunan musik yang santai. Karena mengutamakan pengalaman bersantap dan kenyamanan, jenis ikannya mudah dipancing dan sering kali sudah ditentukan untuk langsung diolah. Meskipun begitu, tempat ini adalah pilihan sempurna untuk memperkenalkan hobi memancing kepada anak-anak sambil menikmati akhir pekan bersama.',
-    imageUrl: bekasiImg
+    description: 'Suasananya dirancang untuk rekreasi keluarga, sering kali dilengkapi saung lesehan di atas air dan alunan musik yang santai. Tempat ini adalah pilihan sempurna untuk memperkenalkan hobi memancing kepada anak-anak.',
+    imageUrl: '/locationimg/bekasi.png'
   },
   {
     city: 'Banten',
     address: 'Jl. Pelelangan Ikan Karangantu',
-    description: 'Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Karena benar-benar berada di lokasi liar, aksesnya bisa jadi sulit dan tidak ada jaminan akan mendapatkan ikan. Akan tetapi, di sinilah letak petualangannya, memberikan kepuasan luar biasa saat berhasil mendaratkan ikan asli penghuni perairan tersebut.',
-    imageUrl: bantenImg
+    description: 'Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Karena benar-benar berada di lokasi liar, aksesnya bisa jadi sulit dan tidak ada jaminan akan mendapatkan ikan.',
+    imageUrl: '/locationimg/banten.png'
   },
   {
     city: 'Tangerang',
     address: 'Jl. Pegangsaan Timur No 55',
-    description: 'Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Karena benar-benar berada di lokasi liar, aksesnya bisa jadi sulit dan tidak ada jaminan akan mendapatkan ikan. Akan tetapi, di sinilah letak petualangannya, memberikan kepuasan luar biasa saat berhasil mendaratkan ikan asli penghuni perairan tersebut.',
-    imageUrl: surabayaImg
+    description: 'Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Tempat yang cocok untuk mencari ketenangan.',
+    imageUrl: '/locationimg/tangerang.jpg' // Pastikan ekstensi file benar (jpg/png)
   }
 ])
 </script>

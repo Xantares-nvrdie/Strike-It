@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router"; // Import useRouter
 import { Icon } from "@iconify/vue";
+
+const router = useRouter(); // Inisialisasi router
 
 // Definisikan item Beranda secara terpisah
 const homeItem = ref({
@@ -21,10 +23,18 @@ const mainNavigationItems = ref([
     },
 ]);
 
-// Tambahkan fungsi handleLogout agar tombol berfungsi
+// --- FUNGSI LOGOUT ---
 const handleLogout = () => {
-    console.log("Logout diklik!");
-  // Ganti dengan logika logout Anda
+    // 1. Konfirmasi User (Opsional tapi disarankan)
+    if (confirm("Apakah Anda yakin ingin keluar?")) {
+        
+        // 2. Hapus Token & Data User dari Penyimpanan Browser
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        // 3. Arahkan kembali ke halaman Login
+        router.push("/login");
+    }
 };
 </script>
 
@@ -47,6 +57,10 @@ const handleLogout = () => {
         </div>
 
         <nav class="flex flex-col flex-1 justify-between">
+        
+        <!-- BAGIAN ATAS (Link Home & Menu Utama) -->
+        <!-- Saya kembalikan struktur div-nya seperti awal -->
+        
         <RouterLink
             :to="homeItem.path"
             class="flex items-center p-3.5 bg-white rounded-xl transition-all text-stone-700 hover:bg-blue-300 hover:text-zinc-100 group"
@@ -71,6 +85,7 @@ const handleLogout = () => {
         <div class="flex flex-col space-y-3">
             <RouterLink
             v-for="item in mainNavigationItems"
+            :key="item.path"
             :to="item.path"
             class="flex items-center p-3.5 bg-white rounded-xl transition-all text-stone-700 hover:bg-blue-300 hover:text-zinc-100 group justify-center md:justify-between"
             active-class="bg-blue-500 !text-white hover:bg-blue-700"
@@ -91,6 +106,7 @@ const handleLogout = () => {
             </RouterLink>
         </div>
 
+        <!-- TOMBOL LOGOUT -->
         <div class="mt-6">
             <button
             @click="handleLogout"
@@ -107,7 +123,6 @@ const handleLogout = () => {
             </div>
             <Icon
                 icon="heroicons:chevron-right-20-solid"
-                V
                 class="w-5 h-5 hidden md:block"
             />
             </button>

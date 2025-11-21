@@ -1,52 +1,60 @@
 <script setup>
-  import {ref, computed} from 'vue';
+  import { ref, computed, onMounted } from 'vue';
+  import api from '@/services/api'; // Import API
 
-  import jakarta from '../../assets/locationimg/jakarta.jpg';
-  import bandung from '../../assets/locationimg/bandung.png';
-  import bekasi from '../../assets/locationimg/bekasi.png';
-  import banten from '../../assets/locationimg/banten.png';
-  import surabaya from '../../assets/locationimg/surabaya.png';
-
-  const locations = ref([
-  {
-  name: "Jakarta",
-  img: jakarta, 
-  },
-  {
-    name: "Bandung",
-  img: bandung,
-  },
-  {
-    name: "Bekasi",
-  img: bekasi, 
-  },
-  {
-    name: "Bogor",
-  img: jakarta,
-  },
-  {
-    name: "Banten",
-  img: banten,
-  },
-  {
-    name: "Surabaya",
-  img: surabaya,
-  }
-  ]);
-
+  // State data
+  const locations = ref([]);
   const selectedIndex = ref(0);
 
+  // 1. Fetch Data dari Database
+  const fetchLocations = async () => {
+    try {
+      const res = await api.getLocations();
+      locations.value = res.data;
+    } catch (error) {
+      console.error("Gagal mengambil lokasi:", error);
+    }
+  };
+
+  // 2. Computed Property untuk Lokasi Terpilih
   const selectedLocation = computed(() => {
-    return locations.value[selectedIndex.value];
+    // Fallback loading jika data belum masuk
+    if (locations.value.length === 0) return { 
+      name: 'Loading...', 
+      img: 'https://placehold.co/800x400?text=Loading' 
+    };
+
+    const loc = locations.value[selectedIndex.value];
+    
+    // LOGIC PENTING: 
+    // Jika path dari DB tidak diawali HTTP (bukan link luar) dan tidak diawali '/',
+    // Kita tambahkan '/' agar mengarah ke folder PUBLIC.
+    // Contoh DB: "locationimg/jakarta.jpg" -> Jadi: "/locationimg/jakarta.jpg"
+    let imagePath = loc.img;
+    if (imagePath && !imagePath.startsWith('http') && !imagePath.startsWith('/')) {
+        imagePath = '/' + imagePath;
+    }
+
+    return {
+      ...loc,
+      img: imagePath
+    };
   });
 
   const next = () => {
-      selectedIndex.value = (selectedIndex.value + 1) % locations.value.length;
+      if (locations.value.length > 0) {
+        selectedIndex.value = (selectedIndex.value + 1) % locations.value.length;
+      }
   };
 
   const prev = () => {
-      selectedIndex.value = (selectedIndex.value - 1 + locations.value.length) % locations.value.length;
+      if (locations.value.length > 0) {
+        selectedIndex.value = (selectedIndex.value - 1 + locations.value.length) % locations.value.length;
+      }
   };
+
+  // Ambil data saat komponen dimuat
+  onMounted(fetchLocations);
 </script>
 
 <template>
@@ -75,6 +83,7 @@
             </button>
           </li>
 
+          <!-- Mobile View -->
           <li class="flex-shrink-0 block md:hidden">
             <button
               class="flex items-center justify-center w-24 h-10 px-4 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out text-sm font-semibold bg-blue-600 text-white shadow-blue-500/50">
@@ -82,7 +91,9 @@
             </button>
           </li>
 
-          <template v-for="(location, index) in locations" :key="location.name">
+          <!-- Desktop List -->
+          <!-- Kita gunakan v-for untuk me-loop data dari database -->
+          <template v-for="(location, index) in locations" :key="location.id || index">
             <li class="hidden md:flex flex-shrink-0">
               <button @click="selectedIndex = index" :class="[
                 'flex items-center justify-center w-24 h-10 px-4 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out text-sm font-semibold',
@@ -90,7 +101,7 @@
                   ? 'bg-blue-600 text-white shadow-blue-500/50'
                   : 'bg-white/10 text-gray-800 backdrop-blur-sm border border-gray-300 hover:bg-gray-100'
               ]">
-                {{ location.name }}
+                {{ location.city }}
               </button>
             </li>
           </template>
@@ -109,11 +120,16 @@
       </div>
 
       <div class="flex flex-col items-center p-4 mx-auto mt-10">
-        <img :src="selectedLocation.img" alt="Preview Pemancingan"
+        <!-- 
+            Image Source sekarang dinamis dari computed property 'selectedLocation'.
+            Juga menambahkan link dinamis ke halaman booking berdasarkan ID lokasi.
+        -->
+        <img :src="selectedLocation.img" :alt="selectedLocation.name"
           class="object-cover w-full max-w-4xl transition duration-300 shadow-2xl h-72 rounded-t-2xl hover:shadow-3xl"
           @error="(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x400/9CA3AF/FFFFFF?text=Image+Not+Found'; }" />
 
-        <router-link to="/location/place/book" class="w-full">
+        <!-- Link Booking Dinamis (menggunakan ID lokasi) -->
+        <router-link :to="selectedLocation.id ? `/location/${selectedLocation.id}/book` : '/location'" class="w-full">
           <button
             class="w-full max-w-4xl py-4 text-xl font-bold tracking-wider text-white uppercase transition duration-300 ease-in-out bg-blue-600 shadow-xl font-outfit rounded-b-2xl hover:bg-blue-700 hover:shadow-2xl">
             Booking Sekarang

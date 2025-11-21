@@ -10,25 +10,23 @@ const api = axios.create({
 });
 
 // 2. Interceptor (PENTING! Otomatis pasang Token)
-// Setiap kali request dikirim, kode ini akan mengecek apakah ada token di localStorage
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token'); // Ambil token dari memori browser
+        const token = localStorage.getItem('token'); 
         if (token) {
-        config.headers.Authorization = `Bearer ${token}`; // Tempel ke Header
+        config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
     (error) => Promise.reject(error)
 );
 
-// 3. Daftar API Call (Biar rapi)
+// 3. Daftar API Call
 export default {
 
     uploadImage(file) {
         const formData = new FormData();
         formData.append('file', file);
-        // Header 'Content-Type': 'multipart/form-data' biasanya otomatis dihandle axios
         return api.post('/upload', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -42,18 +40,22 @@ export default {
         return api.post('/users', data);
     },
     
-    // Products & Locations
+    // Data Master
     getProducts() {
-        return api.get('/api/products'); // Sesuaikan prefix route di backend (kalo ada /api)
+        return api.get('/api/products'); 
     },
     getLocations() {
-        return api.get('/locations'); // Tadi di backend rutenya /locations
+        return api.get('/locations'); 
     },
     getLocationDetail(id) {
         return api.get(`/locations/${id}`);
     },
+    // TAMBAHAN BARU: Ambil data membership
+    getMemberships() {
+        return api.get('/memberships');
+    },
 
-    // Transaksi (Butuh Token - otomatis dihandle interceptor di atas)
+    // Transaksi
     createBooking(data) {
         return api.post('/bookings', data);
     },
@@ -61,15 +63,15 @@ export default {
         return api.get('/my-bookings');
     },
 
-    // --- USER PROFILE ---
+    // User Profile
     getMyProfile() {
         return api.get('/users/me');
     },
     updateProfile(data) {
-        return api.put('/users/me', data); // data isi: {name, bio, avatar_img}
+        return api.put('/users/me', data); 
     },
 
-    // --- PEMBAYARAN & MEMBERSHIP ---
+    // Pembayaran & Membership
     payBooking(bookingId) {
         return api.post(`/pay/booking/${bookingId}`);
     },

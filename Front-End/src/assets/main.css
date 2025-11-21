@@ -6,7 +6,7 @@
   padding: 10px 18px;
   color: #ffffff;
   cursor: pointer;
-  background: rgba(59, 130, 246, 0.25); /* brighter Tailwind-like blue (blue-500/25) */
+  background: rgba(59, 130, 246, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 30px;
   backdrop-filter: blur(12px);

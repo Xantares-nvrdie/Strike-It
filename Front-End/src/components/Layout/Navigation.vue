@@ -1,8 +1,34 @@
 <script setup>
-import { useRoute } from 'vue-router';
-import { ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router'; // Tambah useRouter
+import { ref, computed, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 
+const route = useRoute();
+const router = useRouter(); // Inisialisasi router
+
+// --- STATE LOGIN ---
+const isLoggedIn = ref(false);
+const userName = ref('Guest');
+
+// Cek status login saat komponen dimuat
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  const userString = localStorage.getItem('user');
+  
+  if (token && userString) {
+    isLoggedIn.value = true;
+    try {
+      const user = JSON.parse(userString);
+      userName.value = user.name || 'User';
+    } catch (e) {
+      userName.value = 'User';
+    }
+  } else {
+    isLoggedIn.value = false;
+  }
+});
+
+// --- DATA NAVIGASI ---
 const navigationItems = ref([
   { name: 'Beranda', icon: 'heroicons:home', path: '/' },
   { name: 'Lokasi', icon: 'heroicons:map-pin', path: '/home/#preview' },
@@ -18,44 +44,47 @@ const navigationItemsShop = ref([
   { name: 'Acara', icon: 'heroicons:calendar', path: '/event' }
 ]);
 
-const route = useRoute();
 const isMenuOpen = ref(false)
-const isProfileOpen = ref(false) // State untuk expand/collapse profile
-
-const navbarClass = computed(() => {
-  if (route.meta.navbarStyle === 'transparent') {
-    return 'sticky top-0 z-50 w-full h-16 bg-transparent text-white absolute';
-  }
-  return 'sticky top-0 z-50 w-full h-16 shadow-md bg-white text-gray-800';
-});
+const isProfileOpen = ref(false)
 
 const isMainPage = computed(() => route.name === 'Home');
 
+// --- FUNGSI TOGGLE ---
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-const toggleProfileMenu = () => { // Fungsi untuk toggle profile
+const toggleProfileMenu = () => {
   isProfileOpen.value = !isProfileOpen.value
+}
+
+// --- FUNGSI LOGOUT ---
+const handleLogout = () => {
+  if(confirm("Yakin ingin keluar?")) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    isLoggedIn.value = false;
+    isProfileOpen.value = false;
+    router.push('/login');
+  }
 }
 </script>
 
 <template>
   <nav :class="[
-    // Kelas yang selalu ada
     'z-50', 'flex', 'items-center', 'justify-between', 'w-full', 'px-10', 'py-4', 'font-semibold',
-    
-    // Kelas kondisional
     {
       'absolute top-0 left-0 text-white': isMainPage,
-      'top-0 bg-[#003bb3] left-0 relative text-white': !isMainPage // <-- Background biru jika bukan main page
+      'top-0 bg-[#003bb3] left-0 relative text-white': !isMainPage
     }
   ]">
     
-    <div class="logo">
+    <!-- LOGO -->
+    <div class="logo cursor-pointer" @click="router.push('/home')">
       <img src="../../assets/strikeit_logo.png" alt="Logo Strike It" class="w-[50px] h-[50px] object-contain" />
     </div>
 
+    <!-- MENU DESKTOP -->
     <ul v-if="isMainPage" class="hidden lg:flex list-none gap-x-[30px]">
       <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
         <router-link to="/home">
@@ -107,29 +136,51 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
       </li>
     </ul>
 
-    <div class="hidden lg:block w-48 btn-glass text-white font-semibold relative">
-      <button @click="toggleProfileMenu"
-        class="flex items-center justify-center gap-2 w-full rounded-lg transition-colors">
-        <img src="../../assets/user.png" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
-        <span class="text-lg">salim</span>
-      </button>
+    <!-- USER AREA (DESKTOP) -->
+    <div class="hidden lg:block w-48 relative">
+      
+      <!-- KONDISI 1: SUDAH LOGIN -->
+      <div v-if="isLoggedIn" class="btn-glass text-white font-semibold">
+        <button @click="toggleProfileMenu"
+          class="flex items-center justify-center gap-2 w-full rounded-lg transition-colors">
+          <img src="../../assets/user.png" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
+          <span class="text-lg truncate max-w-[100px]">{{ userName }}</span>
+        </button>
 
-      <transition name="fade">
-        <div v-if="isProfileOpen" class="absolute top-full right-0 mt-2 w-full btn-glass p-2">
-          <div class="flex flex-col gap-1.5">
-            <router-link to="/profile"
-              class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-black/15 hover:bg-white/20 transition-colors">
-              Profile
-            </router-link>
-            <button
-              class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-black/15 hover:bg-white/20 transition-colors">
-              Log Out
-            </button>
+        <transition name="fade">
+          <div v-if="isProfileOpen" class="absolute top-full right-0 mt-2 w-full btn-glass p-2 bg-[#406691]/90 backdrop-blur-md border border-white/20 rounded-xl">
+            <div class="flex flex-col gap-1.5">
+              <router-link to="/profile"
+                class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-black/15 hover:bg-white/20 transition-colors">
+                Profile
+              </router-link>
+              <button
+                @click="handleLogout"
+                class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-red-500/20 hover:bg-red-500/40 text-red-100 hover:text-white transition-colors">
+                Log Out
+              </button>
+            </div>
           </div>
-        </div>
-      </transition>
+        </transition>
+      </div>
+
+      <!-- KONDISI 2: BELUM LOGIN (GUEST) -->
+      <div v-else class="flex gap-3 justify-end">
+        <router-link to="/login">
+          <button class="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 transition-all text-white font-medium backdrop-blur-sm">
+            Masuk
+          </button>
+        </router-link>
+        <router-link to="/register">
+          <button class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg shadow-blue-900/20 transition-all">
+            Daftar
+          </button>
+        </router-link>
+      </div>
+
     </div>
 
+    <!-- HAMBURGER MENU (MOBILE) -->
     <button @click="toggleMenu"
       class="lg:hidden flex flex-col justify-center items-center gap-[4px] w-10 h-10 rounded-md hover:bg-white/10 transition">
       <span class="w-6 h-[2px] bg-white transition-all" :class="{ 'rotate-45 translate-y-[6px]': isMenuOpen }"></span>
@@ -137,26 +188,44 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
       <span class="w-6 h-[2px] bg-white transition-all" :class="{ '-rotate-45 -translate-y-[6px]': isMenuOpen }"></span>
     </button>
 
+    <!-- MOBILE MENU DROPDOWN -->
     <transition name="fade">
-      <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden">
+      <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden px-4">
         <div
-          class="w-[85vw] bg-[#406691]/50 backdrop-blur-md rounded-[3rem] border-4 border-white/50 p-5 flex flex-col items-center gap-3 text-white">
+          class="w-full max-w-md bg-[#406691]/90 backdrop-blur-md rounded-[2rem] border border-white/20 p-5 flex flex-col items-center gap-3 text-white shadow-2xl">
           
+          <!-- USER INFO MOBILE -->
           <div
-            class="w-full bg-white/10 rounded-[1.5rem] border-4 border-white/50 flex flex-col items-center gap-2 py-4">
-            <img src='../../assets/user.png' alt="Foto Profile"
-              class="object-cover w-[12dvh] h-[12dvh] rounded-full" />
-            <p class="font-semibold text-lg">User</p>
-            <router-link to="/profile" class="btn-glass w-[] text-center flex items-center gap-3 justify-start">
-              <span class="text-sm opacity-80 text-decoration-line">Lihat profil</span>
-            </router-link>
+            class="w-full bg-white/10 rounded-[1.5rem] border border-white/10 flex flex-col items-center gap-2 py-4">
+            
+            <template v-if="isLoggedIn">
+                <img src='../../assets/user.png' alt="Foto Profile"
+                class="object-cover w-[80px] h-[80px] rounded-full border-2 border-white/30" />
+                <p class="font-semibold text-lg">{{ userName }}</p>
+                <router-link to="/profile" class="text-sm opacity-80 hover:opacity-100 underline">
+                Lihat Profil
+                </router-link>
+            </template>
+
+            <template v-else>
+                <div class="w-[80px] h-[80px] rounded-full bg-white/10 flex items-center justify-center mb-2">
+                    <Icon icon="heroicons:user" class="w-10 h-10 text-white/50" />
+                </div>
+                <p class="font-semibold text-lg">Tamu (Guest)</p>
+                <div class="flex gap-3 mt-2">
+                    <router-link to="/login" class="px-4 py-1.5 bg-white/20 rounded-lg text-sm hover:bg-white/30">Masuk</router-link>
+                    <router-link to="/register" class="px-4 py-1.5 bg-blue-600 rounded-lg text-sm hover:bg-blue-700">Daftar</router-link>
+                </div>
+            </template>
+
           </div>
 
+          <!-- NAVIGATION LINKS MOBILE -->
           <div
-            class="w-full bg-white/10 rounded-[1.5rem] border-4 border-white/50 flex flex-col items-start gap-4 px-6 py-5">
+            class="w-full bg-white/10 rounded-[1.5rem] border border-white/10 flex flex-col items-start gap-3 px-5 py-5">
             <template v-if="isMainPage">
               <router-link @click="toggleMenu" v-for="item in navigationItems" :key="item.name" :to="item.path"
-                class="btn-glass w-full flex items-center gap-3 justify-start">
+                class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition">
                 <Icon :icon="item.icon" class="w-5 h-5" />
                 {{ item.name }}
               </router-link>
@@ -164,19 +233,22 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
 
             <template v-else>
               <router-link @click="toggleMenu" v-for="item in navigationItemsShop" :key="item.name" :to="item.path"
-                class="btn-glass w-full flex items-center gap-3 justify-start">
+                class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition">
                 <Icon :icon="item.icon" class="w-5 h-5" />
                 {{ item.name }}
               </router-link>
             </template>
           </div>
 
-          <div class="w-full">
+          <!-- LOGOUT BUTTON MOBILE (Hanya muncul jika login) -->
+          <div v-if="isLoggedIn" class="w-full">
             <button
-              class="w-full bg-white/10 border-4 border-white/50 text-white rounded-[1.5rem] py-3 font-semibold hover:bg-white/20 transition">
-              <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+              @click="handleLogout"
+              class="w-full bg-red-500/20 border border-red-500/30 text-red-100 rounded-[1.5rem] py-3 font-semibold hover:bg-red-500/40 transition flex items-center justify-center gap-2">
+              <Icon icon="heroicons:arrow-left-on-rectangle" class="w-5 h-5" /> Keluar
             </button>
           </div>
+
         </div>
       </div>
     </transition>
@@ -187,11 +259,14 @@ const toggleProfileMenu = () => { // Fungsi untuk toggle profile
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+  transform: translateY(-10px);
 }
+
+
 </style>
