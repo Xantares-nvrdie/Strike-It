@@ -87,7 +87,7 @@
           <li class="flex-shrink-0 block md:hidden">
             <button
               class="flex items-center justify-center w-24 h-10 px-4 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out text-sm font-semibold bg-blue-600 text-white shadow-blue-500/50">
-              {{ selectedLocation.name }}
+              {{ selectedLocation.city }}
             </button>
           </li>
 

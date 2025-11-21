@@ -1,18 +1,15 @@
-// src/services/api.js
 import axios from 'axios';
 
-// 1. Buat Instance Axios (Settingan Pusat)
 const api = axios.create({
-    baseURL: 'http://localhost:3000', // Alamat Backend Fastify
+    baseURL: 'http://localhost:3000',
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// 2. Interceptor (PENTING! Otomatis pasang Token)
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token'); 
+        const token = localStorage.getItem('token');
         if (token) {
         config.headers.Authorization = `Bearer ${token}`;
         }
@@ -21,9 +18,7 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// 3. Daftar API Call
 export default {
-
     uploadImage(file) {
         const formData = new FormData();
         formData.append('file', file);
@@ -42,15 +37,16 @@ export default {
     
     // Data Master
     getProducts() {
-        return api.get('/api/products'); 
+        return api.get('/api/products');
     },
     getLocations() {
-        return api.get('/locations'); 
+        return api.get('/locations');
     },
     getLocationDetail(id) {
         return api.get(`/locations/${id}`);
     },
-    // TAMBAHAN BARU: Ambil data membership
+    
+    // --- TAMBAHAN BARU: GET MEMBERSHIPS ---
     getMemberships() {
         return api.get('/memberships');
     },
@@ -68,7 +64,7 @@ export default {
         return api.get('/users/me');
     },
     updateProfile(data) {
-        return api.put('/users/me', data); 
+        return api.put('/users/me', data);
     },
 
     // Pembayaran & Membership

@@ -1,51 +1,49 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import PricingCard from './PricingCard.vue';
-import { Icon } from '@iconify/vue'; // <-- 1. Tambahkan Icon untuk modal
+import { Icon } from '@iconify/vue';
+import api from '@/services/api'; // Import API Service
 
-// Data plan (tidak berubah)
-const pricingPlans = ref([
-  {
-    title: "Kawan Mancing",
-    subtitle: "Mancing cerdas. Kantong puas.",
-    price: "75.000",
-    features: [
-      'Anda dapat menghentikan atau membatalkan kapan saja.',
-      'Diskon 10% untuk sewa alat pancing.',
-      'Voucher makan di restoran/kantin.',
-      'Pemberian umpan dasar gratis saat kedatangan.',
-    ],
-    isPopular: false,
-  },
-  {
-    title: "Juragan Mancing",
-    subtitle: "Untuk Para Hobiis Sejati, Pilihan Paling Populer.",
-    price: "100.000",
-    features: [
-      'Anda dapat menghentikan atau membatalkan kapan saja.',
-      'Diskon 10% untuk sewa alat pancing.',
-      'Diskon 20% untuk pembelian umpan.',
-      'Pemberian umpan dasar gratis saat kedatangan.',
-      'Kesempatan mengikuti turnamen bulanan secara gratis.',
-    ],
-    isPopular: true,
-  },
-  {
-    title: "Jawara Mancing",
-    subtitle: "Pengalaman Terbaik, Tanpa Batas dan Tanpa Kompromi.",
-    price: "150.000",
-    features: [
-      'Anda dapat menghentikan atau membatalkan kapan saja.',
-      'Diskon 10% untuk sewa alat pancing.',
-      'Diskon 20% untuk pembelian umpan.',
-      'Kesempatan mengikuti turnamen bulanan secara gratis.',
-      'Satu sesi konsultasi mingguan dengan pemandu mancing profesional.',
-    ],
-    isPopular: false,
-  },
-]);
+// Data plan (Awalnya kosong, diisi dari API)
+const pricingPlans = ref([]);
 
-// Logika slider (tidak berubah)
+// Mengambil data membership dari Backend
+const fetchMemberships = async () => {
+  try {
+    const response = await api.getMemberships();
+    // Mapping data DB ke format Frontend
+    pricingPlans.value = response.data.map(plan => ({
+      id: plan.id,
+      title: plan.name,
+      subtitle: plan.description,
+      price: Number(plan.price_per_month).toLocaleString('id-ID'), 
+      features: plan.benefits ? plan.benefits.split('\n').filter(f => f.trim()) : [],
+      isPopular: Boolean(plan.is_popular)
+    }));
+  } catch (error) {
+    console.error("Gagal memuat paket langganan:", error);
+  }
+};
+
+// --- LOGIKA SUSUNAN PLAN (Agar Populer di Tengah) ---
+const sortedPlans = computed(() => {
+  if (pricingPlans.value.length === 0) return [];
+  
+  // Pisahkan plan populer dan biasa
+  const popular = pricingPlans.value.find(p => p.isPopular);
+  const regular = pricingPlans.value.filter(p => !p.isPopular);
+
+  // Jika ada plan populer, taruh di tengah (index ke-1 dari 3 item)
+  // Struktur: [Biasa 1, POPULER, Biasa 2]
+  if (popular && regular.length >= 2) {
+    return [regular[0], popular, regular[1], ...regular.slice(2)];
+  }
+  
+  // Fallback jika datanya tidak standar (misal cuma 2 plan)
+  return pricingPlans.value;
+});
+
+// Logika slider (Original)
 const activeIndex = ref(1);
 const touchStartX = ref(0);
 const touchStartY = ref(0);
@@ -60,29 +58,23 @@ function handleTouchEnd(e) {
   const finalY = e.changedTouches[0].clientY;
   const diffX = finalX - touchStartX.value;
   const diffY = finalY - touchStartY.value;
-  if (Math.abs(diffY) > Math.abs(diffX)) {
-    return;
-  }
+  if (Math.abs(diffY) > Math.abs(diffX)) return;
   const tapThreshold = 10;
   const swipeThreshold = 50;
-  if (Math.abs(diffX) < tapThreshold && Math.abs(diffY) < tapThreshold) {
-    return;
-  }
+  if (Math.abs(diffX) < tapThreshold && Math.abs(diffY) < tapThreshold) return;
   if (Math.abs(diffX) > swipeThreshold) {
     e.preventDefault(); 
-    const totalPlans = pricingPlans.value.length;
+    const totalPlans = sortedPlans.value.length; // Gunakan sortedPlans
     const currentTabIndex = activeIndex.value;
     if (diffX < 0) {
-      const nextIndex = (currentTabIndex + 1) % totalPlans;
-      activeIndex.value = nextIndex;
+      activeIndex.value = (currentTabIndex + 1) % totalPlans;
     } else {
-      const prevIndex = (currentTabIndex - 1 + totalPlans) % totalPlans;
-      activeIndex.value = prevIndex;
+      activeIndex.value = (currentTabIndex - 1 + totalPlans) % totalPlans;
     }
   }
 }
 
-// 2. LOGIKA MODAL (DIPINDAH KE SINI)
+// Logika Modal & Checkout
 const isModalOpen = ref(false);
 const selectedPlan = ref(null);
 
@@ -93,16 +85,33 @@ function openModal(plan) {
 
 function closeModal() {
   isModalOpen.value = false;
-  // Kita tunda reset selectedPlan agar data di modal tidak hilang saat transisi
   setTimeout(() => {
     selectedPlan.value = null;
-  }, 300); // 300ms = durasi transisi
+  }, 300);
 }
 
-function confirmCheckout() {
-  alert(`Memproses pembayaran untuk ${selectedPlan.value.title}...`);
-  closeModal();
+async function confirmCheckout() {
+  if (!selectedPlan.value) return;
+
+  try {
+    await api.upgradeMembership(selectedPlan.value.id);
+    alert(`Berhasil berlangganan paket ${selectedPlan.value.title}!`);
+    closeModal();
+    window.location.reload();
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.status === 401) {
+      alert("Silakan login terlebih dahulu untuk berlangganan.");
+    } else {
+      alert("Gagal melakukan langganan. Silakan coba lagi.");
+    }
+    closeModal();
+  }
 }
+
+onMounted(() => {
+  fetchMemberships();
+});
 </script>
 
 <template>
@@ -118,7 +127,13 @@ function confirmCheckout() {
       </p>
     </div>
 
-    <div class="md:hidden mt-12">
+    <!-- Fallback Loading -->
+    <div v-if="pricingPlans.length === 0" class="mt-20 text-gray-500 animate-pulse">
+      Sedang memuat paket...
+    </div>
+
+    <!-- MOBILE VIEW (Slider) - Tetap pakai urutan asli atau sorted (opsional) -->
+    <div v-else class="md:hidden mt-12">
       <div class="overflow-hidden">
         <div
           class="flex transition-transform duration-300 ease-in-out"
@@ -126,8 +141,9 @@ function confirmCheckout() {
           @touchstart="handleTouchStart"
           @touchend="handleTouchEnd"
         >
+          <!-- Kita pakai sortedPlans agar urutan mobile juga konsisten (Biasa-Populer-Biasa) -->
           <div
-            v-for="(plan, index) in pricingPlans"
+            v-for="(plan, index) in sortedPlans"
             :key="index"
             class="w-full flex-shrink-0 flex justify-center p-4"
           >
@@ -146,7 +162,7 @@ function confirmCheckout() {
 
       <div class="flex justify-center gap-2 py-4 mt-4">
         <button
-          v-for="(plan, index) in pricingPlans"
+          v-for="(plan, index) in sortedPlans"
           :key="index"
           @click="activeIndex = index"
           :class="
@@ -158,18 +174,24 @@ function confirmCheckout() {
       </div>
     </div>
 
+    <!-- DESKTOP VIEW (Grid) - Menggunakan sortedPlans agar Populer di Tengah -->
     <div
-      class="hidden md:flex items-stretch gap-6 mt-12 md:flex-wrap md:justify-center"
+      v-if="pricingPlans.length > 0"
+      class="hidden md:flex items-center justify-center gap-6 mt-12 flex-wrap"
     >
       <PricingCard
-        v-for="(plan, index) in pricingPlans"
+        v-for="(plan, index) in sortedPlans"
         :key="index"
         :title="plan.title"
         :subtitle="plan.subtitle"
         :price="plan.price"
         :features="plan.features"
         :is-popular="plan.isPopular"
-        class="md:w-[360px] h-full"
+        class="md:w-[360px] transition-transform duration-300"
+        :class="{ 
+            'transform scale-110 z-10 shadow-2xl border-blue-500/30': plan.isPopular,
+            'h-full': !plan.isPopular 
+        }"
         @subscribe="openModal(plan)"
       />
     </div>
