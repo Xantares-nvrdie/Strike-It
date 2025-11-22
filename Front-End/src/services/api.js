@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// 1. Buat Instance Axios
 const api = axios.create({
     baseURL: 'http://localhost:3000',
     headers: {
@@ -7,6 +8,7 @@ const api = axios.create({
     },
 });
 
+// 2. Interceptor Token
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -18,6 +20,7 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// 3. Daftar API Call
 export default {
     uploadImage(file) {
         const formData = new FormData();
@@ -45,10 +48,19 @@ export default {
     getLocationDetail(id) {
         return api.get(`/locations/${id}`);
     },
+    getDiscounts() {
+        return api.get('/discounts');
+    },
+    getEvents() {
+        return api.get('/events');
+    },
+    getLocationReviews() {
+        return api.get('/reviews/location-public');
+    },
     
-    // --- TAMBAHAN BARU: GET MEMBERSHIPS ---
+    // Memberships
     getMemberships() {
-        return api.get('/memberships');
+        return api.get('/memberships'); 
     },
 
     // Transaksi

@@ -101,12 +101,14 @@ export default async function (fastify, options) {
         if (!match) {
             return reply.code(401).send({ message: 'Email atau password salah' });
         }
-
-        const token = fastify.jwt.sign({ 
-            id: user.id, 
-            email: user.email, 
-            name: user.name 
-        });
+        const token = fastify.jwt.sign(
+            { 
+                id: user.id, 
+                email: user.email, 
+                name: user.name 
+            },
+            { expiresIn: '1h' } 
+        );
 
         return { 
             token, 

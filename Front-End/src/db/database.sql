@@ -188,6 +188,34 @@ CREATE TABLE post_likes (
     UNIQUE KEY unique_like (id_post, id_user)
 );
 
+CREATE TABLE discounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    discount_value VARCHAR(50) NOT NULL, -- Contoh: "15%"
+    code VARCHAR(50) NOT NULL,           -- Contoh: "AASNAAD998"
+    used_count INT DEFAULT 0,            -- Contoh: 122
+    max_usage INT DEFAULT 100            -- Contoh: 130
+);
+
+CREATE TABLE events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    img VARCHAR(255) NOT NULL,
+    link_url TEXT
+);
+
+
+INSERT INTO discounts (discount_value, code, used_count, max_usage) VALUES 
+('15%', 'AASNAAD998', 122, 130),
+('15%', 'ASD12229SDA', 122, 130),
+('15%', 'ADAD9988', 122, 130);
+
+
+INSERT INTO events (name, img, link_url) VALUES 
+('Lomba Mancing Bakti Forkabi Untuk Negeri', '/eventimg/poster1.png', 'https://drive.google.com/'),
+('Lomba Mancing HUT RI Ke-74 Warga Garon', '/eventimg/poster2.png', 'https://drive.google.com/'),
+('Lomba Mancing Karang Taruna Taanimulya', '/eventimg/poster3.png','https://drive.google.com/');
+
+
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_bookings_user_date ON bookings(id_user, booking_date);
 CREATE INDEX idx_orders_user_date ON orders(id_user, created_at);
@@ -406,3 +434,134 @@ INSERT INTO product_reviews (id_user, id_product, comment, rating) VALUES
 (3, 7, 'Reel Okuma Ceymar C-30 ini cukup ringan dan cocok untuk pemancing pemula. Harganya juga terjangkau.', 4),
 (1, 4, 'Joran Abu Garcia Veritas 210cm ini sangat responsif dan nyaman digunakan. Saya sangat merekomendasikannya.', 5),
 (2, 8, 'Reel Sawunggalih XT-5000 ini memiliki desain yang ergonomis dan performa yang baik. Sangat cocok untuk berbagai kondisi memancing.', 4);
+
+
+-- 1. Review dari Jayesh Patil
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Jayesh Patil', 'jayesh.patil@dummy.com', 'pass123', 'https://placehold.co/40x40/FF7F50/FFFFFF/png?text=JP', 1, 1);
+SET @uid = LAST_INSERT_ID(); -- Simpan ID User yang baru dibuat
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 1, DATE_SUB(NOW(), INTERVAL 5 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID(); -- Simpan ID Booking yang baru dibuat
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 1, @bid, "Layanan yang luar biasa! Tim mereka sangat profesional dan responsif. Benar-benar melampaui ekspektasi kami.", 5, NOW());
+
+-- 2. Review dari Ullamcorper Leo
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Ullamcorper Leo', 'ullamcorper@dummy.com', 'pass123', 'https://placehold.co/40x40/6495ED/FFFFFF/png?text=UL', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 2, DATE_SUB(NOW(), INTERVAL 10 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 2, @bid, "Pengalaman yang baik secara keseluruhan. Tempatnya strategis dan ikannya banyak. Mungkin area parkir bisa diperluas sedikit.", 4, NOW());
+
+-- 3. Review dari Dina Sari
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Dina Sari', 'dina.sari@dummy.com', 'pass123', 'https://placehold.co/40x40/90EE90/FFFFFF/png?text=DS', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 3, DATE_SUB(NOW(), INTERVAL 2 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 3, @bid, "Sangat direkomendasikan! Fasilitasnya bersih dan terawat dengan baik. Stafnya juga sangat ramah dan membantu.", 5, NOW());
+
+-- 4. Review dari Arif Hidayat
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Arif Hidayat', 'arif.hidayat@dummy.com', 'pass123', 'https://placehold.co/40x40/FFD700/FFFFFF/png?text=AH', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 4, DATE_SUB(NOW(), INTERVAL 15 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 4, @bid, "Spot yang bagus. Ikannya narik terus. Sayang kemarin pas ke sana lagi ramai banget, jadi kurang nyaman. Tapi tetap oke.", 4, NOW());
+
+-- 5. Review dari Dewi Lestari
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Dewi Lestari', 'dewi.lestari@dummy.com', 'pass123', 'https://placehold.co/40x40/DA70D6/FFFFFF/png?text=DL', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 5, DATE_SUB(NOW(), INTERVAL 20 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 5, @bid, "Sebagai pemancing lokal, saya akui ini salah satu tempat terbaik. Airnya bersih dan ikannya sehat-sehat. Selalu puas mancing di sini.", 5, NOW());
+
+-- 6. Review dari Budi Santoso
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Budi Santoso', 'budi.santoso@dummy.com', 'pass123', 'https://placehold.co/40x40/ADD8E6/FFFFFF/png?text=BS', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 1, DATE_SUB(NOW(), INTERVAL 8 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 1, @bid, "Tempatnya cukup oke untuk mancing santai. Ikannya ada, walaupun ukurannya tidak terlalu besar. Pengalaman standar, tidak ada yang spesial tapi juga tidak mengecewakan.", 3, NOW());
+
+-- 7. Review dari Citra Kirana
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Citra Kirana', 'citra.kirana@dummy.com', 'pass123', 'https://placehold.co/40x40/F08080/FFFFFF/png?text=CK', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 2, DATE_SUB(NOW(), INTERVAL 3 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 2, @bid, "Spot favorit! Selalu dapat tarikan babon di sini. Suasananya tenang dan sangat terawat. Sempurna untuk profesional.", 5, NOW());
+
+-- 8. Review dari Dimas Aditama (1)
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Dimas Aditama', 'dimas.aditama1@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 3, DATE_SUB(NOW(), INTERVAL 12 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 3, @bid, "Sayang sekali, pengalaman saya kurang memuaskan. Tempatnya perlu lebih dirawat kebersihannya. Saya juga sedang kurang beruntung, 3 jam belum ada tarikan. Semoga ke depannya bisa lebih baik.", 2, NOW());
+
+-- 9. Review dari Dimas Aditama (2 - beda email karena unique constraint)
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Dimas Aditama', 'dimas.aditama2@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 4, DATE_SUB(NOW(), INTERVAL 1 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 4, @bid, "Ada beberapa hal yang bisa ditingkatkan. Harga tiketnya terasa agak mahal untuk fasilitas yang didapat. Ikannya juga agak sulit dipancing hari itu. Potensinya ada, semoga bisa lebih baik.", 2, NOW());
+
+-- 10. Review dari Dimas asdkjasbd
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Dimas asdkjasbd', 'dimas.random@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 5, DATE_SUB(NOW(), INTERVAL 7 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 5, @bid, "Lumayan buat pemula. Tempatnya gampang diakses. Banyak ikan kecil, jadi seru buat belajar. Mungkin saungnya perlu ditambah.", 4, NOW());
+
+-- 11. Review dari Asep Aditama
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Asep Aditama', 'asep.aditama@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 1, DATE_SUB(NOW(), INTERVAL 9 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 1, @bid, "Pelayanannya perlu ditingkatkan agar lebih ramah. Foto di iklan terlihat lebih bagus dari kenyataannya. Semoga ada perbaikan.", 2, NOW());
+
+-- 12. Review dari Jamal Aditama
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Jamal Aditama', 'jamal.aditama@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 2, DATE_SUB(NOW(), INTERVAL 11 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 2, @bid, "Lokasinya sebenarnya bagus dan strategis. Sayang sekali kurang terawat, ada sampah di beberapa titik. Kalau dirapikan dan peraturannya diperjelas, pasti jadi spot yang bagus.", 3, NOW());
+
+-- 13. Review dari Azka Aditama
+INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
+VALUES ('Azka Aditama', 'azka.aditama@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
+SET @uid = LAST_INSERT_ID();
+INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
+VALUES (@uid, 3, DATE_SUB(NOW(), INTERVAL 4 DAY), 'completed', 'paid', 1);
+SET @bid = LAST_INSERT_ID();
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
+VALUES (@uid, 3, @bid, "Tempatnya oke, fasilitas toilet dan mushola bersih. Ikannya lumayan, tapi agak susah dapet yang besar. Cocok buat santai.", 4, NOW());

@@ -1,35 +1,43 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import api from "@/services/api.js";
 import DiscountCard from "./DiscountCard.vue";
 
-// 1. Data kupon dipindahkan ke array reaktif
-const discounts = ref([
-  {
-    id: 1,
-    discount: "15%",
-    code: "AASNAAD998",
-    usage: "122 dari 130 kupon sudah terpakai",
-  },
-  {
-    id: 2,
-    discount: "15%",
-    code: "ASD12229SDA",
-    usage: "122 dari 130 kupon sudah terpakai",
-  },
-  {
-    id: 3,
-    discount: "15%",
-    code: "ADAD9988",
-    usage: "122 dari 130 kupon sudah terpakai",
-  },
-]);
+// State untuk data diskon
+const discounts = ref([]);
+const isLoading = ref(true);
 
-// --- LOGIKA KARUSEL DITAMBAHKAN ---
-
-// 2. State untuk melacak kartu aktif dan swipe
-const activeIndex = ref(1);
+// State untuk logika karusel (swipe)
+const activeIndex = ref(0); // Ubah default ke 0 (array index start)
 const touchStartX = ref(0);
 const touchStartY = ref(0);
+
+
+const fetchDiscounts = async () => {
+  try {
+    const response = await api.getDiscounts();
+    
+    // Mapping data dari database (snake_case) ke prop component
+    discounts.value = response.data.map((item) => ({
+      id: item.id,
+      discount: item.discount_value, // DB: discount_value -> Prop: discount
+      code: item.code,
+      // Format string usage: "122 dari 130 kupon sudah terpakai"
+      usage: `${item.used_count} dari ${item.max_usage} kupon sudah terpakai`,
+    }));
+  } catch (error) {
+    console.error("Error loading discounts:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Fetch data saat komponen dimuat
+onMounted(() => {
+  fetchDiscounts();
+});
+
+// --- LOGIKA KARUSEL (Touch Handler) ---
 
 function handleTouchStart(e) {
   touchStartX.value = e.touches[0].clientX;
@@ -43,24 +51,26 @@ function handleTouchEnd(e) {
   const diffX = finalX - touchStartX.value;
   const diffY = finalY - touchStartY.value;
 
-  // Abaikan jika swipe lebih dominan vertikal (untuk scrolling)
+  // Abaikan jika user melakukan scrolling vertikal
   if (Math.abs(diffY) > Math.abs(diffX)) {
     return;
   }
 
-  const threshold = 50; // Jarak minimum swipe
-  const totalDiscounts = discounts.value.length; // Diadaptasi untuk 'discounts'
+  const threshold = 50; 
+  const totalDiscounts = discounts.value.length;
+  
+  // Hindari error division by zero jika data belum dimuat
+  if (totalDiscounts === 0) return;
+
   const currentTabIndex = activeIndex.value;
 
   if (Math.abs(diffX) > threshold) {
     if (diffX < 0) {
-      // Swipe ke kiri (next)
-      const nextIndex = (currentTabIndex + 1) % totalDiscounts;
-      activeIndex.value = nextIndex;
+      // Swipe ke kiri (Next)
+      activeIndex.value = (currentTabIndex + 1) % totalDiscounts;
     } else {
-      // Swipe ke kanan (previous)
-      const prevIndex = (currentTabIndex - 1 + totalDiscounts) % totalDiscounts;
-      activeIndex.value = prevIndex;
+      // Swipe ke kanan (Prev)
+      activeIndex.value = (currentTabIndex - 1 + totalDiscounts) % totalDiscounts;
     }
   }
 }
@@ -79,63 +89,56 @@ function handleTouchEnd(e) {
       </p>
     </div>
 
-    <!-- 3. SLIDER UNTUK MOBILE (md:hidden) -->
-    <div class="md:hidden mt-12">
-      <!-- Wrapper untuk menyembunyikan overflow -->
-      <div class="overflow-hidden">
-        <!-- Container yang bergerak (transform) -->
-        <div
-          class="flex transition-transform duration-300 ease-in-out"
-          :style="{ transform: `translateX(-${activeIndex * 100}%)` }"
-          @touchstart="handleTouchStart"
-          @touchend="handleTouchEnd"
-        >
-          <!-- Loop melalui diskon -->
+    <div v-if="isLoading" class="mt-12 text-gray-400">
+      Memuat diskon...
+    </div>
+
+    <div v-else>
+      <div class="md:hidden mt-12">
+        <div class="overflow-hidden">
           <div
-            v-for="discount in discounts"
-            :key="discount.id"
-            class="w-full flex-shrink-0 flex justify-center p-4"
+            class="flex transition-transform duration-300 ease-in-out"
+            :style="{ transform: `translateX(-${activeIndex * 100}%)` }"
+            @touchstart="handleTouchStart"
+            @touchend="handleTouchEnd"
           >
-            <DiscountCard
-              :discount="discount.discount"
-              :code="discount.code"
-              :usage="discount.usage"
-              class="w-full max-w-sm"
-            />
+            <div
+              v-for="discount in discounts"
+              :key="discount.id"
+              class="w-full flex-shrink-0 flex justify-center p-4"
+            >
+              <DiscountCard
+                :discount="discount.discount"
+                :code="discount.code"
+                :usage="discount.usage"
+                class="w-full max-w-sm"
+              />
+            </div>
           </div>
+        </div>
+
+        <div class="flex justify-center gap-2 py-4 mt-4">
+          <button
+            v-for="(discount, index) in discounts"
+            :key="index"
+            @click="activeIndex = index"
+            :class="activeIndex === index ? 'bg-blue-600' : 'bg-gray-300'"
+            class="size-3 rounded-full transition-colors"
+            :aria-label="`Go to discount ${index + 1}`"
+          ></button>
         </div>
       </div>
 
-      <!-- Pagination Dots -->
-      <div class="flex justify-center gap-2 py-4 mt-4">
-        <button
-          v-for="(discount, index) in discounts"
-          :key="index"
-          @click="activeIndex = index"
-          :class="
-            activeIndex === index ? 'bg-blue-600' : 'bg-gray-300'
-          "
-          class="size-3 rounded-full transition-colors"
-          :aria-label="`Go to discount ${index + 1}`"
-        ></button>
+      <div class="hidden md:flex flex-wrap justify-center gap-6 px-4 mt-12 md:px-10">
+        <DiscountCard
+          v-for="discount in discounts"
+          :key="discount.id"
+          :discount="discount.discount"
+          :code="discount.code"
+          :usage="discount.usage"
+          class="md:w-[360px]"
+        />
       </div>
-    </div>
-
-    <!-- 
-      4. Tampilan Flex-Wrap untuk Desktop (hidden md:flex) 
-      Ini adalah layout asli Anda untuk desktop
-    -->
-    <div
-      class="hidden md:flex flex-wrap justify-center gap-6 px-4 mt-12 md:px-10"
-    >
-      <DiscountCard
-        v-for="discount in discounts"
-        :key="discount.id"
-        :discount="discount.discount"
-        :code="discount.code"
-        :usage="discount.usage"
-        class="md:w-[360px]"
-      />
     </div>
   </section>
 </template>

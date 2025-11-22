@@ -66,6 +66,8 @@ import reviewsRoutes from './src/routes/reviews.js';
 import cartRoutes from './src/routes/cart.js';
 import paymentsRoutes from './src/routes/payments.js';
 import uploadRoutes from './src/routes/upload.js'; 
+import eventsRoutes from './src/routes/events.js';
+
 
 fastify.register(usersRoutes);
 fastify.register(productsRoutes);
@@ -74,10 +76,12 @@ fastify.register(bookingsRoutes);
 fastify.register(ordersRoutes);
 fastify.register(referencesRoutes);
 fastify.register(communityRoutes);
-fastify.register(reviewsRoutes);
+fastify.register(reviewsRoutes, { prefix: '/reviews' });
 fastify.register(cartRoutes);
 fastify.register(paymentsRoutes);
 fastify.register(uploadRoutes);
+fastify.register(eventsRoutes);
+
 
 // --- 5. START SERVER ---
 const start = async () => {
