@@ -1,91 +1,145 @@
 // src/routes/community.js
+
 export default async function (fastify, options) {
-    
-    // GET Semua Postingan (Join dengan User untuk nama & avatar)
-    fastify.get('/posts', async () => {
-        const [rows] = await fastify.db.execute(`
-            SELECT cp.*, u.name as user_name, u.avatar_img 
-            FROM community_posts cp
-            JOIN users u ON cp.id_user = u.id
-            ORDER BY cp.created_at DESC
-        `);
-        return rows;
+
+    // 1. GET ALL POSTS (Feed)
+    fastify.get('/posts', async (request, reply) => {
+        try {
+            // Join dengan users untuk dapat nama & avatar author
+            const [rows] = await fastify.db.query(`
+                SELECT 
+                    p.id, p.title, p.body, p.category, p.created_at,
+                    p.views_count, p.likes_count, p.reply_count,
+                    u.name as author_name, u.avatar_img as author_avatar
+                FROM community_posts p
+                JOIN users u ON p.id_user = u.id
+                ORDER BY p.created_at DESC
+            `);
+            return rows;
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal memuat postingan' });
+        }
     });
 
-    // GET Detail Postingan + Komentar
-    fastify.get('/posts/:id', async (req, reply) => {
-        // Ambil Post
-        const [posts] = await fastify.db.execute(`
-            SELECT cp.*, u.name as user_name, u.avatar_img 
-            FROM community_posts cp
-            JOIN users u ON cp.id_user = u.id
-            WHERE cp.id = ?
-        `, [req.params.id]);
+    // 2. GET SINGLE POST (Detail)
+    fastify.get('/posts/:id', async (request, reply) => {
+        try {
+            const { id } = request.params;
+            
+            // Update view count +1 setiap kali detail dibuka
+            await fastify.db.query('UPDATE community_posts SET views_count = views_count + 1 WHERE id = ?', [id]);
 
-        if (posts.length === 0) return reply.code(404).send({ message: 'Post not found' });
+            const [rows] = await fastify.db.query(`
+                SELECT 
+                    p.id, p.title, p.body, p.category, p.created_at,
+                    p.views_count, p.likes_count, p.reply_count,
+                    u.name as author_name, u.avatar_img as author_avatar
+                FROM community_posts p
+                JOIN users u ON p.id_user = u.id
+                WHERE p.id = ?
+            `, [id]);
 
-        // Ambil Komentar
-        const [comments] = await fastify.db.execute(`
-            SELECT pc.*, u.name as user_name, u.avatar_img 
-            FROM post_comments pc
-            JOIN users u ON pc.id_user = u.id
-            WHERE pc.id_post = ?
-            ORDER BY pc.created_at ASC
-        `, [req.params.id]);
-
-        return { post: posts[0], comments };
+            if (rows.length === 0) return reply.code(404).send({ message: 'Postingan tidak ditemukan' });
+            return rows[0];
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Error server' });
+        }
     });
 
-    // CREATE Post Baru (Butuh Login)
-    fastify.post('/posts', { onRequest: [fastify.authenticate] }, async (req) => {
-        const { title, body, category } = req.body;
-        const userId = req.user.id;
+    // 3. CREATE POST
+    fastify.post('/posts', { onRequest: [fastify.authenticate] }, async (request, reply) => {
+        try {
+            const userId = request.user.id;
+            const { title, body, category } = request.body;
 
-        await fastify.db.execute(
-            'INSERT INTO community_posts (id_user, title, body, category) VALUES (?, ?, ?, ?)',
-            [userId, title, body, category]
-        );
-        return { message: 'Post created successfully' };
+            if (!title || !body || !category) {
+                return reply.code(400).send({ message: 'Semua field wajib diisi' });
+            }
+
+            await fastify.db.query(`
+                INSERT INTO community_posts (id_user, title, body, category, created_at)
+                VALUES (?, ?, ?, ?, NOW())
+            `, [userId, title, body, category]);
+
+            return { message: 'Postingan berhasil dibuat' };
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal membuat postingan' });
+        }
     });
 
-    // CREATE Komentar (Butuh Login)
-    fastify.post('/posts/:id/comments', { onRequest: [fastify.authenticate] }, async (req) => {
-        const { content } = req.body;
-        const postId = req.params.id;
-        const userId = req.user.id;
-
-        await fastify.db.execute(
-            'INSERT INTO post_comments (id_post, id_user, content) VALUES (?, ?, ?)',
-            [postId, userId, content]
-        );
-        
-        // Update jumlah reply di tabel post
-        await fastify.db.execute('UPDATE community_posts SET reply_count = reply_count + 1 WHERE id = ?', [postId]);
-
-        return { message: 'Comment added' };
+    // 4. GET COMMENTS
+    fastify.get('/posts/:id/comments', async (request, reply) => {
+        try {
+            const { id } = request.params;
+            const [rows] = await fastify.db.query(`
+                SELECT 
+                    c.id, c.content, c.created_at,
+                    u.name as author_name, u.avatar_img as author_avatar
+                FROM post_comments c
+                JOIN users u ON c.id_user = u.id
+                WHERE c.id_post = ?
+                ORDER BY c.created_at ASC
+            `, [id]);
+            return rows;
+        } catch (error) {
+            return reply.code(500).send({ message: 'Gagal memuat komentar' });
+        }
     });
 
-    // TOGGLE LIKE (Like/Unlike)
-    fastify.post('/posts/:id/like', { onRequest: [fastify.authenticate] }, async (req) => {
-        const postId = req.params.id;
-        const userId = req.user.id;
+    // 5. CREATE COMMENT
+    fastify.post('/posts/:id/comments', { onRequest: [fastify.authenticate] }, async (request, reply) => {
+        try {
+            const userId = request.user.id;
+            const postId = request.params.id;
+            const { content } = request.body;
 
-        // Cek sudah like belum
-        const [exists] = await fastify.db.execute(
-            'SELECT id FROM post_likes WHERE id_post = ? AND id_user = ?',
-            [postId, userId]
-        );
+            if (!content) return reply.code(400).send({ message: 'Komentar tidak boleh kosong' });
 
-        if (exists.length > 0) {
-            // Kalau sudah, berarti UNLIKE
-            await fastify.db.execute('DELETE FROM post_likes WHERE id_post = ? AND id_user = ?', [postId, userId]);
-            await fastify.db.execute('UPDATE community_posts SET likes_count = likes_count - 1 WHERE id = ?', [postId]);
-            return { message: 'Unliked', liked: false };
-        } else {
-            // Kalau belum, berarti LIKE
-            await fastify.db.execute('INSERT INTO post_likes (id_post, id_user) VALUES (?, ?)', [postId, userId]);
-            await fastify.db.execute('UPDATE community_posts SET likes_count = likes_count + 1 WHERE id = ?', [postId]);
-            return { message: 'Liked', liked: true };
+            // Insert Comment
+            await fastify.db.query(`
+                INSERT INTO post_comments (id_post, id_user, content, created_at)
+                VALUES (?, ?, ?, NOW())
+            `, [postId, userId, content]);
+
+            // Update Reply Count di tabel Post
+            await fastify.db.query(`
+                UPDATE community_posts SET reply_count = reply_count + 1 WHERE id = ?
+            `, [postId]);
+
+            return { message: 'Komentar terkirim' };
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal mengirim komentar' });
+        }
+    });
+    fastify.post('/posts/:id/like', { onRequest: [fastify.authenticate] }, async (request, reply) => {
+        try {
+            const userId = request.user.id;
+            const postId = request.params.id;
+
+            // Cek apakah user sudah like
+            const [check] = await fastify.db.query(
+                'SELECT id FROM post_likes WHERE id_post = ? AND id_user = ?',
+                [postId, userId]
+            );
+
+            if (check.length > 0) {
+                // UNLIKE
+                await fastify.db.query('DELETE FROM post_likes WHERE id_post = ? AND id_user = ?', [postId, userId]);
+                await fastify.db.query('UPDATE community_posts SET likes_count = GREATEST(likes_count - 1, 0) WHERE id = ?', [postId]);
+                return { liked: false };
+            } else {
+                // LIKE
+                await fastify.db.query('INSERT INTO post_likes (id_post, id_user, created_at) VALUES (?, ?, NOW())', [postId, userId]);
+                await fastify.db.query('UPDATE community_posts SET likes_count = likes_count + 1 WHERE id = ?', [postId]);
+                return { liked: true };
+            }
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal like postingan' });
         }
     });
 }

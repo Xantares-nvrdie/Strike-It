@@ -1,32 +1,62 @@
 <script setup>
-// Import Icon dari Iconify
+import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
-// 1. Import useRouter
 import { useRouter } from 'vue-router';
+import api from '@/services/api.js'; // Import API
+import { useToast } from "vue-toastification"; // Optional: buat notif kalau belum login
 
 const props = defineProps({
   post: Object,
 });
 
-// 2. Dapatkan instance router
 const router = useRouter();
+const toast = useToast();
 
-// 3. Buat fungsi untuk navigasi
+// State Lokal untuk Like
+const isLiked = ref(false); // Default false (abu-abu)
+const likeCount = ref(props.post.stats.likes); // Ambil jumlah like awal dari props
+
+// Navigasi ke Detail
 function goToPost() {
-  // Pastikan post.id ada sebelum mencoba navigasi
   if (props.post && props.post.id) {
     router.push(`/community/post/${props.post.id}`);
   }
 }
+
+// LOGIKA LIKE BERFUNGSI
+const handleLike = async (event) => {
+    // Stop propagasi agar tidak masuk ke detail post saat klik tombol like
+    event.stopPropagation(); 
+    
+    try {
+        const response = await api.toggleLikePost(props.post.id);
+        
+        if (response.data.liked) {
+            likeCount.value++;
+            isLiked.value = true;
+        } else {
+            likeCount.value--;
+            isLiked.value = false;
+        }
+    } catch (error) {
+        // Jika error 401 (Unauthorized), suruh login
+        toast.warning("Silakan login untuk menyukai postingan.");
+    }
+};
 </script>
 
 <template>
-  <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-6 cursor-pointer" @click="goToPost">
+  <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-6 cursor-pointer transition-transform hover:scale-[1.01]" @click="goToPost">
     <div class="flex justify-between items-start">
       <div class="flex items-center space-x-3">
-        <img class="h-10 w-10 rounded-full" :src="post.author.avatar" :alt="post.author.name">
+        <img 
+            class="h-10 w-10 rounded-full object-cover" 
+            :src="post.author.avatar" 
+            :alt="post.author.name"
+            @error="$event.target.src = 'https://ui-avatars.com/api/?name=' + post.author.name"
+        >
         <div>
-          <a href="#" class="text-sm font-semibold text-gray-900 hover:underline">{{ post.author.name }}</a>
+          <span class="text-sm font-semibold text-gray-900 hover:underline">{{ post.author.name }}</span>
           <p class="text-xs text-gray-500">{{ post.time }}</p>
         </div>
       </div>
@@ -36,7 +66,7 @@ function goToPost() {
     </div>
 
     <div class="mt-4">
-      <h2 class="text-lg font-bold text-gray-900 cursor-pointer">
+      <h2 class="text-lg font-bold text-gray-900">
         {{ post.title }}
       </h2>
       <p class="mt-2 text-sm text-gray-700 line-clamp-3">
@@ -44,15 +74,15 @@ function goToPost() {
       </p>
     </div>
 
-    <div
-      class="mt-4 flex-wrap sm:flex md:flex-row justify-start sm:justify-start lg:justify-between items-center gap-4 m">
-      <div class="flex flex-wrap gap-x-2 gap-y-2">
+    <div class="mt-4 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex flex-wrap gap-2">
         <span v-for="tag in post.tags" :key="tag"
-          class="inline-flex items-center px-2.5 py-0.5 bg-[#e5e5e5] rounded-full text-xs font-medium text-gray-600">
+          class="inline-flex items-center px-2.5 py-0.5 bg-[#e5e5e5] rounded-full text-xs font-medium text-gray-600 capitalize">
           {{ tag }}
         </span>
       </div>
-      <div class="flex space-x-4 text-sm text-gray-500 mt-4 sm:mt-0">
+      
+      <div class="flex space-x-4 text-sm text-gray-500">
         <span class="flex items-center space-x-1">
           <Icon icon="heroicons-solid:eye" class="h-4 w-4" />
           <span>{{ post.stats.views }}</span>
@@ -61,10 +91,15 @@ function goToPost() {
           <Icon icon="heroicons-solid:chat-bubble-left-ellipsis" class="h-4 w-4" />
           <span>{{ post.stats.comments }}</span>
         </span>
-        <span class="flex items-center space-x-1">
-          <Icon icon="heroicons-solid:thumb-up" class="h-4 w-4" />
-          <span>{{ post.stats.likes }}</span>
-        </span>
+        
+        <button 
+            @click="handleLike"
+            class="flex items-center space-x-1 transition-colors z-10"
+            :class="isLiked ? 'text-blue-600 font-bold' : 'hover:text-blue-600'"
+        >
+          <Icon :icon="isLiked ? 'heroicons-solid:thumb-up' : 'heroicons-outline:thumb-up'" class="h-4 w-4" />
+          <span>{{ likeCount }}</span>
+        </button>
       </div>
     </div>
   </div>

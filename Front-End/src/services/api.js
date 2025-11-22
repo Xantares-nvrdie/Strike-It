@@ -85,6 +85,26 @@ export default {
         return api.put('/users/me', data);
     },
 
+    // COMMUNITY API
+    getAllPosts() {
+        return api.get('/community/posts');
+    },
+    getPostDetail(id) {
+        return api.get(`/community/posts/${id}`);
+    },
+    createPost(data) {
+        return api.post('/community/posts', data);
+    },
+    getPostComments(postId) {
+        return api.get(`/community/posts/${postId}/comments`);
+    },
+    createComment(postId, data) {
+        return api.post(`/community/posts/${postId}/comments`, data);
+    },
+    toggleLikePost(postId) {
+        return api.post(`/community/posts/${postId}/like`);
+    },
+
     // Pembayaran & Membership
     payBooking(bookingId) {
         return api.post(`/pay/booking/${bookingId}`);
