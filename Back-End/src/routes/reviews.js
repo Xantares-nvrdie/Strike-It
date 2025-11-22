@@ -24,4 +24,44 @@ export default async function (fastify, options) {
             return reply.code(500).send({ message: 'Gagal mengambil data review lokasi' });
         }
     });
+
+    fastify.post('/', {
+        onRequest: [fastify.authenticate]
+    }, async (request, reply) => {
+        try {
+            const userId = request.user.id;
+            const { id_booking, id_location, rating, comment } = request.body;
+
+            // Validasi sederhana
+            if (!rating || !id_booking || !id_location) {
+                return reply.code(400).send({ message: 'Data tidak lengkap (Rating, Booking ID, Location ID wajib ada)' });
+            }
+
+            // Cek apakah user ini benar pemilik booking tersebut (Security)
+            const [bookingCheck] = await fastify.db.query(
+                'SELECT id FROM bookings WHERE id = ? AND id_user = ?',
+                [id_booking, userId]
+            );
+
+            if (bookingCheck.length === 0) {
+                return reply.code(403).send({ message: 'Booking tidak valid atau bukan milik Anda.' });
+            }
+
+            // Insert ke database
+            await fastify.db.query(`
+                INSERT INTO location_reviews (id_user, id_location, id_booking, rating, comment)
+                VALUES (?, ?, ?, ?, ?)
+            `, [userId, id_location, id_booking, rating, comment]);
+
+            return { message: 'Ulasan berhasil dikirim' };
+
+        } catch (error) {
+            // Handle error jika user mencoba review 2x pada booking yang sama (karena constraint UNIQUE di DB)
+            if (error.code === 'ER_DUP_ENTRY') {
+                return reply.code(409).send({ message: 'Anda sudah memberikan ulasan untuk pesanan ini.' });
+            }
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal menyimpan ulasan' });
+        }
+    });
 }

@@ -72,7 +72,7 @@ import eventsRoutes from './src/routes/events.js';
 fastify.register(usersRoutes);
 fastify.register(productsRoutes);
 fastify.register(locationsRoutes);
-fastify.register(bookingsRoutes);
+fastify.register(bookingsRoutes, { prefix: '/bookings' });
 fastify.register(ordersRoutes);
 fastify.register(referencesRoutes);
 fastify.register(communityRoutes);

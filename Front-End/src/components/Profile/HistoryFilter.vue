@@ -2,11 +2,10 @@
 import { ref, defineEmits } from "vue";
 
 // 1. Definisikan data reaktif untuk filter
-const selectedTime = ref("bulan_ini"); // Untuk tombol aktif
-const startDate = ref("2025-12-11"); // Sesuai screenshot
-const endDate = ref("2025-12-20"); // Sesuai screenshot
+const selectedTime = ref("bulan_ini"); // Default filter
+const startDate = ref(""); 
+const endDate = ref("");   
 
-// Kita buat filter status menjadi multi-pilih
 const allStatuses = [
   { id: "terbayar", text: "Terbayar", class: "bg-green-100 text-green-800" },
   {
@@ -16,60 +15,62 @@ const allStatuses = [
   },
   { id: "dibatalkan", text: "Dibatalkan", class: "bg-red-100 text-red-800" },
 ];
-const selectedStatuses = ref(["terbayar", "belum_dibayar", "dibatalkan"]); // Status yang dipilih
+const selectedStatuses = ref(["terbayar", "belum_dibayar", "dibatalkan"]); 
 
-// 2. Definisikan 'emit' untuk mengirim data ke Induk
+// 2. Definisikan 'emit'
 const emit = defineEmits(["apply-filters"]);
 
-// 3. Fungsi untuk tombol-tombol
+// 3. Fungsi untuk tombol-tombol Waktu Preset
 const selectTime = (time) => {
   selectedTime.value = time;
+  // UX: Jika pilih preset (Hari ini dll), kosongkan tanggal manual agar tidak bentrok
+  startDate.value = "";
+  endDate.value = "";
 };
 
-// Fungsi untuk menambah/menghapus status dari array
+// Fungsi jika user mengubah tanggal manual, matikan preset
+const onDateChange = () => {
+    selectedTime.value = ""; // Matikan highlight tombol preset
+};
+
+// Fungsi toggle status
 const toggleStatus = (statusId) => {
   const index = selectedStatuses.value.indexOf(statusId);
   if (index > -1) {
-    // Jika sudah ada, hapus
     selectedStatuses.value.splice(index, 1);
   } else {
-    // Jika belum ada, tambahkan
     selectedStatuses.value.push(statusId);
   }
 };
 
-// Fungsi untuk mengecek apakah status aktif (untuk styling)
 const isStatusActive = (statusId) => {
   return selectedStatuses.value.includes(statusId);
 };
 
-// 4. Fungsi untuk tombol "Tampilkan Hasil"
+// 4. Fungsi tombol "Tampilkan Hasil"
 const handleApplyFilters = () => {
-  // Kumpulkan semua data filter ke dalam satu objek
   const filters = {
     time: selectedTime.value,
     startDate: startDate.value,
     endDate: endDate.value,
     statuses: selectedStatuses.value,
   };
-
-  // Kirim (emit) objek filter ke Induk (HistoryPage.vue)
   emit("apply-filters", filters);
 };
 
-// 5. Fungsi untuk tombol "Clear"
+// 5. Fungsi tombol "Hapus" (Clear) - PERBAIKAN UTAMA DISINI
 const handleClearFilters = () => {
   selectedTime.value = "bulan_ini";
-  startDate.value = "2025-12-11";
-  endDate.value = "2025-12-20";
+  startDate.value = ""; // Perbaikan: Jangan pakai 'const', langsung set value
+  endDate.value = "";   // Perbaikan: Jangan pakai 'const', langsung set value
   selectedStatuses.value = ["terbayar", "belum_dibayar", "dibatalkan"];
-  // Beritahu induk bahwa filter di-reset
+  
+  // Otomatis apply setelah clear
   handleApplyFilters();
 };
 </script>
 
 <template>
-  <!-- Perubahan 1: Padding diubah menjadi responsif (p-4 di mobile, md:p-6 di desktop) -->
   <div class="bg-white rounded-xl shadow p-4 md:p-6">
     <div class="flex justify-between items-center mb-6">
       <h3 class="text-xl font-semibold text-gray-900">Filters</h3>
@@ -81,7 +82,6 @@ const handleClearFilters = () => {
       </button>
     </div>
 
-    <!-- Tidak ada perubahan di sini, 'flex-wrap' sudah responsif -->
     <div class="mb-6">
       <h4 class="font-semibold text-gray-800 mb-3">Waktu</h4>
       <div class="flex flex-wrap gap-2">
@@ -127,18 +127,19 @@ const handleClearFilters = () => {
         <input
           type="date"
           v-model="startDate"
+          @change="onDateChange" 
           class="w-full p-2.5 border border-gray-300 rounded-lg text-sm text-gray-700"
         />
         <span class="text-gray-500 rotate-90 md:rotate-0">-</span>
         <input
           type="date"
           v-model="endDate"
+          @change="onDateChange"
           class="w-full p-2.5 border border-gray-300 rounded-lg text-sm text-gray-700"
         />
       </div>
     </div>
 
-    <!-- Tidak ada perubahan di sini, 'flex-wrap' sudah responsif -->
     <div class="mb-6">
       <h4 class="font-semibold text-gray-800 mb-3">Status</h4>
       <div class="flex flex-wrap gap-2">
@@ -160,7 +161,6 @@ const handleClearFilters = () => {
 
     <button
       @click="handleApplyFilters"
-      s
       class="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
     >
       Tampilkan Hasil

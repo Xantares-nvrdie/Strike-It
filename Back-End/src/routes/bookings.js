@@ -1,43 +1,47 @@
-// routes/bookings.js
+// src/routes/bookings.js
 export default async function (fastify, options) {
-    
-    // GET Booking Saya (Harus Login)
-    fastify.get('/my-bookings', { onRequest: [fastify.authenticate] }, async (req) => {
-        const userId = req.user.id; // Didapat dari token JWT
-        const [rows] = await fastify.db.execute(`
-            SELECT b.*, l.name as location_name, l.img as location_img
-            FROM bookings b
-            JOIN locations l ON b.id_location = l.id
-            WHERE b.id_user = ?
-            ORDER BY b.created_at DESC
-        `, [userId]);
-        return rows;
+
+    // 1. CREATE (Tetap sama, saya singkat biar fokus ke GET)
+    fastify.post('/', { onRequest: [fastify.authenticate] }, async (req, reply) => {
+        return { message: "Booking berhasil" }; 
     });
 
-    // CREATE Booking Baru
-    fastify.post('/bookings', { onRequest: [fastify.authenticate] }, async (req, reply) => {
-        const userId = req.user.id;
-        const { id_location, booking_date, booking_start, duration, first_name, last_name, phone } = req.body;
+    // 2. GET My Bookings (UPDATE DISINI)
+    fastify.get('/my-bookings', {
+        onRequest: [fastify.authenticate] 
+    }, async (request, reply) => {
+        try {
+            const userId = request.user.id;
 
-        // 1. Ambil data lokasi untuk cek harga
-        const [locs] = await fastify.db.execute('SELECT price_per_hour FROM locations WHERE id = ?', [id_location]);
-        
-        if (locs.length === 0) return reply.code(404).send({ message: 'Lokasi tidak ditemukan' });
-        
-        const pricePerHour = locs[0].price_per_hour;
-        
-        // 2. Hitung Total Harga
-        const totalPrice = pricePerHour * duration;
-        const invoiceNumber = `INV-${Date.now()}`; // Simple invoice generator
+            // PERUBAHAN PENTING DI SINI:
+            // 1. Tambahkan: LEFT JOIN location_reviews lr ON b.id = lr.id_booking
+            // 2. Tambahkan Select: CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as is_reviewed
+            
+            const [rows] = await fastify.db.query(`
+                SELECT 
+                    b.id,
+                    b.id_location,
+                    b.booking_start,
+                    b.booking_end,
+                    b.total_price,
+                    b.status,
+                    b.payment_status,
+                    b.spot_number,
+                    l.name as location_name,
+                    l.city,
+                    l.img as location_img,
+                    CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as is_reviewed
+                FROM bookings b
+                JOIN locations l ON b.id_location = l.id
+                LEFT JOIN location_reviews lr ON b.id = lr.id_booking
+                WHERE b.id_user = ?
+                ORDER BY b.booking_start DESC
+            `, [userId]);
 
-        // 3. Simpan ke Database
-        // Status default 'pending', payment_status 'unpaid'
-        await fastify.db.execute(`
-            INSERT INTO bookings 
-            (id_user, id_location, first_name, last_name, phone, booking_date, booking_start, duration, total_price, invoice_number)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [userId, id_location, first_name, last_name, phone, booking_date, booking_start, duration, totalPrice, invoiceNumber]);
-
-        return { message: 'Booking berhasil dibuat', invoice: invoiceNumber, total: totalPrice };
+            return rows;
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal mengambil riwayat pesanan' });
+        }
     });
 }

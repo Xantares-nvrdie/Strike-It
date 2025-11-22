@@ -58,6 +58,12 @@ export default {
         return api.get('/reviews/location-public');
     },
     
+    //reviews
+    createReview(data) {
+        return api.post('/reviews', data);
+    },
+
+
     // Memberships
     getMemberships() {
         return api.get('/memberships'); 
@@ -68,7 +74,7 @@ export default {
         return api.post('/bookings', data);
     },
     getMyBookings() {
-        return api.get('/my-bookings');
+        return api.get('/bookings/my-bookings');
     },
 
     // User Profile
