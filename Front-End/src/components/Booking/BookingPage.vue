@@ -22,22 +22,65 @@ const duration = ref(parseInt(route.query.duration) || 2);
 const selectedDate = ref(route.query.date || new Date().toISOString().split('T')[0]);
 const selectedSeatId = ref(null);
 const selectedSeatName = ref('');
+
+// Data Diskon
 const voucherCode = ref('');
+const appliedVoucherCode = ref('');
+const discountValue = ref(0);
+const isVoucherApplied = ref(false);
 
 // Helper
 const baseUrl = 'http://localhost:3000/uploads';
 const getToday = () => new Date().toISOString().split('T')[0];
 const getFullUrl = (path) => path ? (path.startsWith('http') ? path : `${baseUrl}/${path}`) : 'https://placehold.co/600x400';
 
-// Prices
+// --- COMPUTED PRICES ---
 const pricePerJam = computed(() => locationData.value?.price_per_hour || 0);
 const formattedPrice = computed(() => pricePerJam.value.toLocaleString('id-ID'));
 const subtotal = computed(() => pricePerJam.value * duration.value);
 const taxRate = 0.10;
 const tax = computed(() => Math.round(subtotal.value * taxRate));
-const grandTotal = computed(() => subtotal.value + tax.value);
 
-// --- FETCH DATA & SEATS ---
+// Grand Total (Subtotal + Pajak - Diskon)
+const grandTotal = computed(() => {
+    const total = subtotal.value + tax.value - discountValue.value;
+    return total > 0 ? total : 0;
+});
+
+// --- LOGIC VOUCHER ---
+const applyVoucher = async () => {
+    if (!voucherCode.value) {
+        toast.warning("Masukkan kode voucher!");
+        return;
+    }
+
+    try {
+        const res = await api.checkVoucher(voucherCode.value);
+        
+        if (res.data.valid) {
+            const valStr = res.data.discount_value;
+            
+            if (valStr.includes('%')) {
+                const percent = parseInt(valStr.replace('%', ''));
+                discountValue.value = subtotal.value * (percent / 100);
+            } else {
+                discountValue.value = parseInt(valStr);
+            }
+
+            appliedVoucherCode.value = voucherCode.value;
+            isVoucherApplied.value = true;
+            toast.success(`Voucher diterapkan! Hemat Rp. ${discountValue.value.toLocaleString('id-ID')}`);
+        }
+    } catch (error) {
+        console.error(error);
+        discountValue.value = 0;
+        isVoucherApplied.value = false;
+        appliedVoucherCode.value = '';
+        toast.error(error.response?.data?.message || "Kode voucher tidak valid.");
+    }
+};
+
+// --- FETCH DATA ---
 const fetchSeatsStatus = async () => {
     if (!locationData.value?.id || !selectedDate.value) return;
     try {
@@ -51,6 +94,7 @@ const fetchSeatsStatus = async () => {
 
 watch(selectedDate, () => {
     selectedSeatId.value = null;
+    selectedSeatName.value = '';
     fetchSeatsStatus();
 });
 
@@ -59,24 +103,20 @@ onMounted(async () => {
     if (!locId) { router.push('/location'); return; }
 
     try {
-        // 1. Ambil Detail Lokasi
         const locRes = await api.getLocationDetail(locId);
         const loc = locRes.data;
         locationData.value = { ...loc, imageUrl: getFullUrl(loc.img) };
 
-        // 2. Ambil Data User
         const userRes = await api.getMyProfile();
         userData.value = userRes.data;
 
-        // 3. Load Status Kursi
         await fetchSeatsStatus();
-
     } catch (error) {
         toast.error("Gagal memuat data.");
     }
 });
 
-// --- LOGIC ---
+// --- NAVIGATION ---
 const goToStep = (step) => currentStep.value = step;
 const resetFlow = () => router.push('/location');
 
@@ -114,12 +154,12 @@ const handlePayment = async () => {
             booking_date: selectedDate.value,
             booking_start: `${selectedDate.value} 10:00:00`, 
             duration: duration.value,
-            total_price: grandTotal.value,
             spot_number: selectedSeatName.value,
             first_name: userData.value.name.split(' ')[0],
             last_name: userData.value.name.split(' ').slice(1).join(' ') || '',
             email: userData.value.email,
-            phone: '08123456789'
+            phone: '08123456789',
+            voucher_code: isVoucherApplied.value ? appliedVoucherCode.value : null
         };
 
         const response = await api.createBooking(payload);
@@ -192,20 +232,20 @@ const getStepClass = (step) => {
               <img :src="locationData.imageUrl" class="w-full h-64 object-cover">
               <div class="p-6 bg-transparent flex-1">
                 <h3 class="text-xl text-black font-semibold mb-2">{{ locationData.name }}</h3>
-                <p class="text-gray-600 mb-4">{{ locationData.city }}</p>
+                <p class="text-gray-600 mb-4">{{ locationData.city }}, Indonesia</p>
                 <p class="text-2xl font-bold text-blue-600">Rp. {{ formattedPrice }}<span class="text-lg font-normal text-gray-500"> / jam</span></p>
                 
                 <div class="mt-6 space-y-3">
                     <label class="font-medium text-gray-700">Durasi Booking</label>
                     <div class="flex justify-between items-center bg-gray-100 rounded-lg p-2">
-                        <button @click="decreaseDuration" class="size-10 bg-red-500 text-white rounded-full text-2xl font-bold disabled:bg-gray-300" :disabled="duration <= 1">-</button>
+                        <button @click="decreaseDuration" class="size-10 bg-red-500 text-white rounded-full text-2xl font-bold" :disabled="duration <= 1">-</button>
                         <span class="text-xl font-bold text-gray-900">{{ duration }} jam</span>
                         <button @click="increaseDuration" class="size-10 bg-green-500 text-white rounded-full text-2xl font-bold">+</button>
                     </div>
                 </div>
                 <div class="space-y-3 mt-4">
                     <label class="font-medium text-gray-700">Pilih Tanggal</label>
-                    <input type="date" v-model="selectedDate" :min="getToday()" class="w-full bg-gray-100 rounded-lg p-3 font-medium text-gray-900 border-none outline-none" />
+                    <input type="date" v-model="selectedDate" :min="getToday()" class="w-full bg-gray-100 rounded-lg p-3 font-medium text-gray-900 border-none outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
               </div>
             </div>
@@ -239,12 +279,12 @@ const getStepClass = (step) => {
 
         <div v-if="currentStep === 1 && !locationData" class="text-center py-20">
             <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-600 mx-auto"></div>
-            <p class="mt-4 text-gray-600">Memuat data...</p>
+            <p class="mt-4 text-gray-600">Memuat data booking...</p>
         </div>
 
         <div v-if="currentStep === 2" class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-8 w-full max-w-4xl">
           <h2 class="text-2xl font-semibold text-center text-gray-800 mb-2">Pilih Kursi</h2>
-          <p class="text-center text-gray-500 mb-8">Silakan pilih spot memancing yang tersedia</p>
+          <p class="text-center text-gray-500 mb-8">Silakan pilih spot memancing Anda</p>
 
           <div class="flex flex-col items-center w-full">
             <div class="flex flex-wrap justify-center gap-1 sm:gap-2 mb-2">
@@ -261,9 +301,11 @@ const getStepClass = (step) => {
                   <Icon icon="mdi:storefront" class="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
+
               <div class="border-4 border-gray-300 rounded-lg w-2/3 h-32 sm:h-48 flex items-center justify-center bg-blue-50 text-blue-500 text-base sm:text-xl font-semibold text-center">
                 Area Pemancingan
               </div>
+
               <div class="flex flex-col gap-1 sm:gap-2">
                 <div v-for="seat in rightSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
                   class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg shadow cursor-pointer transition-all">
@@ -300,8 +342,18 @@ const getStepClass = (step) => {
                 <div class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-4 sm:p-8 w-full max-w-4xl">
                     <h3 class="text-xl text-black font-semibold mb-4">Voucher Booking</h3>
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                        <input v-model="voucherCode" type="text" class="flex-grow px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Masukkan kode anda disini">
-                        <button class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 w-full sm:w-auto">Konfirmasi</button>
+                        <input 
+                            v-model="voucherCode" 
+                            :disabled="isVoucherApplied"
+                            type="text" 
+                            class="flex-grow px-4 py-3 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-blue-500 disabled:bg-gray-100" 
+                            placeholder="Masukkan kode anda disini">
+                        <button
+                            @click="applyVoucher"
+                            :disabled="isVoucherApplied"
+                            class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 w-full sm:w-auto disabled:bg-green-600">
+                            {{ isVoucherApplied ? 'Terpasang' : 'Konfirmasi' }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -313,6 +365,12 @@ const getStepClass = (step) => {
                   <div class="flex justify-between"><span class="text-gray-600">Spot</span><span class="font-medium text-gray-800">{{ selectedSeatName }}</span></div>
                   <div class="flex justify-between"><span class="text-gray-600">Subtotal</span><span class="font-medium text-gray-800">Rp. {{ subtotal.toLocaleString('id-ID') }}</span></div>
                   <div class="flex justify-between"><span class="text-gray-600">Pajak (10%)</span><span class="font-medium text-gray-800">Rp. {{ tax.toLocaleString('id-ID') }}</span></div>
+                  
+                  <div v-if="discountValue > 0" class="flex justify-between text-green-600">
+                      <span>Diskon</span>
+                      <span class="font-medium">- Rp. {{ discountValue.toLocaleString('id-ID') }}</span>
+                  </div>
+
                   <div class="border-t border-dashed my-4"></div>
                   <div class="flex justify-between text-lg font-semibold"><span>Grand Total</span><span>Rp. {{ grandTotal.toLocaleString('id-ID') }}</span></div>
                 </div>

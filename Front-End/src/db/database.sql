@@ -407,3 +407,49 @@ INSERT INTO location_images (id_location, img_path, img_type) VALUES
 (5, 'locationimg/tangerang.jpg', 'main'),
 (5, 'locationimg/banten.png', 'gallery'),
 (5, 'locationimg/bandung.png', 'gallery');
+
+USE strike_it;
+
+-- =============================================
+-- ISI KURSI UNTUK LOKASI 2 (BANDUNG)
+-- =============================================
+INSERT INTO location_spots (id_location, spot_name, spot_type) VALUES 
+(2, 'T1', 'general'), (2, 'T2', 'general'), (2, 'T3', 'general'), (2, 'T4', 'general'), (2, 'T5', 'general'),
+(2, 'T6', 'general'), (2, 'T7', 'general'), (2, 'T8', 'general'), (2, 'T9', 'general'),
+(2, 'B1', 'general'), (2, 'B2', 'general'), (2, 'B3', 'general'), (2, 'B4', 'general'), (2, 'B5', 'general'),
+(2, 'B6', 'general'), (2, 'B7', 'general'), (2, 'B8', 'general'), (2, 'B9', 'general'),
+(2, 'L1', 'general'), (2, 'L2', 'general'), (2, 'L3', 'general'),
+(2, 'R1', 'general'), (2, 'R2', 'general'), (2, 'R3', 'general');
+
+-- =============================================
+-- ISI KURSI UNTUK LOKASI 3 (BEKASI)
+-- =============================================
+INSERT INTO location_spots (id_location, spot_name, spot_type) VALUES 
+(3, 'T1', 'general'), (3, 'T2', 'general'), (3, 'T3', 'general'), (3, 'T4', 'general'), (3, 'T5', 'general'),
+(3, 'T6', 'general'), (3, 'T7', 'general'), (3, 'T8', 'general'), (3, 'T9', 'general'),
+(3, 'B1', 'general'), (3, 'B2', 'general'), (3, 'B3', 'general'), (3, 'B4', 'general'), (3, 'B5', 'general'),
+(3, 'B6', 'general'), (3, 'B7', 'general'), (3, 'B8', 'general'), (3, 'B9', 'general'),
+(3, 'L1', 'general'), (3, 'L2', 'general'), (3, 'L3', 'general'),
+(3, 'R1', 'general'), (3, 'R2', 'general'), (3, 'R3', 'general');
+
+-- =============================================
+-- ISI KURSI UNTUK LOKASI 4 (BANTEN)
+-- =============================================
+INSERT INTO location_spots (id_location, spot_name, spot_type) VALUES 
+(4, 'T1', 'general'), (4, 'T2', 'general'), (4, 'T3', 'general'), (4, 'T4', 'general'), (4, 'T5', 'general'),
+(4, 'T6', 'general'), (4, 'T7', 'general'), (4, 'T8', 'general'), (4, 'T9', 'general'),
+(4, 'B1', 'general'), (4, 'B2', 'general'), (4, 'B3', 'general'), (4, 'B4', 'general'), (4, 'B5', 'general'),
+(4, 'B6', 'general'), (4, 'B7', 'general'), (4, 'B8', 'general'), (4, 'B9', 'general'),
+(4, 'L1', 'general'), (4, 'L2', 'general'), (4, 'L3', 'general'),
+(4, 'R1', 'general'), (4, 'R2', 'general'), (4, 'R3', 'general');
+
+-- =============================================
+-- ISI KURSI UNTUK LOKASI 5 (TANGERANG)
+-- =============================================
+INSERT INTO location_spots (id_location, spot_name, spot_type) VALUES 
+(5, 'T1', 'general'), (5, 'T2', 'general'), (5, 'T3', 'general'), (5, 'T4', 'general'), (5, 'T5', 'general'),
+(5, 'T6', 'general'), (5, 'T7', 'general'), (5, 'T8', 'general'), (5, 'T9', 'general'),
+(5, 'B1', 'general'), (5, 'B2', 'general'), (5, 'B3', 'general'), (5, 'B4', 'general'), (5, 'B5', 'general'),
+(5, 'B6', 'general'), (5, 'B7', 'general'), (5, 'B8', 'general'), (5, 'B9', 'general'),
+(5, 'L1', 'general'), (5, 'L2', 'general'), (5, 'L3', 'general'),
+(5, 'R1', 'general'), (5, 'R2', 'general'), (5, 'R3', 'general');

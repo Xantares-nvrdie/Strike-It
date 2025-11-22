@@ -123,6 +123,9 @@ export default {
     getLocationSpots(id, date) {
         return api.get(`/locations/${id}/spots`, { params: { date } });
     },
+    checkVoucher(code) {
+        return api.post('/discounts/check', { code }); 
+    },
 
     // --- COMMUNITY (FORUM) ---
     getAllPosts() {

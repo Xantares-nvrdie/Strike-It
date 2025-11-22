@@ -1,4 +1,3 @@
-// src/routes/bookings.js
 export default async function (fastify, options) {
 
     // 1. GET Booking Saya (Riwayat Pesanan)
@@ -23,6 +22,7 @@ export default async function (fastify, options) {
                     l.name as location_name,
                     l.city,
                     l.img as location_img,
+                    -- Cek apakah user sudah memberikan review untuk booking ini
                     CASE WHEN lr.id IS NOT NULL THEN 1 ELSE 0 END as is_reviewed
                 FROM bookings b
                 JOIN locations l ON b.id_location = l.id
@@ -38,33 +38,106 @@ export default async function (fastify, options) {
         }
     });
 
-    // 2. CREATE Booking Baru
+    // 2. CREATE Booking Baru (Dengan Fitur Voucher & Transaksi)
     // URL: POST /bookings/
     fastify.post('/', { onRequest: [fastify.authenticate] }, async (req, reply) => {
         const userId = req.user.id;
-        
-        // Ambil data dari body request
-        const { id_location, booking_date, booking_start, duration, total_price, spot_number, first_name, last_name, phone } = req.body;
+        const { 
+            id_location, booking_date, booking_start, duration, 
+            spot_number, first_name, last_name, phone,
+            voucher_code // Terima kode voucher dari frontend
+        } = req.body;
 
-        const invoiceNumber = `INV-${Date.now()}`;
+        // Kita gunakan connection (bukan pool langsung) untuk fitur Transaction
+        const connection = await fastify.db.getConnection(); 
         
-        // Hitung waktu selesai (booking_end)
-        const startObj = new Date(booking_start);
-        const endObj = new Date(startObj.getTime() + duration * 60 * 60 * 1000);
-        const booking_end = endObj.toISOString().slice(0, 19).replace('T', ' ');
-
         try {
-            // Simpan ke Database
-            await fastify.db.execute(`
-                INSERT INTO bookings 
-                (id_user, id_location, spot_number, first_name, last_name, phone, booking_date, booking_start, booking_end, duration, total_price, invoice_number, status, payment_status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unpaid')
-            `, [userId, id_location, spot_number, first_name, last_name, phone, booking_date, booking_start, booking_end, duration, total_price, invoiceNumber]);
+            // Mulai Transaksi Database
+            await connection.beginTransaction();
 
-            return { message: 'Booking berhasil dibuat', invoice: invoiceNumber };
+            // A. Ambil Harga Lokasi
+            const [locs] = await connection.query('SELECT price_per_hour FROM locations WHERE id = ?', [id_location]);
+            if (locs.length === 0) {
+                throw new Error('Lokasi tidak valid');
+            }
+            const pricePerHour = locs[0].price_per_hour;
+
+            // B. Hitung Kalkulasi Awal
+            let subtotal = pricePerHour * duration;
+            let tax = subtotal * 0.10; // Pajak 10%
+            let discountAmount = 0;
+
+            // C. Logika Diskon (Server-Side Validation)
+            if (voucher_code) {
+                // Cek ketersediaan voucher dan kunci barisnya (FOR UPDATE)
+                const [discounts] = await connection.query(
+                    'SELECT id, discount_value, used_count, max_usage FROM discounts WHERE code = ? FOR UPDATE', 
+                    [voucher_code]
+                );
+
+                if (discounts.length > 0) {
+                    const disc = discounts[0];
+                    
+                    // Cek apakah kuota masih ada
+                    if (disc.used_count < disc.max_usage) {
+                        // Hitung nominal diskon
+                        if (disc.discount_value.includes('%')) {
+                            const percent = parseInt(disc.discount_value.replace('%', ''));
+                            discountAmount = subtotal * (percent / 100);
+                        } else {
+                            discountAmount = parseInt(disc.discount_value);
+                        }
+
+                        // Update kuota terpakai (+1) secara permanen
+                        await connection.query(
+                            'UPDATE discounts SET used_count = used_count + 1 WHERE id = ?', 
+                            [disc.id]
+                        );
+                    } else {
+                        // Opsional: Throw error jika kuota habis saat proses berjalan
+                        // throw new Error('Voucher habis');
+                    }
+                }
+            }
+
+            // D. Hitung Grand Total Akhir
+            // Pastikan tidak minus
+            const finalTotal = Math.max(0, subtotal + tax - discountAmount);
+            
+            const invoiceNumber = `INV-${Date.now()}`;
+            
+            // Hitung Waktu Selesai
+            const startObj = new Date(booking_start);
+            const endObj = new Date(startObj.getTime() + duration * 60 * 60 * 1000);
+            const booking_end = endObj.toISOString().slice(0, 19).replace('T', ' ');
+
+            // E. Simpan Booking ke Database
+            // Note: Kita menyimpan 'finalTotal' ke dalam 'total_price'
+            await connection.query(`
+                INSERT INTO bookings 
+                (id_user, id_location, spot_number, first_name, last_name, phone, booking_date, booking_start, booking_end, duration, total_price, tax_amount, invoice_number, status, payment_status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unpaid')
+            `, [userId, id_location, spot_number, first_name, last_name, phone, booking_date, booking_start, booking_end, duration, finalTotal, tax, invoiceNumber]);
+
+            // Commit Transaksi (Simpan Perubahan)
+            await connection.commit();
+            
+            // Lepaskan koneksi kembali ke pool
+            connection.release();
+
+            return { 
+                message: 'Booking berhasil dibuat', 
+                invoice: invoiceNumber, 
+                total_paid: finalTotal 
+            };
+
         } catch (err) {
+            // Jika ada error, batalkan semua perubahan database (Rollback)
+            await connection.rollback();
+            connection.release();
+            
             req.log.error(err);
-            return reply.code(500).send({ message: 'Gagal membuat booking di database' });
+            return reply.code(500).send({ message: err.message || 'Gagal membuat booking' });
         }
     });
 }
