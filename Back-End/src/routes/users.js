@@ -16,7 +16,7 @@ export default async function (fastify, options) {
         const userId = req.user.id;
         const [rows] = await fastify.db.execute(`
             SELECT u.id, u.name, u.email, u.bio, u.avatar_img, u.date_birth, 
-                   m.name as membership_name, m.description as membership_desc
+                    m.name as membership_name, m.description as membership_desc
             FROM users u
             LEFT JOIN memberships m ON u.id_membership = m.id
             WHERE u.id = ?

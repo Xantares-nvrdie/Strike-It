@@ -1,19 +1,35 @@
 <script setup>
-import { ref } from 'vue';
-import { Icon } from '@iconify/vue';
+import { ref, watch, defineEmits } from 'vue';
 
-// State untuk mengontrol tab mana yang aktif
-const activeTab = ref('e-wallet'); // 'e-wallet', 'va', 'card'
+const emit = defineEmits(['update:paymentMethod']);
 
-// State untuk menyimpan pilihan di setiap tab
-const selectedEWallet = ref('gopay');
-const selectedVA = ref(null);
-const creditCardInfo = ref({
-  number: '',
-  expiry: '',
-  cvv: '',
-  name: ''
-});
+// Tab aktif (default: transfer)
+// Pilihan: 'transfer', 'qris', 'card', 'cod'
+const activeTab = ref('transfer');
+
+// State untuk pilihan spesifik (UX Only)
+const selectedBank = ref('bca');
+
+// Form Kartu
+const cardInfo = ref({ number: '', expiry: '', cvv: '', name: '' });
+
+// Logic Mapping ke ID Database
+// 1: Debit Card, 2: Bank Transfer, 3: QRIS, 4: Cash on Delivery
+const getPaymentMethodId = () => {
+    switch (activeTab.value) {
+        case 'card': return 1;
+        case 'transfer': return 2;
+        case 'qris': return 3;
+        case 'cod': return 4;
+        default: return 2;
+    }
+};
+
+// Pantau perubahan tab dan kirim ID ke parent (BookingPage)
+watch(activeTab, () => {
+    const methodId = getPaymentMethodId();
+    emit('update:paymentMethod', methodId);
+}, { immediate: true });
 </script>
 
 <template>
@@ -22,27 +38,27 @@ const creditCardInfo = ref({
       Metode Pembayaran
     </h3>
 
-    <div class="border-b border-gray-200 mb-6">
-      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+    <div class="border-b border-gray-200 mb-6 overflow-x-auto">
+      <nav class="-mb-px flex space-x-6" aria-label="Tabs">
         <button
-          @click="activeTab = 'e-wallet'"
+          @click="activeTab = 'transfer'"
           :class="[
-            activeTab === 'e-wallet'
+            activeTab === 'transfer'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
           ]">
-          E-Wallet
+          Bank Transfer
         </button>
         <button
-          @click="activeTab = 'va'"
+          @click="activeTab = 'qris'"
           :class="[
-            activeTab === 'va'
+            activeTab === 'qris'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
           ]">
-          Virtual Account
+          QRIS
         </button>
         <button
           @click="activeTab = 'card'"
@@ -50,105 +66,118 @@ const creditCardInfo = ref({
             activeTab === 'card'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
+            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
           ]">
-          Kartu Kredit/Debit
+          Kartu Debit/Kredit
+        </button>
+        <button
+          @click="activeTab = 'cod'"
+          :class="[
+            activeTab === 'cod'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+            'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors'
+          ]">
+          COD
         </button>
       </nav>
     </div>
 
-    <div>
-      <div v-if="activeTab === 'e-wallet'" class="space-y-4">
-        <label
-          class="flex items-center justify-between p-4 border rounded-lg cursor-pointer"
-          :class="{'border-blue-600 ring-2 ring-blue-600': selectedEWallet === 'gopay'}">
-          <span class="flex items-center gap-3">
-            <Icon icon="simple-icons:gopay" class="size-6 text-[#00AEEF]" />
-            <span class="font-medium text-gray-900">GoPay</span>
-          </span>
-          <input type="radio" name="e-wallet" value="gopay" v-model="selectedEWallet" class="h-4 w-4 text-blue-600 border-gray-300">
+    <div class="min-h-[200px]">
+      
+      <div v-if="activeTab === 'transfer'" class="space-y-4 animate-fade-in">
+        <p class="text-sm text-gray-500 mb-4">Pilih bank tujuan transfer (Virtual Account):</p>
+        
+        <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+          :class="{'border-blue-600 ring-1 ring-blue-600 bg-blue-50': selectedBank === 'bca'}">
+          <div class="flex items-center gap-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" alt="BCA" class="h-8 w-auto">
+            <span class="font-medium text-gray-900">BCA Virtual Account</span>
+          </div>
+          <input type="radio" value="bca" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300">
         </label>
-        <label
-          class="flex items-center justify-between p-4 border rounded-lg cursor-pointer"
-          :class="{'border-blue-600 ring-2 ring-blue-600': selectedEWallet === 'ovo'}">
-          <span class="flex items-center gap-3">
-            <Icon icon="simple-icons:ovo" class="size-6 text-[#4D2E91]" />
-            <span class="font-medium text-gray-900">OVO</span>
-          </span>
-          <input type="radio" name="e-wallet" value="ovo" v-model="selectedEWallet" class="h-4 w-4 text-blue-600 border-gray-300">
+
+        <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+          :class="{'border-blue-600 ring-1 ring-blue-600 bg-blue-50': selectedBank === 'mandiri'}">
+          <div class="flex items-center gap-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" alt="Mandiri" class="h-8 w-auto">
+            <span class="font-medium text-gray-900">Mandiri Virtual Account</span>
+          </div>
+          <input type="radio" value="mandiri" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300">
         </label>
-        <label
-          class="flex items-center justify-between p-4 border rounded-lg cursor-pointer"
-          :class="{'border-blue-600 ring-2 ring-blue-600': selectedEWallet === 'dana'}">
-          <span class="flex items-center gap-3">
-            <Icon icon="simple-icons:dana" class="size-6 text-[#108EE9]" />
-            <span class="font-medium text-gray-900">DANA</span>
-          </span>
-          <input type="radio" name="e-wallet" value="dana" v-model="selectedEWallet" class="h-4 w-4 text-blue-600 border-gray-300">
+
+        <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+          :class="{'border-blue-600 ring-1 ring-blue-600 bg-blue-50': selectedBank === 'bri'}">
+          <div class="flex items-center gap-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg" alt="BRI" class="h-8 w-auto">
+            <span class="font-medium text-gray-900">BRI Virtual Account</span>
+          </div>
+          <input type="radio" value="bri" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300">
         </label>
       </div>
 
-      <div v-if="activeTab === 'va'" class="space-y-4">
-        <label
-          class="flex items-center justify-between p-4 border rounded-lg cursor-pointer"
-          :class="{'border-blue-600 ring-2 ring-blue-600': selectedVA === 'bca'}">
-          <span class="flex items-center gap-3">
-            <Icon icon="simple-icons:bca" class="size-6 text-[#0060A8]" />
-            <span class="font-medium text-gray-900">BCA Virtual Account</span>
-          </span>
-          <input type="radio" name="va" value="bca" v-model="selectedVA" class="h-4 w-4 text-blue-600 border-gray-300">
-        </label>
-        <label
-          class="flex items-center justify-between p-4 border rounded-lg cursor-pointer"
-          :class="{'border-blue-600 ring-2 ring-blue-600': selectedVA === 'mandiri'}">
-          <span class="flex items-center gap-3">
-            <Icon icon="simple-icons:bankmandiri" class="size-6 text-[#003D79]" />
-            <span class="font-medium text-gray-900">Mandiri Virtual Account</span>
-          </span>
-          <input type="radio" name="va" value="mandiri" v-model="selectedVA" class="h-4 w-4 text-blue-600 border-gray-300">
-        </label>
+      <div v-if="activeTab === 'qris'" class="flex flex-col items-center justify-center space-y-6 py-4 animate-fade-in">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" alt="QRIS" class="h-12 mb-2">
+        
+        <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-200">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=StrikeItPayment" alt="QR Code" class="w-48 h-48">
+        </div>
+        
+        <p class="text-center text-gray-600 text-sm max-w-xs">
+          Scan QR code di atas menggunakan GoPay, OVO, Dana, atau Mobile Banking Anda.
+        </p>
+      </div>
+
+      <div v-if="activeTab === 'card'" class="space-y-4 animate-fade-in">
+        <div class="flex justify-end gap-2 mb-2">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg" alt="Visa" class="h-6">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-6">
         </div>
 
-      <div v-if="activeTab === 'card'" class="space-y-4">
         <div>
-          <label for="card-number" class="block text-sm font-medium text-gray-700">Nomor Kartu</label>
-          <input 
-            type="text" 
-            id="card-number" 
-            v-model="creditCardInfo.number"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="0000 0000 0000 0000">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Kartu</label>
+          <input type="text" v-model="cardInfo.number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0000 0000 0000 0000">
         </div>
+
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label for="expiry" class="block text-sm font-medium text-gray-700">Tanggal Kadaluarsa</label>
-            <input 
-              type="text" 
-              id="expiry" 
-              v-model="creditCardInfo.expiry"
-              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="MM / YY">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Berlaku Hingga</label>
+            <input type="text" v-model="cardInfo.expiry" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="MM / YY">
           </div>
           <div>
-            <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
-            <input 
-              type="text" 
-              id="cvv" 
-              v-model="creditCardInfo.cvv"
-              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="123">
+            <label class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+            <input type="text" v-model="cardInfo.cvv" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="123">
           </div>
         </div>
+
         <div>
-          <label for="card-name" class="block text-sm font-medium text-gray-700">Nama Pemegang Kartu</label>
-          <input 
-            type="text" 
-            id="card-name" 
-            v-model="creditCardInfo.name"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Nama Sesuai Kartu">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nama di Kartu</label>
+          <input type="text" v-model="cardInfo.name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nama Pemilik">
         </div>
       </div>
+
+      <div v-if="activeTab === 'cod'" class="flex flex-col items-center justify-center space-y-4 py-8 animate-fade-in">
+        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331941.png" alt="COD" class="w-24 h-24 opacity-80">
+        <h4 class="text-lg font-semibold text-gray-900">Bayar di Tempat</h4>
+        <p class="text-center text-gray-600 text-sm max-w-sm">
+          Anda dapat melakukan pembayaran secara tunai di lokasi pemancingan saat melakukan registrasi ulang / check-in.
+        </p>
+        <div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg text-sm border border-yellow-200">
+          Pastikan membawa uang pas untuk mempercepat proses.
+        </div>
+      </div>
+
     </div>
   </div>
 </template>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

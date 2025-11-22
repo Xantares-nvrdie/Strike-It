@@ -9,7 +9,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import db from './src/config/db.js'; 
 
-// Setup __dirname untuk ES Modules
+//setup __dirname untuk ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -17,7 +17,7 @@ dotenv.config();
 
 const fastify = Fastify({ logger: true });
 
-// --- 1. CEK & BUAT FOLDER UPLOADS (PENTING AGAR GAK CRASH) ---
+// cek dir uploads
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)){
     fs.mkdirSync(uploadDir);
