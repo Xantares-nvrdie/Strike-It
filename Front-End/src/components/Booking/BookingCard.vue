@@ -1,39 +1,37 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Icon } from '@iconify/vue';
+import { useRouter } from 'vue-router';
 
-const pricePerJam = 15000;
+// Terima props dari parent (Logic Integrasi Tetap Ada)
+const props = defineProps({
+    price: { type: Number, default: 15000 },
+    locationId: { type: Number, required: true }
+});
+
+const router = useRouter();
 const duration = ref(2);
 
-function increaseDuration() {
-    duration.value++;
-}
+// Fungsi durasi
+function increaseDuration() { duration.value++; }
+function decreaseDuration() { if (duration.value > 1) duration.value--; }
 
-function decreaseDuration() {
-    if (duration.value > 1) {
-        duration.value--;
-    }
-}
+const totalPrice = computed(() => (props.price * duration.value).toLocaleString('id-ID'));
+const formattedPrice = computed(() => props.price.toLocaleString('id-ID'));
 
-const totalPrice = computed(() => {
-    return (pricePerJam * duration.value).toLocaleString('id-ID');
-});
-
-const formattedPrice = pricePerJam.toLocaleString('id-ID');
-
+// Date logic
 const getToday = () => new Date().toISOString().split('T')[0];
-
 const selectedDate = ref(getToday());
 
-const formattedSelectedDate = computed(() => {
-    if (!selectedDate.value) return 'Pilih tanggal';
-    const date = new Date(selectedDate.value);
-    return date.toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
+// Fungsi Lanjut Booking
+const handleBooking = () => {
+    router.push({
+        path: `/location/${props.locationId}/book`,
+        query: {
+            date: selectedDate.value,
+            duration: duration.value
+        }
     });
-});
+};
 </script>
 
 <template>
@@ -76,11 +74,11 @@ const formattedSelectedDate = computed(() => {
                 untuk {{ duration }} jam
             </p>
         </div>
-        <router-link to="/location/place/book">
-            <button
-                class="w-full bg-blue-600 text-white text-xl font-medium py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-colors">
-                Lanjutkan booking
-            </button>
-        </router-link>
+        
+        <button
+            @click="handleBooking"
+            class="w-full bg-blue-600 text-white text-xl font-medium py-4 rounded-xl shadow-lg hover:bg-blue-700 transition-colors">
+            Lanjutkan booking
+        </button>
     </div>
 </template>

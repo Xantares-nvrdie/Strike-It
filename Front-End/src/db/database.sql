@@ -1,5 +1,9 @@
-CREATE DATABASE strike_it;
+CREATE DATABASE IF NOT EXISTS strike_it;
 USE strike_it;
+
+-- ==========================================
+-- 1. TABLES DEFINITION
+-- ==========================================
 
 CREATE TABLE payment_methods (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,9 +46,32 @@ CREATE TABLE locations (
     description TEXT,
     address VARCHAR(255),
     price_per_hour DECIMAL(10,2),
-    img VARCHAR(255),
+    img VARCHAR(255), -- Cover Image (Main)
+    lat DECIMAL(10, 8) DEFAULT NULL, -- Latitude untuk Peta
+    lng DECIMAL(11, 8) DEFAULT NULL, -- Longitude untuk Peta
     rating_average DECIMAL(3,2) DEFAULT 0,
     total_reviews INT DEFAULT 0
+);
+
+-- Tabel Baru: Location Images (Gallery)
+CREATE TABLE location_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_location INT NOT NULL,
+    img_path VARCHAR(255) NOT NULL,
+    img_type ENUM('main', 'gallery') DEFAULT 'gallery',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_location) REFERENCES locations(id) ON DELETE CASCADE
+);
+
+-- Tabel Baru: Location Spots (Kursi/Spot)
+CREATE TABLE location_spots (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_location INT NOT NULL,
+    spot_name VARCHAR(10) NOT NULL, -- T1, B2, dll
+    spot_type VARCHAR(50) DEFAULT 'general',
+    is_active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (id_location) REFERENCES locations(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_spot_per_location (id_location, spot_name)
 );
 
 CREATE TABLE products (
@@ -71,7 +98,7 @@ CREATE TABLE bookings (
     last_name VARCHAR(100),
     email VARCHAR(100),
     phone VARCHAR(20),
-    spot_number INT,
+    spot_number VARCHAR(10), -- Update: Ubah ke VARCHAR agar bisa simpan 'T1'
     booking_date DATE,
     booking_start DATETIME,
     booking_end DATETIME,
@@ -160,7 +187,7 @@ CREATE TABLE community_posts (
     id_user INT NOT NULL,
     title VARCHAR(100),
     body TEXT,
-    category ENUM('general', 'review', 'event', 'discussion'),
+    category ENUM('general', 'review', 'event', 'discussion', 'umpan', 'piranti', 'laporan mancing', 'tips & trik'),
     likes_count INT DEFAULT 0,
     reply_count INT DEFAULT 0,
     views_count INT DEFAULT 0,
@@ -173,6 +200,7 @@ CREATE TABLE post_comments (
     id_post INT NOT NULL,
     id_user INT NOT NULL,
     content TEXT NOT NULL,
+    likes_count INT DEFAULT 0, -- Tambahan Likes Count
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_post) REFERENCES community_posts(id) ON DELETE CASCADE,
     FOREIGN KEY (id_user) REFERENCES users(id)
@@ -188,12 +216,22 @@ CREATE TABLE post_likes (
     UNIQUE KEY unique_like (id_post, id_user)
 );
 
+CREATE TABLE comment_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_comment INT NOT NULL,
+    id_user INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_comment) REFERENCES post_comments(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_user) REFERENCES users(id),
+    UNIQUE KEY unique_comment_like (id_comment, id_user)
+);
+
 CREATE TABLE discounts (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    discount_value VARCHAR(50) NOT NULL, -- Contoh: "15%"
-    code VARCHAR(50) NOT NULL,           -- Contoh: "AASNAAD998"
-    used_count INT DEFAULT 0,            -- Contoh: 122
-    max_usage INT DEFAULT 100            -- Contoh: 130
+    discount_value VARCHAR(50) NOT NULL, 
+    code VARCHAR(50) NOT NULL,           
+    used_count INT DEFAULT 0,            
+    max_usage INT DEFAULT 100            
 );
 
 CREATE TABLE events (
@@ -203,19 +241,7 @@ CREATE TABLE events (
     link_url TEXT
 );
 
-
-INSERT INTO discounts (discount_value, code, used_count, max_usage) VALUES 
-('15%', 'AASNAAD998', 122, 130),
-('15%', 'ASD12229SDA', 122, 130),
-('15%', 'ADAD9988', 122, 130);
-
-
-INSERT INTO events (name, img, link_url) VALUES 
-('Lomba Mancing Bakti Forkabi Untuk Negeri', '/eventimg/poster1.png', 'https://drive.google.com/'),
-('Lomba Mancing HUT RI Ke-74 Warga Garon', '/eventimg/poster2.png', 'https://drive.google.com/'),
-('Lomba Mancing Karang Taruna Taanimulya', '/eventimg/poster3.png','https://drive.google.com/');
-
-
+-- INDEXING
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_bookings_user_date ON bookings(id_user, booking_date);
 CREATE INDEX idx_orders_user_date ON orders(id_user, created_at);
@@ -225,8 +251,23 @@ CREATE INDEX idx_posts_user_date ON community_posts(id_user, created_at);
 CREATE INDEX idx_post_comments_post ON post_comments(id_post);
 CREATE INDEX idx_post_likes_post ON post_likes(id_post);
 
--- Insert sample data into locations table
-INSERT INTO locations (name, city, description, address, price_per_hour, img, rating_average, total_reviews)
+
+-- ==========================================
+-- 2. SEEDING DATA
+-- ==========================================
+
+INSERT INTO discounts (discount_value, code, used_count, max_usage) VALUES 
+('15%', 'AASNAAD998', 122, 130),
+('15%', 'ASD12229SDA', 122, 130),
+('15%', 'ADAD9988', 122, 130);
+
+INSERT INTO events (name, img, link_url) VALUES 
+('Lomba Mancing Bakti Forkabi Untuk Negeri', '/eventimg/poster1.png', 'https://drive.google.com/'),
+('Lomba Mancing HUT RI Ke-74 Warga Garon', '/eventimg/poster2.png', 'https://drive.google.com/'),
+('Lomba Mancing Karang Taruna Taanimulya', '/eventimg/poster3.png','https://drive.google.com/');
+
+-- Insert Locations (Lengkap dengan Lat/Lng)
+INSERT INTO locations (name, city, description, address, price_per_hour, img, lat, lng, rating_average, total_reviews)
 VALUES 
 ("Situ Rawa Indah", 
 "Jakarta", 
@@ -234,334 +275,135 @@ VALUES
 "Jl. Kh Hasyim Ashari No.125",
 15000, 
 "locationimg/jakarta.jpg",
+-6.200000, 106.816666,
 4.5,
 5),
 ("Lembah Pancing Citarum",
 "Bandung",
-"Atmosfernya penuh semangat kompetisi, dengan para pemancing serius yang fokus memantau ujung jorannya. Karena tujuannya adalah perlombaan untuk mendapatkan ikan terberat, fasilitasnya lebih fungsional dan kurang ditujukan untuk rekreasi keluarga. Namun, tempat ini menjadi surga bagi mereka yang mencari tantangan dan sensasi adrenalin saat umpan disambar ikan babon.",
+"Atmosfernya penuh semangat kompetisi, dengan para pemancing serius yang fokus memantau ujung jorannya. Karena tujuannya adalah perlombaan untuk mendapatkan ikan terberat, fasilitasnya lebih fungsional.",
 "Jl. Diponegoro No.22, Citarum",
 20000,
 "locationimg/bandung.png",
+-6.917500, 107.619100,
 4.2,
 8),
 ("Pancingan Tirta Sari",
 "Bekasi",
-"Suasananya dirancang untuk rekreasi keluarga, sering kali dilengkapi saung lesehan di atas air dan alunan musik yang santai. Karena mengutamakan pengalaman bersantap dan kenyamanan, jenis ikannya mudah dipancing dan sering kali sudah ditentukan untuk langsung diolah. Meskipun begitu, tempat ini adalah pilihan sempurna untuk memperkenalkan hobi memancing kepada anak-anak sambil menikmati akhir pekan bersama.",
+"Suasananya dirancang untuk rekreasi keluarga, sering kali dilengkapi saung lesehan di atas air dan alunan musik yang santai. Tempat ini adalah pilihan sempurna untuk keluarga.",
 "Jl. Pramuka No.59",
 25000,
 "locationimg/bekasi.png",
+-6.238300, 106.975600,
 4.7,
 12),
 ("Kolam Pancing Nirwana",
 "Banten",
-"Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Karena benar-benar berada di lokasi liar, aksesnya bisa jadi sulit dan tidak ada jaminan akan mendapatkan ikan. Akan tetapi, di sinilah letak petualangannya, memberikan kepuasan luar biasa saat berhasil mendaratkan ikan asli penghuni perairan tersebut.",
+"Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Aksesnya bisa jadi sulit tapi petualangannya luar biasa.",
 "Jl. Pelelangan Ikan Karangantu",
 30000,
 "locationimg/banten.png",
+-6.120000, 106.150000,
 4.9,
 15),
 ("Danau Singkarak",
 "Tangerang",
-"Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Karena benar-benar berada di lokasi liar, aksesnya bisa jadi sulit dan tidak ada jaminan akan mendapatkan ikan. Akan tetapi, di sinilah letak petualangannya, memberikan kepuasan luar biasa saat berhasil mendaratkan ikan asli penghuni perairan tersebut.",
+"Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air. Tempat yang cocok untuk mencari ketenangan.",
 "Jl. Pegangsaan Timur No 55",
 18000,
 "locationimg/tangerang.jpg",
+-6.178300, 106.631900,
 4.6,
 10);
 
--- Insert sample data into payment_methods table
-INSERT INTO payment_methods (name) VALUES 
-('Debit Card'),
-('Bank Transfer'),
-('QRIS'),
-('Cash on Delivery');
+-- Insert Location Images (Gallery) untuk Lokasi 1 (Jakarta)
+INSERT INTO location_images (id_location, img_path, img_type) VALUES 
+(1, 'locationimg/jakarta.jpg', 'main'),
+(1, 'locationimg/jakarta_thumb1.jpg', 'gallery'),
+(1, 'locationimg/jakarta_thumb2.jpg', 'gallery');
 
--- Insert sample data into memberships table
+-- Insert Spots untuk Lokasi 1 (Jakarta)
+INSERT INTO location_spots (id_location, spot_name, spot_type) VALUES 
+(1, 'T1', 'general'), (1, 'T2', 'general'), (1, 'T3', 'general'),
+(1, 'T4', 'general'), (1, 'T5', 'general'), (1, 'T6', 'general'),
+(1, 'T7', 'general'), (1, 'T8', 'general'), (1, 'T9', 'general'),
+(1, 'B1', 'general'), (1, 'B2', 'general'), (1, 'B3', 'general'),
+(1, 'B4', 'general'), (1, 'B5', 'general'), (1, 'B6', 'general'),
+(1, 'B7', 'general'), (1, 'B8', 'general'), (1, 'B9', 'general'),
+(1, 'L1', 'general'), (1, 'L2', 'general'), (1, 'L3', 'general'),
+(1, 'R1', 'general'), (1, 'R2', 'general'), (1, 'R3', 'general');
+
+-- Payment Methods
+INSERT INTO payment_methods (name) VALUES ('Debit Card'), ('Bank Transfer'), ('QRIS'), ('Cash on Delivery');
+
+-- Memberships
 INSERT INTO memberships (name, description, is_popular, price_per_month, benefits) VALUES
-('Juragan Mancing', 'Untuk Para Hobiis Sejati, Pilihan Paling Populer.', TRUE, 100000, 
-'Anda dapat menghentikan atau membatalkan kapan saja.\n 
-Diskon 10% untuk sewa alat pancing.\n
-Diskon 20% untuk pembelian umpan.\n
-Pemberian umpan dasar gratis saat kedatangan.\n
-Kesempatan mengikuti turnamen bulanan secara gratis.'),
-('Kawan Mancing', 'Mancing cerdas. Kantong puas.', FALSE, 75000, 
-'Anda dapat menghentikan atau membatalkan kapan saja.\n
-Diskon 10% untuk sewa alat pancing.\n
-Voucher makan di restoran/kantin.\n
-Pemberian umpan dasar gratis saat kedatangan.'),
-('Jawara Mancing', 'Pengalaman Terbaik, Tanpa Batas dan Tanpa Kompromi.', FALSE, 150000,
-'Anda dapat menghentikan atau membatalkan kapan saja.\n
-Diskon 10% untuk sewa alat pancing.\n
-Diskon 20% untuk pembelian umpan.\n
-Kesempatan mengikuti turnamen bulanan secara gratis.\n
-Satu sesi konsultasi mingguan dengan pemandu mancing profesional.\n');
+('Juragan Mancing', 'Untuk Para Hobiis Sejati.', TRUE, 100000, 'Benefit A, Benefit B'),
+('Kawan Mancing', 'Mancing cerdas. Kantong puas.', FALSE, 75000, 'Benefit C'),
+('Jawara Mancing', 'Pengalaman Terbaik.', FALSE, 150000, 'Benefit D');
 
--- Insert sample data into category_products table
-INSERT INTO category_products (name) VALUES
-('Joran'),
-('Reel'),
-('Umpan'),
-('Kail'),
-('Senar');
+-- Categories
+INSERT INTO category_products (name) VALUES ('Joran'), ('Reel'), ('Umpan'), ('Kail'), ('Senar');
 
--- Insert sample data into products table
+-- Products
 INSERT INTO products (name, description, img, price, specification, method, stock, id_category) VALUES
-('Joran Pancing Shimano FX Spinning 210cm',
-'Joran pancing spinning berkualitas tinggi dari Shimano, panjang 210cm, cocok untuk berbagai jenis memancing.',
-'alatimg/joran1.png',
-489000,
-'Panjang: 210cm\n
-Material: Carbon Fiber\n 
-Berat: 150g\n',
-'sewa',
-10,
-1),
-('Joran Carbon Fiber 180cm Kuat',
-'Joran pancing ini terbuat dari serat karbon berkualitas tinggi, panjang 180cm, dirancang untuk ketahanan dan kekuatan maksimum.',
-'alatimg/joran2.png',
-399000,
-'Panjang: 180cm\n 
-Material: Carbon Fiber\n 
-Berat: 120g\n',
-'sewa',
-15,
-1),
-('Joran Pancing IdrisMaster 240cm',
-'Joran pancing panjang 240cm dari IdrisMaster, ideal untuk memancing di laut dan sungai besar.',
-'alatimg/joran3.png',
-599000,
-'Panjang: 240cm\n
-Material: Graphite\n 
-Berat: 200g\n',
-'beli',
-8,
-1),
-('Joran Spinning Abu Garcia Veritas 210cm',
-'Joran pancing spinning dari Abu Garcia, panjang 210cm, ringan dan responsif untuk pengalaman memancing yang optimal.',
-'alatimg/joran4.png',
-529000,
-'Panjang: 210cm\n 
-Material: Carbon Fiber\n
-Berat: 140g\n',
-'beli',
-12,
-1),
-('Reel Pancing Shimano Stradic CI4+ 2500',
-'Reel pancing berkualitas tinggi dari Shimano, model Stradic CI4+ 2500, ringan dan tahan lama.',
-'alatimg/reels1.png',
-525000,
-'Model: Stradic CI4+ 2500\n 
-Material: CI4+\n
-Berat: 205g\n',
-'beli',
-20,
-2),
-('Reel Daiwa BG 3000',
-'Reel pancing Daiwa BG 3000, dirancang untuk kekuatan dan keandalan dalam berbagai kondisi memancing.',
-'alatimg/reels2.png',
-450000,
-'Model: BG 3000\n
-Material: Aluminum\n
-Berat: 250g\n',
-'beli',
-18,
-2),
-('Reel Pancing Okuma Ceymar C-30',
-'Reel pancing Okuma Ceymar C-30, ringan dan mudah digunakan, cocok untuk pemancing pemula dan berpengalaman.',
-'alatimg/reels3.png',
-320000,
-'Model: Ceymar C-30\n
-Material: Graphite\n
-Berat: 220g\n',
-'beli',
-15,
-2),
-('Reel Sawunggalih XT-5000',
-'Reel pancing Sawunggalih XT-5000, menawarkan performa tinggi dengan desain ergonomis untuk kenyamanan saat memancing.',
-'alatimg/reels4.png',
-380000,
-'Model: XT-5000\n
-Material: Aluminum\n
-Berat: 240g\n',
-'sewa',
-15,
-2);
+('Joran Shimano FX', 'Joran berkualitas', 'alatimg/joran1.png', 489000, 'Spec A', 'sewa', 10, 1),
+('Reel Daiwa BG', 'Reel kuat', 'alatimg/reels2.png', 450000, 'Spec B', 'beli', 18, 2);
 
+-- Users
+INSERT INTO users (name, email, password, bio, avatar_img, id_payment_method, id_membership) VALUES
+('Joran_Melengkung', 'joran_melengkung@example.com', 'pass123', 'Hobi mancing', 'avatar/joran_melengkung.png', 1, 1),
+('Kang_Asep_Mancing', 'kang_asep_mancing@example.com', 'pass456', 'Mancing mania', 'avatar/kang_asep_mancing.png', 2, 2),
+('Pemula_Casting', 'pemula_casting@example.com', 'pass789', 'Newbie', 'avatar/pemula_casting.png', 1, 1);
 
-
--- Insert user sample data
-INSERT INTO users (name, email, password, bio, avatar_img, date_birth, id_payment_method, id_membership) VALUES
-('Joran_Melengkung', 'joran_melengkung@example.com', 'password123', 'Pecinta mancing sejati.', 'avatar/joran_melengkung.png', '1990-05-15', 1, 1),
-('Kang_Asep_Mancing', 'kang_asep_mancing@example.com', 'password456', 'Mancing adalah hidupku.', 'avatar/kang_asep_mancing.png', '1985-08-20', 2, 2),
-('Pemula_Casting', 'pemula_casting@example.com', 'password789', 'Saya baru belajar mancing.', 'avatar/pemula_casting.png', '2000-01-01', 1, 1);
-
--- Insert community posts sample data
+-- Community Posts
 INSERT INTO community_posts (id_user, title, body, category) VALUES
-(1, 
-'Umpan putih andalan untuk ikan mas lagi susah makan?',
-'Para suhu, dan rekan angler, mohon pencerahannya. Sudah dua minggu ini saya coba mancing harian ikan mas di kolam langganan, tapi hasilnya boncos terus. Padahal biasanya resep umpan putih andalan saya ini selalu gacor. Saya pakai campuran tepung terigu, dedak halus, dan sedikit pelet ikan mas. Kadang saya tambahkan sedikit aroma vanilla atau pandan biar lebih menggoda. Tapi belakangan ini ikan mas kok kayaknya ogah banget nyambar. Ada yang mengalami hal serupa? Mungkin ada yang punya tips atau modifikasi resep umpan putih biar ikan masnya mau makan lagi? Terima kasih sebelumnya buat sharingnya!',
-'umpan'),
-(2,
-'Laporan mancing di Situ Rawa Indah kemarin',
-'Halo rekan-rekan angler! Kemarin saya berkesempatan mancing di Situ Rawa Indah, dan saya ingin berbagi pengalaman serta hasil tangkapan saya. Cuaca cerah dengan angin sepoi-sepoi membuat suasana mancing sangat menyenangkan. Saya menggunakan joran spinning dengan umpan cacing dan pelet ikan mas. Alhamdulillah, dalam waktu 4 jam saya berhasil mendapatkan 5 ekor ikan mas dengan berat bervariasi antara 1 hingga 3 kg. Spot favorit saya adalah di dekat pohon besar di sisi timur danau, di mana banyak ikan berkumpul. Fasilitas di sana juga cukup lengkap, dengan area parkir yang luas dan warung makan yang menyediakan hidangan lezat. Saya sangat merekomendasikan Situ Rawa Indah bagi teman-teman yang ingin menikmati hari memancing yang seru. Jangan lupa bawa peralatan lengkap dan umpan favorit kalian ya! Selamat mancing!',
-'laporan mancing'),
-(3,
-'Rekomendasi reel baitcasting untuk pemula',
-'Halo semua! Saya baru saja mulai belajar mancing dengan teknik baitcasting dan sedang mencari rekomendasi reel baitcasting yang cocok untuk pemula. Saya ingin reel yang mudah digunakan, tahan lama, dan tentunya dengan harga yang terjangkau. Apakah ada di antara kalian yang punya pengalaman dengan reel baitcasting tertentu yang bisa direkomendasikan? Mungkin ada merek atau model yang menurut kalian sangat cocok untuk pemula seperti saya. Terima kasih banyak sebelumnya atas sarannya!',
-'rekomendasi');
+(1, 'Umpan putih andalan?', 'Mohon pencerahannya suhu...', 'umpan'),
+(2, 'Laporan mancing di Situ Rawa Indah', 'Hasil tangkapan lumayan...', 'laporan mancing');
 
--- Insert post comments sample data
-INSERT INTO post_comments (id_post, id_user, content) VALUES
-(1, 2, 'Saya juga mengalami hal serupa minggu lalu. Mungkin ikan masnya lagi picky eater nih. Coba tambahkan aroma bawang putih atau keju pada umpan putihnya, biasanya ikan mas suka itu. Semoga berhasil!'),
-(2, 3, 'Wah, mantap sekali hasil tangkapannya! Situ Rawa Indah memang tempat favorit saya juga. Terima kasih sudah berbagi pengalaman, jadi makin semangat untuk mancing di sana.'),
-(3, 1, 'Untuk pemula, saya rekomendasikan reel baitcasting dari Abu Garcia atau Shimano. Keduanya cukup user-friendly dan punya kualitas yang baik. Pastikan juga untuk latihan casting agar lebih nyaman saat menggunakannya.');
-
--- Insert post likes sample data
-INSERT INTO post_likes (id_post, id_user) VALUES
-(1, 3),
-(1, 2),
-(2, 1),
-(2, 3),
-(3, 2);
-
--- Insert product reviews
-INSERT INTO product_reviews (id_user, id_product, comment, rating) VALUES
-(1, 1, 'Joran Shimano FX Spinning ini sangat ringan dan mudah digunakan. Cocok untuk pemancing pemula seperti saya.', 5),
-(2, 5, 'Reel Shimano Stradic CI4+ 2500 ini sangat tangguh dan awet. Saya sudah menggunakannya selama beberapa bulan dan performanya tetap prima.', 4),
-(3, 2, 'Joran Carbon Fiber 180cm ini cukup kuat, tapi saya merasa agak berat untuk dibawa saat memancing seharian.', 3),
-(1, 6, 'Reel Daiwa BG 3000 ini sangat mudah dioperasikan dan memberikan hasil tangkapan yang memuaskan.', 5),
-(2, 3, 'Joran IdrisMaster 240cm ini sangat panjang dan ideal untuk memancing di laut. Saya sangat puas dengan pembelian ini.', 4),
-(3, 7, 'Reel Okuma Ceymar C-30 ini cukup ringan dan cocok untuk pemancing pemula. Harganya juga terjangkau.', 4),
-(1, 4, 'Joran Abu Garcia Veritas 210cm ini sangat responsif dan nyaman digunakan. Saya sangat merekomendasikannya.', 5),
-(2, 8, 'Reel Sawunggalih XT-5000 ini memiliki desain yang ergonomis dan performa yang baik. Sangat cocok untuk berbagai kondisi memancing.', 4);
-
-
--- 1. Review dari Jayesh Patil
+-- Reviews & Bookings Logic (Contoh Transaksi Selesai + Review)
+-- 1. Booking & Review: Jayesh
 INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
 VALUES ('Jayesh Patil', 'jayesh.patil@dummy.com', 'pass123', 'https://placehold.co/40x40/FF7F50/FFFFFF/png?text=JP', 1, 1);
-SET @uid = LAST_INSERT_ID(); -- Simpan ID User yang baru dibuat
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 1, DATE_SUB(NOW(), INTERVAL 5 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID(); -- Simpan ID Booking yang baru dibuat
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 1, @bid, "Layanan yang luar biasa! Tim mereka sangat profesional dan responsif. Benar-benar melampaui ekspektasi kami.", 5, NOW());
-
--- 2. Review dari Ullamcorper Leo
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Ullamcorper Leo', 'ullamcorper@dummy.com', 'pass123', 'https://placehold.co/40x40/6495ED/FFFFFF/png?text=UL', 1, 1);
 SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 2, DATE_SUB(NOW(), INTERVAL 10 DAY), 'completed', 'paid', 1);
+INSERT INTO bookings (id_user, id_location, spot_number, booking_date, booking_start, booking_end, duration, total_price, status, payment_status, payment_method) 
+VALUES (@uid, 1, 'T1', DATE_SUB(NOW(), INTERVAL 5 DAY), DATE_SUB(NOW(), INTERVAL 5 DAY), DATE_ADD(DATE_SUB(NOW(), INTERVAL 5 DAY), INTERVAL 2 HOUR), 2, 30000, 'completed', 'paid', 1);
 SET @bid = LAST_INSERT_ID();
 INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 2, @bid, "Pengalaman yang baik secara keseluruhan. Tempatnya strategis dan ikannya banyak. Mungkin area parkir bisa diperluas sedikit.", 4, NOW());
+VALUES (@uid, 1, @bid, "Layanan luar biasa!", 5, NOW());
 
--- 3. Review dari Dina Sari
+-- 2. Booking & Review: Dina
 INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
 VALUES ('Dina Sari', 'dina.sari@dummy.com', 'pass123', 'https://placehold.co/40x40/90EE90/FFFFFF/png?text=DS', 1, 1);
 SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 3, DATE_SUB(NOW(), INTERVAL 2 DAY), 'completed', 'paid', 1);
+INSERT INTO bookings (id_user, id_location, spot_number, booking_date, booking_start, booking_end, duration, total_price, status, payment_status, payment_method) 
+VALUES (@uid, 1, 'B5', DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_ADD(DATE_SUB(NOW(), INTERVAL 2 DAY), INTERVAL 3 HOUR), 3, 45000, 'completed', 'paid', 1);
 SET @bid = LAST_INSERT_ID();
 INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 3, @bid, "Sangat direkomendasikan! Fasilitasnya bersih dan terawat dengan baik. Stafnya juga sangat ramah dan membantu.", 5, NOW());
+VALUES (@uid, 1, @bid, "Tempatnya nyaman.", 4, NOW());
 
--- 4. Review dari Arif Hidayat
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Arif Hidayat', 'arif.hidayat@dummy.com', 'pass123', 'https://placehold.co/40x40/FFD700/FFFFFF/png?text=AH', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 4, DATE_SUB(NOW(), INTERVAL 15 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 4, @bid, "Spot yang bagus. Ikannya narik terus. Sayang kemarin pas ke sana lagi ramai banget, jadi kurang nyaman. Tapi tetap oke.", 4, NOW());
 
--- 5. Review dari Dewi Lestari
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Dewi Lestari', 'dewi.lestari@dummy.com', 'pass123', 'https://placehold.co/40x40/DA70D6/FFFFFF/png?text=DL', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 5, DATE_SUB(NOW(), INTERVAL 20 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 5, @bid, "Sebagai pemancing lokal, saya akui ini salah satu tempat terbaik. Airnya bersih dan ikannya sehat-sehat. Selalu puas mancing di sini.", 5, NOW());
+USE strike_it;
 
--- 6. Review dari Budi Santoso
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Budi Santoso', 'budi.santoso@dummy.com', 'pass123', 'https://placehold.co/40x40/ADD8E6/FFFFFF/png?text=BS', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 1, DATE_SUB(NOW(), INTERVAL 8 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 1, @bid, "Tempatnya cukup oke untuk mancing santai. Ikannya ada, walaupun ukurannya tidak terlalu besar. Pengalaman standar, tidak ada yang spesial tapi juga tidak mengecewakan.", 3, NOW());
+-- Gambar untuk Lokasi 2 (Bandung)
+INSERT INTO location_images (id_location, img_path, img_type) VALUES 
+(2, 'locationimg/bandung.png', 'main'),
+(2, 'locationimg/jakarta.jpg', 'gallery'), -- Dummy: Pinjam gambar jakarta
+(2, 'locationimg/bekasi.png', 'gallery');  -- Dummy: Pinjam gambar bekasi
 
--- 7. Review dari Citra Kirana
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Citra Kirana', 'citra.kirana@dummy.com', 'pass123', 'https://placehold.co/40x40/F08080/FFFFFF/png?text=CK', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 2, DATE_SUB(NOW(), INTERVAL 3 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 2, @bid, "Spot favorit! Selalu dapat tarikan babon di sini. Suasananya tenang dan sangat terawat. Sempurna untuk profesional.", 5, NOW());
+-- Gambar untuk Lokasi 3 (Bekasi)
+INSERT INTO location_images (id_location, img_path, img_type) VALUES 
+(3, 'locationimg/bekasi.png', 'main'),
+(3, 'locationimg/bandung.png', 'gallery'),
+(3, 'locationimg/banten.png', 'gallery');
 
--- 8. Review dari Dimas Aditama (1)
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Dimas Aditama', 'dimas.aditama1@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 3, DATE_SUB(NOW(), INTERVAL 12 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 3, @bid, "Sayang sekali, pengalaman saya kurang memuaskan. Tempatnya perlu lebih dirawat kebersihannya. Saya juga sedang kurang beruntung, 3 jam belum ada tarikan. Semoga ke depannya bisa lebih baik.", 2, NOW());
+-- Gambar untuk Lokasi 4 (Banten)
+INSERT INTO location_images (id_location, img_path, img_type) VALUES 
+(4, 'locationimg/banten.png', 'main'),
+(4, 'locationimg/tangerang.jpg', 'gallery'),
+(4, 'locationimg/jakarta.jpg', 'gallery');
 
--- 9. Review dari Dimas Aditama (2 - beda email karena unique constraint)
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Dimas Aditama', 'dimas.aditama2@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 4, DATE_SUB(NOW(), INTERVAL 1 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 4, @bid, "Ada beberapa hal yang bisa ditingkatkan. Harga tiketnya terasa agak mahal untuk fasilitas yang didapat. Ikannya juga agak sulit dipancing hari itu. Potensinya ada, semoga bisa lebih baik.", 2, NOW());
-
--- 10. Review dari Dimas asdkjasbd
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Dimas asdkjasbd', 'dimas.random@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 5, DATE_SUB(NOW(), INTERVAL 7 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 5, @bid, "Lumayan buat pemula. Tempatnya gampang diakses. Banyak ikan kecil, jadi seru buat belajar. Mungkin saungnya perlu ditambah.", 4, NOW());
-
--- 11. Review dari Asep Aditama
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Asep Aditama', 'asep.aditama@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 1, DATE_SUB(NOW(), INTERVAL 9 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 1, @bid, "Pelayanannya perlu ditingkatkan agar lebih ramah. Foto di iklan terlihat lebih bagus dari kenyataannya. Semoga ada perbaikan.", 2, NOW());
-
--- 12. Review dari Jamal Aditama
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Jamal Aditama', 'jamal.aditama@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 2, DATE_SUB(NOW(), INTERVAL 11 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 2, @bid, "Lokasinya sebenarnya bagus dan strategis. Sayang sekali kurang terawat, ada sampah di beberapa titik. Kalau dirapikan dan peraturannya diperjelas, pasti jadi spot yang bagus.", 3, NOW());
-
--- 13. Review dari Azka Aditama
-INSERT INTO users (name, email, password, avatar_img, id_payment_method, id_membership) 
-VALUES ('Azka Aditama', 'azka.aditama@dummy.com', 'pass123', 'https://placehold.co/40x40/20B2AA/FFFFFF/png?text=DA', 1, 1);
-SET @uid = LAST_INSERT_ID();
-INSERT INTO bookings (id_user, id_location, booking_date, status, payment_status, payment_method) 
-VALUES (@uid, 3, DATE_SUB(NOW(), INTERVAL 4 DAY), 'completed', 'paid', 1);
-SET @bid = LAST_INSERT_ID();
-INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating, created_at) 
-VALUES (@uid, 3, @bid, "Tempatnya oke, fasilitas toilet dan mushola bersih. Ikannya lumayan, tapi agak susah dapet yang besar. Cocok buat santai.", 4, NOW());
+-- Gambar untuk Lokasi 5 (Tangerang)
+INSERT INTO location_images (id_location, img_path, img_type) VALUES 
+(5, 'locationimg/tangerang.jpg', 'main'),
+(5, 'locationimg/banten.png', 'gallery'),
+(5, 'locationimg/bandung.png', 'gallery');

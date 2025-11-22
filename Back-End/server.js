@@ -71,7 +71,7 @@ import eventsRoutes from './src/routes/events.js';
 
 fastify.register(usersRoutes);
 fastify.register(productsRoutes);
-fastify.register(locationsRoutes);
+fastify.register(locationsRoutes, { prefix: '/locations' });
 fastify.register(bookingsRoutes, { prefix: '/bookings'});
 fastify.register(ordersRoutes);
 fastify.register(referencesRoutes);

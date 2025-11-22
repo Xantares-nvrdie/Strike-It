@@ -44,7 +44,6 @@ const routes = [
     path: '/shop/checkout',
     name: 'Checkout',
     component: CheckoutView,
-    // TAMBAHAN: Halaman checkout butuh login
     meta: { hideFooter: true, requiresAuth: true } 
   },
   {

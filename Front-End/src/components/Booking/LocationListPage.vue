@@ -1,41 +1,31 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
-
 import LocationCard from '@/components/Booking/LocationCard.vue';
+import api from '@/services/api.js'; // Import API
 
-const locations = ref([
-  {
-    city: 'Jakarta',
-    address: 'Jl. Kh Hasyim Ashari No.125',
-    description: 'Suasananya asri dan dikelilingi pepohonan. Karena merupakan fasilitas publik, kelengkapan fasilitasnya tidak seperti kolam pemancingan komersial, namun tetap menjadi favorit untuk bersantai.',
-    imageUrl: '/locationimg/jakarta.jpg' 
-  },
-  {
-    city: 'Bandung',
-    address: 'Jl. Diponegoro No.22, Citarum',
-    description: 'Atmosfernya penuh semangat kompetisi, dengan para pemancing serius yang fokus memantau ujung jorannya. Karena tujuannya adalah perlombaan untuk mendapatkan ikan terberat, fasilitasnya lebih fungsional.',
-    imageUrl: '/locationimg/bandung.png'
-  },
-  {
-    city: 'Bekasi',
-    address: 'Jl. Pramuka No.59',
-    description: 'Suasananya dirancang untuk rekreasi keluarga, sering kali dilengkapi saung lesehan di atas air dan alunan musik yang santai. Tempat ini adalah pilihan sempurna untuk memperkenalkan hobi memancing kepada anak-anak.',
-    imageUrl: '/locationimg/bekasi.png'
-  },
-  {
-    city: 'Banten',
-    address: 'Jl. Pelelangan Ikan Karangantu',
-    description: 'Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Karena benar-benar berada di lokasi liar, aksesnya bisa jadi sulit dan tidak ada jaminan akan mendapatkan ikan.',
-    imageUrl: '/locationimg/banten.png'
-  },
-  {
-    city: 'Tangerang',
-    address: 'Jl. Pegangsaan Timur No 55',
-    description: 'Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air dan serangga hutan. Tempat yang cocok untuk mencari ketenangan.',
-    imageUrl: '/locationimg/tangerang.jpg' // Pastikan ekstensi file benar (jpg/png)
+const locations = ref([]);
+const baseUrl = 'http://localhost:3000/uploads'; // Sesuaikan port
+
+const fetchLocations = async () => {
+  try {
+    const response = await api.getLocations();
+    locations.value = response.data.map(loc => ({
+      id: loc.id, // PENTING: Simpan ID untuk link detail
+      city: loc.city,
+      address: loc.address,
+      description: loc.description,
+      // Handle URL Gambar
+      imageUrl: loc.img ? (loc.img.startsWith('http') ? loc.img : `${baseUrl}/${loc.img}`) : 'https://placehold.co/600x400'
+    }));
+  } catch (error) {
+    console.error("Gagal load lokasi", error);
   }
-])
+};
+
+onMounted(() => {
+  fetchLocations();
+});
 </script>
 
 <template>
@@ -49,6 +39,6 @@ const locations = ref([
     </p>
   </div>
   <div class="flex justify-center items-center flex-col gap-5 mb-24">
-    <LocationCard class="" v-for="location in locations" :key="location.city" :location="location" />
+    <LocationCard class="" v-for="location in locations" :key="location.id" :location="location" />
   </div>
 </template>
