@@ -1,27 +1,30 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useRoute } from 'vue-router'; // Penting: useRoute untuk baca parameter URL
+import { useRoute } from 'vue-router';
 import FilterSidebar from '@/components/Shop/FilterSidebar.vue';
 import ProductList from '@/components/Shop/ProductList.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/services/api.js';
 
+// --- STATE DATA ---
 const products = ref([]); 
 const isLoading = ref(true);
 
 const route = useRoute();
-// Ambil slug kategori dari URL (misal: 'joran', 'reels')
 const currentCategorySlug = computed(() => route.params.categorySlug);
 
-// Fetch All Products
+// --- FETCH DATA ---
 const fetchProducts = async (filters = {}) => {
     isLoading.value = true;
     try {
         const params = {};
-        // Jika ada filter dari sidebar
         if (filters.alat && filters.alat.length > 0) params.category = filters.alat[0];
         if (filters.harga?.min) params.minPrice = filters.harga.min;
         if (filters.harga?.max) params.maxPrice = filters.harga.max;
+        
+        if (filters.status) {
+            params.type = filters.status; // 'Sewa' atau 'Beli'
+        }
 
         const res = await api.getProducts(params);
         products.value = res.data;
@@ -32,36 +35,57 @@ const fetchProducts = async (filters = {}) => {
     }
 };
 
-// --- LOGIKA FILTER KATEGORI ---
+// --- LOGIKA GROUPING OTOMATIS (KUNCI DINAMISNYA DISINI) ---
+const groupedProducts = computed(() => {
+    const groups = {};
+    
+    products.value.forEach(p => {
+        // 1. Cek nama kategori dari Backend (p.category_name)
+        // 2. Jika belum ada (backend belum update), pakai mapping manual ID -> Nama
+        let catName = p.category_name;
+        
+        if (!catName) {
+            if (p.id_category == 1) catName = 'Joran';
+            else if (p.id_category == 2) catName = 'Reel';
+            else if (p.id_category == 3) catName = 'Umpan';
+            else if (p.id_category == 4) catName = 'Kail';
+            else if (p.id_category == 5) catName = 'Senar';
+            else catName = 'Lainnya';
+        }
 
-const joranProducts = computed(() => {
-    // ID 1 = Joran (Sesuaikan dengan DB Anda)
-    return products.value.filter(p => p.id_category == 1 || (p.name && p.name.toLowerCase().includes('joran')));
+        if (!groups[catName]) {
+            groups[catName] = [];
+        }
+        groups[catName].push(p);
+    });
+    
+    // Contoh Hasil: { "Joran": [...], "Reel": [...] }
+    return groups;
 });
 
-const reelProducts = computed(() => {
-    // ID 2 = Reel (Sesuaikan dengan DB Anda)
-    return products.value.filter(p => p.id_category == 2 || (p.name && p.name.toLowerCase().includes('reel')));
-});
-
-// Produk yang ditampilkan saat masuk ke halaman "Lihat Semua"
+// --- FILTER HALAMAN KATEGORI (DETAIL VIEW) ---
 const categoryFilteredProducts = computed(() => {
     if (!currentCategorySlug.value) return [];
-    
     const slug = currentCategorySlug.value.toLowerCase();
     
-    if (slug === 'joran') return joranProducts.value;
-    if (slug === 'reels') return reelProducts.value;
-    
-    // Fallback untuk kategori lain
-    return products.value.filter(p => p.name.toLowerCase().includes(slug));
+    return products.value.filter(p => {
+        // Cek nama kategori (dari backend atau manual mapping di atas)
+        let catName = p.category_name;
+        if (!catName) {
+             if (p.id_category == 1) catName = 'Joran';
+             else if (p.id_category == 2) catName = 'Reel';
+             // ... dst
+        }
+        
+        // Cocokkan slug dengan nama kategori ATAU nama produk
+        return (catName && catName.toLowerCase() === slug) || p.name.toLowerCase().includes(slug);
+    });
 });
 
-// Judul Halaman Dinamis
 const pageTitle = computed(() => {
-    if (currentCategorySlug.value === 'joran') return 'Kategori: Joran';
-    if (currentCategorySlug.value === 'reels') return 'Kategori: Reels Pancing';
-    return 'Semua Produk';
+    if (!currentCategorySlug.value) return 'Toko Strike It!';
+    // Ubah slug 'joran' jadi 'Kategori: Joran'
+    return 'Kategori: ' + currentCategorySlug.value.charAt(0).toUpperCase() + currentCategorySlug.value.slice(1);
 });
 
 // --- UI UTILS ---
@@ -70,6 +94,7 @@ const showScrollToTop = ref(false);
 
 const handleScroll = () => showScrollToTop.value = window.scrollY > 200;
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
 const handleFilter = (filterData) => {
     fetchProducts(filterData);
     isFilterVisible.value = false; 
@@ -79,7 +104,10 @@ onMounted(() => {
     fetchProducts();
     window.addEventListener('scroll', handleScroll);
 });
-onUnmounted(() => window.removeEventListener('scroll', handleScroll));
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
 </script>
 
 <template>
@@ -91,10 +119,10 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                 
                 <main class="flex-1 min-w-0 py-9 inline-flex flex-col justify-start items-center gap-2.5 w-full">
 
-                    <h1 class="text-4xl font-medium text-black md:text-6xl">
-                        Toko Strike It!
+                    <h1 class="text-4xl font-medium text-black md:text-6xl text-center">
+                        {{ pageTitle }}
                     </h1>
-                    <p class="max-w-2xl mx-auto mt-5 text-lg text-center leading-relaxed text-gray-600">
+                    <p v-if="!currentCategorySlug" class="max-w-2xl mx-auto mt-5 text-lg text-center leading-relaxed text-gray-600">
                         Jelajahi koleksi perlengkapan memancing terbaik kami.
                     </p>
                     
@@ -115,24 +143,19 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                     
                     <div v-else-if="!currentCategorySlug" class="w-full flex flex-col gap-8">
                         
-                        <ProductList 
-                            v-if="joranProducts.length > 0"
-                            title="Joran" 
-                            :products="joranProducts" 
-                            categorySlug="joran" 
-                            displayMode="row" 
-                        />
-                        
-                        <ProductList 
-                            v-if="reelProducts.length > 0"
-                            title="Reels Pancing" 
-                            :products="reelProducts" 
-                            categorySlug="reels" 
-                            displayMode="row" 
-                        />
+                        <div v-for="(items, categoryName) in groupedProducts" :key="categoryName">
+                            <ProductList 
+                                v-if="items.length > 0"
+                                :title="categoryName" 
+                                :products="items" 
+                                :categorySlug="categoryName.toLowerCase()" 
+                                displayMode="row" 
+                            />
+                        </div>
 
-                        <div v-if="products.length === 0" class="text-center py-10 text-gray-400 bg-white rounded-xl w-full">
-                            Belum ada data produk.
+                        <div v-if="products.length === 0" class="text-center py-10 text-gray-400 bg-white rounded-xl w-full p-8">
+                            <p class="text-lg font-semibold">Belum ada data produk.</p>
+                            <p class="text-sm">Coba reset filter atau cek database.</p>
                         </div>
                     </div>
 
@@ -143,9 +166,14 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
                             :categorySlug="currentCategorySlug"
                             displayMode="grid" 
                         />
+                        
+                        <div v-if="categoryFilteredProducts.length === 0" class="text-center py-10 text-gray-500">
+                            Tidak ada produk di kategori ini.
+                        </div>
                     </div>
 
                 </main>
+
             </div>
         </div>
 

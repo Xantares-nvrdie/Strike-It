@@ -8,28 +8,28 @@ const emit = defineEmits(['close']);
 const toast = useToast();
 
 // --- TAB SYSTEM ---
-const activeTab = ref('filter'); // 'filter' or 'cart'
+const activeTab = ref('filter'); 
 
 // --- DATA FILTER ---
 const jenisAlat = ['Joran', 'Umpan', 'Kail', 'Senar', 'Reel']; 
+const status = ['Sewa', 'Beli']; // Opsi Status
 const selectedAlat = ref([]);
+const selectedStatus = ref(null); // State untuk status terpilih
 const filterHarga = reactive({ min: null, max: null });
 
 // --- DATA CART ---
 const cartItems = ref([]);
 const baseUrl = 'http://localhost:3000/uploads';
 
-// Fetch Cart
 const fetchCart = async () => {
     try {
         const res = await api.getCart();
         cartItems.value = res.data;
     } catch (error) {
-        cartItems.value = []; // Silent fail
+        cartItems.value = []; 
     }
 };
 
-// Remove Item
 const removeItem = async (id) => {
     try {
         await api.removeFromCart(id);
@@ -40,12 +40,10 @@ const removeItem = async (id) => {
     }
 };
 
-// Total Harga Keranjang
 const cartTotal = computed(() => {
     return cartItems.value.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
 });
 
-// Helper URL Gambar
 const getFullUrl = (path) => {
     if (!path) return 'https://placehold.co/100';
     return path.startsWith('http') ? path : `${baseUrl}/${path}`;
@@ -62,9 +60,16 @@ function toggleAlat(alat) {
     else selectedAlat.value.push(alat);
 }
 
+function selectStatus(stat) {
+    // Toggle status (klik lagi untuk unselect)
+    if (selectedStatus.value === stat) selectedStatus.value = null;
+    else selectedStatus.value = stat;
+}
+
 function tampilkanHasil() {
     emit('close', {
         alat: selectedAlat.value,
+        status: selectedStatus.value, // Kirim status ke parent
         harga: filterHarga
     });
 }
@@ -73,7 +78,7 @@ function resetFilter() {
     filterHarga.min = null;
     filterHarga.max = null;
     selectedAlat.value = [];
-    // tampilkanHasil(); // Opsional
+    selectedStatus.value = null;
 }
 </script>
 
@@ -133,24 +138,34 @@ function resetFilter() {
                 <h3 class="text-lg font-semibold text-gray-800">Harga</h3>
                 <div class="flex items-center gap-2">
                     <div class="relative flex-1">
-                        <input
-                            type="number"
-                            v-model.number="filterHarga.min"
-                            placeholder="Min"
-                            class="w-full pl-8 pr-2 py-2 border border-gray-300 text-black rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
+                        <input type="number" v-model.number="filterHarga.min" placeholder="Min" class="w-full pl-8 pr-2 py-2 border border-gray-300 text-black rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"/>
                         <Icon icon="heroicons:currency-dollar-20-solid" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     </div>
                     <span class="text-gray-500">-</span>
                     <div class="relative flex-1">
-                        <input
-                            type="number"
-                            v-model.number="filterHarga.max"
-                            placeholder="Max"
-                            class="w-full pl-8 pr-2 py-2 border border-gray-300 text-black rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
+                        <input type="number" v-model.number="filterHarga.max" placeholder="Max" class="w-full pl-8 pr-2 py-2 border border-gray-300 text-black rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"/>
                         <Icon icon="heroicons:currency-dollar-20-solid" class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                     </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <h3 class="text-lg font-semibold text-gray-800">Status</h3>
+                <div class="flex flex-wrap gap-2.5">
+                    <button 
+                        v-for="stat in status"
+                        :key="stat"
+                        type="button"
+                        @click="selectStatus(stat)"
+                        :class="[
+                            'px-4 py-2 text-sm font-medium rounded-lg transition-colors border',
+                            selectedStatus === stat
+                                ? 'bg-blue-600 text-white border-blue-600'
+                                : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                        ]"
+                    >
+                        {{ stat }}
+                    </button>
                 </div>
             </div>
             
@@ -167,13 +182,9 @@ function resetFilter() {
                 <Icon icon="heroicons:shopping-cart" class="w-12 h-12 mb-2 opacity-50" />
                 <p class="text-sm">Keranjang kosong</p>
             </div>
-
             <div v-else class="flex flex-col gap-4 flex-1 overflow-y-auto pr-1">
                 <div v-for="item in cartItems" :key="item.id" class="flex gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100 relative group">
-                    <img 
-                        :src="getFullUrl(item.img)"
-                        class="w-16 h-16 object-cover rounded-lg bg-white border border-gray-200"
-                    >
+                    <img :src="getFullUrl(item.img)" class="w-16 h-16 object-cover rounded-lg bg-white border border-gray-200">
                     <div class="flex-1 min-w-0 flex flex-col justify-between">
                         <div>
                             <h4 class="text-sm font-bold text-gray-900 truncate">{{ item.name }}</h4>
@@ -183,7 +194,6 @@ function resetFilter() {
                         </div>
                         <div class="flex items-center justify-between mt-1">
                             <span class="text-sm font-bold text-blue-600">Rp {{ (item.price * item.quantity).toLocaleString('id-ID') }}</span>
-                            
                             <button @click="removeItem(item.id)" class="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors">
                                 <Icon icon="heroicons:trash" class="w-4 h-4" />
                             </button>
@@ -191,7 +201,6 @@ function resetFilter() {
                     </div>
                 </div>
             </div>
-
             <div v-if="cartItems.length > 0" class="mt-auto pt-4 border-t border-gray-100">
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-sm font-medium text-gray-600">Total</span>

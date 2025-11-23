@@ -67,6 +67,9 @@ export default {
     getProductReviews(id) {
         return api.get(`/products/${id}/reviews`);
     },
+    createProductReview(id, data) {
+        return api.post(`/products/${id}/reviews`, data);
+    },
 
     // --- MASTER DATA ---
     getEvents() {
@@ -114,6 +117,9 @@ export default {
     },
     createOrder(data) {
         return api.post('/orders', data);
+    },
+    getMyOrders() {
+        return api.get('/orders/my-orders');
     },
 
     // --- REVIEWS (Landing Page) ---

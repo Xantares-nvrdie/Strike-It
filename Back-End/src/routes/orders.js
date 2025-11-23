@@ -77,4 +77,54 @@ export default async function (fastify, options) {
             return reply.code(500).send({ message: error.message || 'Gagal membuat pesanan' });
         }
     });
+
+    // URL: GET /orders/my-orders
+    fastify.get('/my-orders', { onRequest: [fastify.authenticate] }, async (request, reply) => {
+        try {
+            const userId = request.user.id;
+            
+            // UPDATE QUERY: 
+            // 1. Ambil first_product_id (agar frontend tau produk mana yang direview)
+            // 2. Cek apakah sudah ada review di tabel product_reviews terkait order ini
+            const [rows] = await fastify.db.query(`
+                SELECT 
+                    o.id, 
+                    o.order_number, 
+                    o.total_amount, 
+                    o.status, 
+                    o.payment_status, 
+                    o.created_at,
+                    (SELECT COUNT(*) FROM order_items WHERE id_order = o.id) as total_items,
+                    (
+                        SELECT p.name 
+                        FROM order_items oi 
+                        JOIN products p ON oi.id_product = p.id 
+                        WHERE oi.id_order = o.id 
+                        LIMIT 1
+                    ) as first_product_name,
+                    (
+                        SELECT p.id 
+                        FROM order_items oi 
+                        JOIN products p ON oi.id_product = p.id 
+                        WHERE oi.id_order = o.id 
+                        LIMIT 1
+                    ) as first_product_id,
+                    -- Cek apakah sudah direview (Count > 0 berarti true)
+                    (
+                        SELECT COUNT(*) 
+                        FROM product_reviews pr 
+                        JOIN order_items oi ON pr.id_order_item = oi.id
+                        WHERE oi.id_order = o.id
+                    ) as review_count
+                FROM orders o
+                WHERE o.id_user = ?
+                ORDER BY o.created_at DESC
+            `, [userId]);
+            
+            return rows;
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal mengambil riwayat pesanan' });
+        }
+    });
 }

@@ -4,16 +4,14 @@ import HistoryCard from "@/components/Profile/HistoryCard.vue";
 import HistoryFilter from "@/components/Profile/HistoryFilter.vue";
 import { Icon } from "@iconify/vue";
 import api from "@/services/api.js";
-import { useToast } from "vue-toastification"; // 1. Import Toast
+import { useToast } from "vue-toastification";
 
-// Inisialisasi Toast
 const toast = useToast();
-
 const isFilterVisible = ref(false);
 const historyItems = ref([]);    
 const allHistoryItems = ref([]); 
 
-// Helpers Formatter
+// Helper Formatter
 const formatRupiah = (price) => {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price).replace('IDR', 'Rp.');
 };
@@ -24,48 +22,110 @@ const formatDate = (dateString) => {
   return new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(date);
 };
 
+// Mapping Status
 const mapStatus = (item) => {
-  if (item.status === 'cancelled') return { id: 'dibatalkan', text: 'Dibatalkan' };
-  if (item.payment_status === 'paid' || item.status === 'completed') return { id: 'terbayar', text: 'Terbayar' };
-  return { id: 'belum_dibayar', text: 'Belum Dibayar' };
+    // A. Booking (Sewa)
+    if (item.spot_number) { 
+        if (item.status === 'cancelled') return { id: 'dibatalkan', text: 'Dibatalkan', class: 'text-red-600 bg-red-50' };
+        if (item.payment_status === 'paid') return { id: 'terbayar', text: 'Sewa Selesai', class: 'text-green-600 bg-green-50' };
+        return { id: 'belum_dibayar', text: 'Belum Bayar', class: 'text-yellow-600 bg-yellow-50' };
+    }
+    // B. Order (Belanja)
+    switch (item.status) {
+        case 'pending': return { id: 'belum_dibayar', text: 'Menunggu Pembayaran', class: 'text-yellow-600 bg-yellow-50' };
+        case 'processing': return { id: 'diproses', text: 'Sedang Dikemas', class: 'text-blue-600 bg-blue-50' };
+        case 'shipped': return { id: 'dikirim', text: 'Dalam Pengiriman', class: 'text-orange-600 bg-orange-50' };
+        case 'delivered': return { id: 'terbayar', text: 'Pesanan Diterima', class: 'text-green-600 bg-green-50' };
+        case 'cancelled': return { id: 'dibatalkan', text: 'Dibatalkan', class: 'text-red-600 bg-red-50' };
+        default: return { id: 'unknown', text: item.status, class: 'text-gray-500 bg-gray-50' };
+    }
 };
 
-// --- FETCH DATA ---
 const fetchHistory = async () => {
   try {
-    const response = await api.getMyBookings();
-    
-    const mappedData = response.data.map(item => {
+    const [bookingRes, orderRes] = await Promise.all([
+        api.getMyBookings(), 
+        api.getMyOrders()    
+    ]);
+
+    // 1. Booking
+    const bookings = bookingRes.data.map(item => {
       const statusInfo = mapStatus(item);
       return {
-        // ... data lain sama ...
-        id: item.id,
-        locationId: item.id_location,
-        title: `Sewa Tempat No. ${item.spot_number} - ${item.location_name}`,
+        id: `BOOK-${item.id}`, 
+        originalId: item.id,
+        type: 'booking',       
+        title: `Sewa Tempat: ${item.location_name} (Spot ${item.spot_number})`,
         dateTime: formatDate(item.booking_start),
-        rawDate: item.booking_start,
+        rawDate: new Date(item.booking_start),
         price: formatRupiah(item.total_price),
-        status: statusInfo.id, 
+        status: statusInfo.id,
         statusText: statusInfo.text,
+        statusClass: statusInfo.class,
         
-        // BARU: Tangkap status review dari backend
-        // Backend kirim 1 atau 0, kita ubah jadi Boolean (true/false)
-        hasReviewed: Boolean(item.is_reviewed), 
-        
+        // Data Review Booking
+        targetId: item.id_location, // Location ID
+        hasReviewed: Boolean(item.is_reviewed),
         isRatingVisible: false,
         rating: 0,
         reviewText: "",
       };
     });
 
-    allHistoryItems.value = mappedData;
-    historyItems.value = mappedData;
+    // 2. Order
+    const orders = orderRes.data.map(item => {
+       const statusInfo = mapStatus(item);
+       let title = item.first_product_name || 'Produk';
+       if (item.total_items > 1) title += ` (+ ${item.total_items - 1} barang lainnya)`;
+
+       return {
+         id: `ORD-${item.id}`,
+         originalId: item.id,
+         type: 'order', 
+         title: title,
+         dateTime: formatDate(item.created_at),
+         rawDate: new Date(item.created_at),
+         price: formatRupiah(item.total_amount),
+         status: statusInfo.id,
+         statusText: statusInfo.text,
+         statusClass: statusInfo.class,
+         
+         // Data Review Order
+         targetId: item.first_product_id, // Product ID (untuk di-review)
+         hasReviewed: item.review_count > 0, // Cek dari backend
+         isRatingVisible: false,
+         rating: 0,
+         reviewText: ""
+       };
+    });
+
+    const combined = [...bookings, ...orders].sort((a, b) => b.rawDate - a.rawDate);
+    allHistoryItems.value = combined;
+    historyItems.value = combined;
+
   } catch (error) {
-    // ... error handling
+    toast.error("Gagal memuat riwayat.");
   }
 };
 
-// UPDATE SUBMIT RATING
+// --- LOGIC TOGGLE & SUBMIT (UPDATED) ---
+
+const toggleRating = (clickedItem) => {
+    // 1. Validasi Pembayaran
+    if (clickedItem.status !== 'terbayar') { // Status 'terbayar' kita set untuk paid/completed/delivered
+        toast.warning("Selesaikan transaksi untuk memberi ulasan.");
+        return;
+    }
+    
+    // 2. Validasi Sudah Review
+    if (clickedItem.hasReviewed) return;
+
+    // 3. Buka Form
+    const newVisibility = !clickedItem.isRatingVisible;
+    historyItems.value.forEach(item => item.isRatingVisible = false);
+    clickedItem.isRatingVisible = newVisibility;
+};
+
 const handleSubmitRating = async (item) => {
     if (item.rating === 0) {
         toast.warning("Mohon pilih bintang dulu");
@@ -73,77 +133,47 @@ const handleSubmitRating = async (item) => {
     }
 
     try {
-        const payload = {
-            id_booking: item.id,
-            id_location: item.locationId, 
-            rating: item.rating,
-            comment: item.reviewText
-        };
+        // JIKA BOOKING -> API Review Lokasi
+        if (item.type === 'booking') {
+            await api.createReview({
+                id_booking: item.originalId, 
+                id_location: item.targetId, 
+                rating: item.rating,
+                comment: item.reviewText
+            });
+        } 
+        // JIKA ORDER -> API Review Produk
+        else if (item.type === 'order') {
+            if (!item.targetId) {
+                toast.error("Produk tidak ditemukan.");
+                return;
+            }
+            // Panggil endpoint POST /products/:id/reviews
+            await api.createProductReview(item.targetId, {
+                rating: item.rating,
+                comment: item.reviewText
+            });
+        }
 
-        await api.createReview(payload);
         toast.success("Ulasan berhasil dikirim!");
-        
-        // LOGIKA BARU:
-        // 1. Tutup form
         item.isRatingVisible = false;
-        // 2. Tandai item ini sudah direview agar tombol berubah jadi "Selesai"
         item.hasReviewed = true; 
 
     } catch (error) {
-        const msg = error.response?.data?.message || "Gagal kirim ulasan";
-        toast.error(msg);
+        toast.error(error.response?.data?.message || "Gagal kirim ulasan");
     }
-};
-
-// --- LOGIKA UI LAINNYA ---
-const toggleRating = (clickedItem) => {
-    // Cek apakah status completed/terbayar sebelum buka form rating?
-    if (clickedItem.status !== 'terbayar') {
-        toast.warning("Anda hanya bisa mengulas pesanan yang sudah selesai/terbayar.");
-        return;
-    }
-
-    const newVisibility = !clickedItem.isRatingVisible;
-    historyItems.value.forEach(item => item.isRatingVisible = false);
-    clickedItem.isRatingVisible = newVisibility;
 };
 
 const handleFiltersUpdate = (filters) => {
-  let result = allHistoryItems.value;
-
-  if (filters.statuses && filters.statuses.length > 0) {
-    result = result.filter(item => filters.statuses.includes(item.status));
-  }
-
-  if (filters.startDate && filters.endDate) {
-    const start = new Date(filters.startDate).setHours(0,0,0,0);
-    const end = new Date(filters.endDate).setHours(23,59,59,999);
-    result = result.filter(item => {
-      const itemTime = new Date(item.rawDate).getTime();
-      return itemTime >= start && itemTime <= end;
-    });
-  } else if (filters.time) {
-    const now = new Date();
-    if (filters.time === 'hari_ini') {
-      result = result.filter(item => new Date(item.rawDate).toDateString() === now.toDateString());
-    } else if (filters.time === 'minggu_ini') {
-      const oneWeekAgo = new Date(now);
-      oneWeekAgo.setDate(now.getDate() - 7);
-      result = result.filter(item => new Date(item.rawDate) >= oneWeekAgo);
-    } else if (filters.time === 'bulan_ini') {
-      result = result.filter(item => {
-          const d = new Date(item.rawDate);
-          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      });
+    let result = allHistoryItems.value;
+    if (filters.statuses && filters.statuses.length > 0) {
+        result = result.filter(item => filters.statuses.includes(item.status));
     }
-  }
-  historyItems.value = result;
-  if (window.innerWidth < 1024) isFilterVisible.value = false;
+    // ... date filter ...
+    historyItems.value = result;
 };
 
-onMounted(() => {
-  fetchHistory();
-});
+onMounted(() => { fetchHistory(); });
 </script>
 
 <template>
@@ -155,15 +185,14 @@ onMounted(() => {
       </button>
     </header>
 
-    <aside class="lg:hidden transition-all duration-300 ease-out" 
-          :class="isFilterVisible ? 'opacity-100 translate-y-0 max-h-screen' : 'opacity-0 -translate-y-4 max-h-0 overflow-hidden'">
+    <aside class="lg:hidden transition-all duration-300 ease-out" :class="isFilterVisible ? 'opacity-100 translate-y-0 max-h-screen' : 'opacity-0 -translate-y-4 max-h-0 overflow-hidden'">
       <HistoryFilter class="mb-6" @apply-filters="handleFiltersUpdate" />
     </aside>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <main class="lg:col-span-2 flex flex-col gap-4">
         <div v-if="historyItems.length === 0" class="p-8 text-center bg-white rounded-xl shadow">
-              <p class="text-gray-500">Tidak ada pesanan yang ditemukan.</p>
+             <p class="text-gray-500">Belum ada riwayat pesanan.</p>
         </div>
 
         <HistoryCard

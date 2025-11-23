@@ -73,7 +73,7 @@ fastify.register(usersRoutes);
 fastify.register(productsRoutes, { prefix: '/products' });
 fastify.register(locationsRoutes, { prefix: '/locations' });
 fastify.register(bookingsRoutes, { prefix: '/bookings'});
-fastify.register(ordersRoutes);
+fastify.register(ordersRoutes, { prefix: '/orders' });
 fastify.register(referencesRoutes);
 fastify.register(communityRoutes, { prefix: '/community'});
 fastify.register(reviewsRoutes, { prefix: '/reviews'});

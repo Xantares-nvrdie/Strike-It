@@ -9,15 +9,14 @@ const router = useRouter();
 const toast = useToast();
 const baseUrl = 'http://localhost:3000/uploads';
 
-// State
+// --- STATE ---
 const cartItems = ref([]);
 const isSubmitting = ref(false);
-const selectedPayment = ref('bank_transfer'); // Default ID: 2 (Bank Transfer)
+const selectedPayment = ref('bank_transfer'); 
 
-// Form Data
+// Form Data (Disederhanakan: fullName)
 const billingDetails = ref({
-  firstName: '',
-  lastName: '',
+  fullName: '', // Gabungan nama depan & belakang
   phone: '',
   email: '',
   address: '',
@@ -27,18 +26,15 @@ const billingDetails = ref({
   notes: ''
 });
 
+// Diskon State
+const voucherCode = ref('');
+const discountAmount = ref(0);
+const isVoucherApplied = ref(false);
+
 // --- FETCH DATA ---
 const loadData = async () => {
     try {
-        // 1. Ambil Profil User (Auto Fill)
-        const userRes = await api.getMyProfile();
-        const u = userRes.data;
-        billingDetails.value.firstName = u.name.split(' ')[0];
-        billingDetails.value.lastName = u.name.split(' ').slice(1).join(' ');
-        billingDetails.value.email = u.email;
-        billingDetails.value.phone = '08123456789'; // Dummy jika di db kosong
-
-        // 2. Ambil Keranjang
+        // 1. Cek Keranjang
         const cartRes = await api.getCart();
         if (cartRes.data.length === 0) {
             toast.info("Keranjang kosong, silakan belanja dulu.");
@@ -46,6 +42,13 @@ const loadData = async () => {
             return;
         }
         cartItems.value = cartRes.data;
+
+        // 2. Auto-fill Data User
+        const userRes = await api.getMyProfile();
+        const u = userRes.data;
+        billingDetails.value.fullName = u.name; // Langsung nama lengkap
+        billingDetails.value.email = u.email;
+        billingDetails.value.phone = '08123456789'; 
 
     } catch (error) {
         console.error(error);
@@ -57,30 +60,64 @@ onMounted(() => {
     loadData();
 });
 
-// --- COMPUTED ---
+// --- COMPUTED PRICES ---
 const cartTotal = computed(() => {
     return cartItems.value.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
 });
 
+const shippingCost = 20000; 
+
+const grandTotal = computed(() => {
+    const total = cartTotal.value + shippingCost - discountAmount.value;
+    return total > 0 ? total : 0;
+});
+
 const getFullUrl = (path) => path ? (path.startsWith('http') ? path : `${baseUrl}/${path}`) : 'https://placehold.co/100';
+
+// --- LOGIC VOUCHER ---
+const applyVoucher = async () => {
+    if (!voucherCode.value) {
+        toast.warning("Masukkan kode voucher!");
+        return;
+    }
+
+    try {
+        const res = await api.checkVoucher(voucherCode.value);
+        
+        if (res.data.valid) {
+            const valStr = res.data.discount_value;
+            
+            // Hitung diskon (Persen atau Nominal)
+            if (valStr.includes('%')) {
+                const percent = parseInt(valStr.replace('%', ''));
+                discountAmount.value = cartTotal.value * (percent / 100);
+            } else {
+                discountAmount.value = parseInt(valStr);
+            }
+
+            isVoucherApplied.value = true;
+            toast.success(`Voucher berhasil! Hemat Rp ${discountAmount.value.toLocaleString('id-ID')}`);
+        }
+    } catch (error) {
+        discountAmount.value = 0;
+        isVoucherApplied.value = false;
+        toast.error(error.response?.data?.message || "Kode voucher tidak valid.");
+    }
+};
 
 // --- SUBMIT ORDER ---
 const submitCheckout = async () => {
     if (isSubmitting.value) return;
     
-    // Validasi Sederhana
-    if (!billingDetails.value.address || !billingDetails.value.city) {
-        toast.warning("Mohon lengkapi alamat pengiriman.");
+    if (!billingDetails.value.address || !billingDetails.value.city || !billingDetails.value.phone) {
+        toast.warning("Mohon lengkapi alamat dan nomor HP.");
         return;
     }
 
     isSubmitting.value = true;
     try {
-        // Gabungkan alamat jadi satu string lengkap
         const fullAddress = `${billingDetails.value.address}, ${billingDetails.value.city}, ${billingDetails.value.province} ${billingDetails.value.postcode}`;
 
-        // Mapping Payment Method ke ID Database (Manual sementara)
-        // 1: Debit, 2: Transfer, 3: QRIS, 4: COD
         let paymentId = 2; 
         if (selectedPayment.value === 'qris') paymentId = 3;
         if (selectedPayment.value === 'cod') paymentId = 4;
@@ -89,16 +126,15 @@ const submitCheckout = async () => {
             shipping_address: fullAddress,
             payment_method: paymentId,
             notes: billingDetails.value.notes,
-            shipping_cost: 20000, // Flat rate contoh
+            shipping_cost: shippingCost,
             tax_amount: 0,
-            discount_amount: 0
+            discount_amount: discountAmount.value // Kirim nilai diskon ke backend
         };
 
         const res = await api.createOrder(payload);
         
         toast.success(`Pesanan Berhasil! No: ${res.data.order_number}`);
-        // Redirect ke halaman History atau Success
-        router.push('/history'); // Atau halaman sukses khusus
+        router.push('/history'); 
 
     } catch (error) {
         toast.error(error.response?.data?.message || "Gagal membuat pesanan.");
@@ -119,25 +155,21 @@ const submitCheckout = async () => {
           <h2 class="text-2xl font-semibold mb-6">Alamat Pengiriman</h2>
           
           <form @submit.prevent="submitCheckout" class="space-y-5">
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                <input type="text" v-model="billingDetails.fullName" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Nama Penerima">
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Depan</label>
-                <input type="text" v-model="billingDetails.firstName" class="w-full p-3 border border-gray-300 rounded-lg" readonly>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Belakang</label>
-                <input type="text" v-model="billingDetails.lastName" class="w-full p-3 border border-gray-300 rounded-lg" readonly>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input type="email" v-model="billingDetails.email" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" readonly>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Nomor HP <span class="text-red-500">*</span></label>
-              <input type="tel" v-model="billingDetails.phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" v-model="billingDetails.email" class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50" readonly>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nomor HP <span class="text-red-500">*</span></label>
+                    <input type="tel" v-model="billingDetails.phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+                </div>
             </div>
 
             <div class="pt-4 border-t border-gray-100">
@@ -145,53 +177,68 @@ const submitCheckout = async () => {
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Jalan <span class="text-red-500">*</span></label>
-                        <input type="text" v-model="billingDetails.address" class="w-full p-3 border border-gray-300 rounded-lg" required placeholder="Nama Jalan, No Rumah, RT/RW">
+                        <input type="text" v-model="billingDetails.address" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required placeholder="Nama Jalan, No Rumah, RT/RW">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kota <span class="text-red-500">*</span></label>
-                            <input type="text" v-model="billingDetails.city" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                            <input type="text" v-model="billingDetails.city" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Provinsi <span class="text-red-500">*</span></label>
-                            <input type="text" v-model="billingDetails.province" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                            <input type="text" v-model="billingDetails.province" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Kode Pos <span class="text-red-500">*</span></label>
-                        <input type="text" v-model="billingDetails.postcode" class="w-full p-3 border border-gray-300 rounded-lg" required>
+                        <input type="text" v-model="billingDetails.postcode" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
                     </div>
                 </div>
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
-              <textarea rows="3" v-model="billingDetails.notes" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="Pesan khusus untuk kurir..."></textarea>
+              <textarea rows="3" v-model="billingDetails.notes" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Pesan khusus untuk kurir..."></textarea>
             </div>
           </form>
         </div>
 
-        <div class="w-full lg:w-2/5">
-          <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg space-y-6">
+        <div class="w-full lg:w-2/5 space-y-6">
+          
+          <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg space-y-6 sticky top-24">
             <h2 class="text-2xl text-black font-semibold">Pesanan Anda</h2>
 
-            <div class="space-y-4 max-h-60 overflow-y-auto pr-2">
+            <div class="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
               <div v-for="item in cartItems" :key="item.id" class="flex justify-between items-center border-b border-gray-50 pb-3">
                 <div class="flex items-center gap-3">
-                  <img :src="getFullUrl(item.img)" class="w-14 h-14 rounded-md object-cover border border-gray-200">
+                  <img :src="getFullUrl(item.img)" class="w-14 h-14 rounded-md object-cover border border-gray-200 bg-gray-50">
                   <div>
-                    <span class="font-medium text-gray-800 block truncate w-32">{{ item.name }}</span>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span class="text-xs text-gray-500">x {{ item.quantity }}</span>
-                        <span class="px-1.5 py-0.5 text-[10px] font-bold uppercase rounded"
-                            :class="item.transaction_type === 'sewa' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'">
-                            {{ item.transaction_type }}
-                        </span>
-                    </div>
+                    <span class="font-medium text-gray-800 block truncate w-40 sm:w-32" :title="item.name">{{ item.name }}</span>
+                    <span class="text-xs text-gray-500">x {{ item.quantity }}</span>
                   </div>
                 </div>
                 <span class="font-medium text-gray-700 text-sm">Rp {{ (item.price * item.quantity).toLocaleString('id-ID') }}</span>
               </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <label class="text-sm font-medium text-gray-700 mb-2 block">Kode Voucher</label>
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        v-model="voucherCode"
+                        :disabled="isVoucherApplied"
+                        placeholder="Masukkan kode" 
+                        class="flex-1 px-3 text-gray-800 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 uppercase"
+                    >
+                    <button 
+                        @click="applyVoucher"
+                        :disabled="isVoucherApplied"
+                        class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+                    >
+                        {{ isVoucherApplied ? 'Terpakai' : 'Pakai' }}
+                    </button>
+                </div>
             </div>
 
             <div class="border-t border-gray-200 pt-4 space-y-2">
@@ -200,31 +247,37 @@ const submitCheckout = async () => {
                     <span>Rp {{ cartTotal.toLocaleString('id-ID') }}</span>
                 </div>
                 <div class="flex justify-between text-sm text-gray-600">
-                    <span>Pengiriman</span>
-                    <span>Rp 20.000</span>
+                    <span>Pengiriman (Flat)</span>
+                    <span>Rp {{ shippingCost.toLocaleString('id-ID') }}</span>
                 </div>
-                <div class="flex justify-between items-center pt-2 border-t border-dashed">
+                
+                <div v-if="discountAmount > 0" class="flex justify-between text-sm text-green-600 font-medium">
+                    <span>Diskon Voucher</span>
+                    <span>- Rp {{ discountAmount.toLocaleString('id-ID') }}</span>
+                </div>
+
+                <div class="flex justify-between items-center pt-2 border-t border-dashed mt-2">
                     <span class="text-lg font-semibold text-gray-900">Total</span>
-                    <span class="text-xl font-bold text-blue-600">Rp {{ (cartTotal + 20000).toLocaleString('id-ID') }}</span>
+                    <span class="text-xl font-bold text-blue-600">Rp {{ grandTotal.toLocaleString('id-ID') }}</span>
                 </div>
             </div>
 
             <div class="border-t border-gray-200 pt-6 space-y-3">
                 <h3 class="font-medium text-gray-800">Metode Pembayaran</h3>
                 
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'bank_transfer'}">
+                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'bank_transfer'}">
                     <input type="radio" value="bank_transfer" v-model="selectedPayment" class="h-4 w-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">Bank Transfer (BCA/Mandiri)</span>
+                    <span class="ml-3 text-sm font-medium text-gray-700">Bank Transfer</span>
                 </label>
 
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'qris'}">
+                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'qris'}">
                     <input type="radio" value="qris" v-model="selectedPayment" class="h-4 w-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">QRIS (GoPay/OVO/Dana)</span>
+                    <span class="ml-3 text-sm font-medium text-gray-700">QRIS</span>
                 </label>
 
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'cod'}">
+                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'cod'}">
                     <input type="radio" value="cod" v-model="selectedPayment" class="h-4 w-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">Cash on Delivery (COD)</span>
+                    <span class="ml-3 text-sm font-medium text-gray-700">COD (Bayar di Tempat)</span>
                 </label>
             </div>
 
@@ -242,3 +295,20 @@ const submitCheckout = async () => {
     </div>
   </section>
 </template>
+
+<style scoped>
+/* Custom Scrollbar untuk list item */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1; 
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8; 
+}
+</style>
