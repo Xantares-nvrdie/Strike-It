@@ -591,3 +591,18 @@ SET @bid5 = LAST_INSERT_ID();
 
 INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating) 
 VALUES (@uid5, 5, @bid5, "Harga tiket masuk terjangkau. Kolamnya luas, lapaknya juga berjarak jadi nggak sempit-sempitan. Sayang kantinnya tutup pas saya datang.", 4);
+
+
+UPDATE memberships 
+SET benefits = 'Anda dapat menghentikan atau membatalkan kapan saja.\nDiskon 10% untuk sewa alat pancing.\nDiskon 20% untuk pembelian umpan.\nPemberian umpan dasar gratis saat kedatangan.\nKesempatan mengikuti turnamen bulanan secara gratis.'
+WHERE id = 1;
+
+-- Update Kawan Mancing
+UPDATE memberships 
+SET benefits = 'Anda dapat menghentikan atau membatalkan kapan saja.\nDiskon 10% untuk sewa alat pancing.\nVoucher makan di restoran/kantin.\nPemberian umpan dasar gratis saat kedatangan.'
+WHERE id = 2;
+
+-- Update Jawara Mancing
+UPDATE memberships 
+SET benefits = 'Anda dapat menghentikan atau membatalkan kapan saja.\nDiskon 10% untuk sewa alat pancing.\nDiskon 20% untuk pembelian umpan.\nKesempatan mengikuti turnamen bulanan secara gratis.\nSatu sesi konsultasi mingguan dengan pemandu mancing profesional.'
+WHERE id = 3;

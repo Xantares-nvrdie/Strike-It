@@ -12,18 +12,28 @@ export default async function (fastify, options) {
 
     // --- 2. GET MY PROFILE (PENTING: Taruh paling atas sebelum /:id) ---
     // Ini untuk mengambil data saat halaman Profil dibuka
-    fastify.get('/users/me', { onRequest: [fastify.authenticate] }, async (req, reply) => {
-        const userId = req.user.id;
-        const [rows] = await fastify.db.execute(`
-            SELECT u.id, u.name, u.email, u.bio, u.avatar_img, u.date_birth, 
-                    m.name as membership_name, m.description as membership_desc
-            FROM users u
-            LEFT JOIN memberships m ON u.id_membership = m.id
-            WHERE u.id = ?
-        `, [userId]);
-        
-        if (rows.length === 0) return reply.code(404).send({ error: 'User not found' });
-        return rows[0];
+    fastify.put('/me', { onRequest: [fastify.authenticate] }, async (request, reply) => {
+        try {
+            const userId = request.user.id;
+            const { name, bio, date_birth, avatar_img, id_payment_method } = request.body;
+
+            // Kita buat query dinamis sederhana atau update field yg dikirim saja
+            // Disini contoh update semua yang umum + payment method jika ada
+            await fastify.db.query(`
+                UPDATE users 
+                SET name = COALESCE(?, name), 
+                    bio = COALESCE(?, bio), 
+                    date_birth = COALESCE(?, date_birth),
+                    avatar_img = COALESCE(?, avatar_img),
+                    id_payment_method = COALESCE(?, id_payment_method)
+                WHERE id = ?
+            `, [name, bio, date_birth, avatar_img, id_payment_method, userId]);
+
+            return { message: 'Profil berhasil diupdate' };
+        } catch (error) {
+            request.log.error(error);
+            return reply.code(500).send({ message: 'Gagal update profil' });
+        }
     });
 
     // --- 3. UPDATE PROFILE (PUT) - PENTING: INI YANG HILANG ---

@@ -4,46 +4,62 @@ import PricingCard from './PricingCard.vue';
 import { Icon } from '@iconify/vue';
 import api from '@/services/api'; // Import API Service
 
-// Data plan (Awalnya kosong, diisi dari API)
+// --- State Management ---
 const pricingPlans = ref([]);
+const isModalOpen = ref(false);
+const selectedPlan = ref(null);
+const isLoggedIn = ref(false);
+const userMembership = ref('');
 
-// Mengambil data membership dari Backend
-const fetchMemberships = async () => {
+// --- Fetch Data Logic ---
+const fetchAllData = async () => {
   try {
+    // 1. Cek Login & Ambil Paket Aktif User
+    const token = localStorage.getItem('token');
+    if (token) {
+        isLoggedIn.value = true;
+        try {
+            const profileRes = await api.getMyProfile();
+            userMembership.value = profileRes.data.membership_name;
+        } catch (e) {
+            console.warn("Token expired/invalid", e);
+            isLoggedIn.value = false;
+        }
+    }
+
+    // 2. Ambil List Paket dari Backend
     const response = await api.getMemberships();
+    
     // Mapping data DB ke format Frontend
     pricingPlans.value = response.data.map(plan => ({
       id: plan.id,
       title: plan.name,
       subtitle: plan.description,
+      // Format harga langsung di sini
       price: Number(plan.price_per_month).toLocaleString('id-ID'), 
-      features: plan.benefits ? plan.benefits.split('\n').filter(f => f.trim()) : [],
+      features: plan.benefits ? plan.benefits.split(/[\n,]/).filter(f => f.trim()) : [],
       isPopular: Boolean(plan.is_popular)
     }));
   } catch (error) {
-    console.error("Gagal memuat paket langganan:", error);
+    console.error("Gagal memuat data:", error);
   }
 };
 
-// --- LOGIKA SUSUNAN PLAN (Agar Populer di Tengah) ---
+// --- Logika Sorting Plan (Populer di Tengah) ---
 const sortedPlans = computed(() => {
   if (pricingPlans.value.length === 0) return [];
   
-  // Pisahkan plan populer dan biasa
   const popular = pricingPlans.value.find(p => p.isPopular);
   const regular = pricingPlans.value.filter(p => !p.isPopular);
 
-  // Jika ada plan populer, taruh di tengah (index ke-1 dari 3 item)
-  // Struktur: [Biasa 1, POPULER, Biasa 2]
   if (popular && regular.length >= 2) {
     return [regular[0], popular, regular[1], ...regular.slice(2)];
   }
   
-  // Fallback jika datanya tidak standar (misal cuma 2 plan)
   return pricingPlans.value;
 });
 
-// Logika slider (Original)
+// --- Logika Slider Mobile ---
 const activeIndex = ref(1);
 const touchStartX = ref(0);
 const touchStartY = ref(0);
@@ -58,13 +74,17 @@ function handleTouchEnd(e) {
   const finalY = e.changedTouches[0].clientY;
   const diffX = finalX - touchStartX.value;
   const diffY = finalY - touchStartY.value;
-  if (Math.abs(diffY) > Math.abs(diffX)) return;
+  
+  if (Math.abs(diffY) > Math.abs(diffX)) return; // Abaikan scroll vertikal
+  
   const tapThreshold = 10;
   const swipeThreshold = 50;
+  
   if (Math.abs(diffX) < tapThreshold && Math.abs(diffY) < tapThreshold) return;
+  
   if (Math.abs(diffX) > swipeThreshold) {
     e.preventDefault(); 
-    const totalPlans = sortedPlans.value.length; // Gunakan sortedPlans
+    const totalPlans = sortedPlans.value.length; 
     const currentTabIndex = activeIndex.value;
     if (diffX < 0) {
       activeIndex.value = (currentTabIndex + 1) % totalPlans;
@@ -74,11 +94,14 @@ function handleTouchEnd(e) {
   }
 }
 
-// Logika Modal & Checkout
-const isModalOpen = ref(false);
-const selectedPlan = ref(null);
-
+// --- Logika Modal & Checkout ---
 function openModal(plan) {
+  if (!isLoggedIn.value) {
+      if (confirm("Silakan login terlebih dahulu untuk berlangganan.")) {
+          window.location.href = '/login';
+      }
+      return;
+  }
   selectedPlan.value = plan;
   isModalOpen.value = true;
 }
@@ -95,22 +118,27 @@ async function confirmCheckout() {
 
   try {
     await api.upgradeMembership(selectedPlan.value.id);
-    alert(`Berhasil berlangganan paket ${selectedPlan.value.title}!`);
-    closeModal();
-    window.location.reload();
+    
+    // Tutup modal
+    isModalOpen.value = false;
+    
+    alert(`Pembayaran Berhasil! Anda sekarang berlangganan paket ${selectedPlan.value.title}.`);
+    
+    // Refresh data agar status membership terupdate
+    await fetchAllData();
+    
   } catch (error) {
     console.error(error);
-    if (error.response && error.response.status === 401) {
-      alert("Silakan login terlebih dahulu untuk berlangganan.");
-    } else {
-      alert("Gagal melakukan langganan. Silakan coba lagi.");
-    }
-    closeModal();
+    alert("Gagal melakukan pembayaran. Silakan coba lagi.");
   }
 }
 
+const isCurrentPlan = (planName) => {
+    return isLoggedIn.value && planName === userMembership.value;
+};
+
 onMounted(() => {
-  fetchMemberships();
+  fetchAllData();
 });
 </script>
 
@@ -127,12 +155,10 @@ onMounted(() => {
       </p>
     </div>
 
-    <!-- Fallback Loading -->
     <div v-if="pricingPlans.length === 0" class="mt-20 text-gray-500 animate-pulse">
       Sedang memuat paket...
     </div>
 
-    <!-- MOBILE VIEW (Slider) - Tetap pakai urutan asli atau sorted (opsional) -->
     <div v-else class="md:hidden mt-12">
       <div class="overflow-hidden">
         <div
@@ -141,7 +167,6 @@ onMounted(() => {
           @touchstart="handleTouchStart"
           @touchend="handleTouchEnd"
         >
-          <!-- Kita pakai sortedPlans agar urutan mobile juga konsisten (Biasa-Populer-Biasa) -->
           <div
             v-for="(plan, index) in sortedPlans"
             :key="index"
@@ -153,6 +178,7 @@ onMounted(() => {
               :price="plan.price"
               :features="plan.features"
               :is-popular="plan.isPopular"
+              :is-current="isCurrentPlan(plan.title)"
               class="h-full w-full max-w-sm"
               @subscribe="openModal(plan)"
             />
@@ -165,16 +191,13 @@ onMounted(() => {
           v-for="(plan, index) in sortedPlans"
           :key="index"
           @click="activeIndex = index"
-          :class="
-            activeIndex === index ? 'bg-blue-600' : 'bg-gray-300'
-          "
+          :class="activeIndex === index ? 'bg-blue-600' : 'bg-gray-300'"
           class="size-3 rounded-full transition-colors"
           :aria-label="`Go to plan ${index + 1}`"
         ></button>
       </div>
     </div>
 
-    <!-- DESKTOP VIEW (Grid) - Menggunakan sortedPlans agar Populer di Tengah -->
     <div
       v-if="pricingPlans.length > 0"
       class="hidden md:flex items-center justify-center gap-6 mt-12 flex-wrap"
@@ -187,9 +210,10 @@ onMounted(() => {
         :price="plan.price"
         :features="plan.features"
         :is-popular="plan.isPopular"
+        :is-current="isCurrentPlan(plan.title)"
         class="md:w-[360px] transition-transform duration-300"
         :class="{ 
-            'transform scale-110 z-10 shadow-2xl border-blue-500/30': plan.isPopular,
+            'transform scale-110 z-10 shadow-2xl border-blue-500/30': plan.isPopular && !isCurrentPlan(plan.title),
             'h-full': !plan.isPopular 
         }"
         @subscribe="openModal(plan)"
@@ -199,47 +223,51 @@ onMounted(() => {
 
   <Transition name="fade">
     <div
-      v-if="isModalOpen"
+      v-if="isModalOpen && selectedPlan"
       @click="closeModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 font-['Outfit']"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm font-['Outfit']"
     >
       <div
         @click.stop
-        class="bg-white rounded-3xl shadow-xl w-full max-w-lg p-8 relative"
+        class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl relative transform transition-all scale-100"
       >
-        <button
-          @click="closeModal"
-          class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          <Icon icon="mdi:close" class="w-7 h-7" />
-        </button>
-
-        <div class="text-center">
-          <Icon icon="heroicons:shopping-cart-solid" class="w-16 h-16 text-blue-600 mx-auto mb-4" />
-          <h2 class="text-2xl font-semibold text-gray-900 mb-2">
-            Konfirmasi Langganan
-          </h2>
-          <p class="text-gray-600 mb-6">
-            Anda akan berlangganan paket berikut:
-          </p>
-
-          <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 text-left space-y-3">
-            <div class="flex justify-between">
-              <span class="text-gray-500">Paket:</span>
-              <span class="text-lg font-semibold text-gray-900">{{ selectedPlan?.title }}</span>
+        <div class="text-center mb-6">
+            <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Icon icon="mdi:credit-card-outline" class="w-8 h-8 text-blue-600" />
             </div>
-            <div class="flex justify-between">
-              <span class="text-gray-500">Harga:</span>
-              <span class="text-lg font-semibold text-gray-900">Rp{{ selectedPlan?.price }}/bulan</span>
+            <h3 class="text-2xl font-bold text-gray-900">Konfirmasi Pembayaran</h3>
+            <p class="text-sm text-gray-500 mt-1">Simulasi pembayaran langganan</p>
+        </div>
+
+        <div class="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-600">Paket</span>
+                <span class="font-bold text-gray-900">{{ selectedPlan.title }}</span>
             </div>
-          </div>
-          
-          <button
-            @click="confirmCheckout"
-            class="w-full mt-8 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
-          >
-            Konfirmasi & Bayar
-          </button>
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-600">Metode Bayar</span>
+                <span class="text-sm font-medium text-blue-600">E-Wallet (Simulasi)</span>
+            </div>
+            <div class="border-t border-gray-200 my-2"></div>
+            <div class="flex justify-between items-center">
+                <span class="text-base font-bold text-gray-800">Total</span>
+                <span class="text-xl font-bold text-blue-600">Rp {{ selectedPlan.price }}</span>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <button
+                @click="closeModal"
+                class="flex-1 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 transition duration-200"
+            >
+                Batal
+            </button>
+            <button
+                @click="confirmCheckout"
+                class="flex-1 py-2.5 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition duration-300 active:scale-95"
+            >
+                Bayar / Oke
+            </button>
         </div>
       </div>
     </div>
@@ -249,7 +277,7 @@ onMounted(() => {
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease-out;
 }
 .fade-enter-from,
 .fade-leave-to {
