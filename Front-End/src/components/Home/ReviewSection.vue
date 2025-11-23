@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import ReviewCard from './ReviewCard.vue';
-import api from '@/services/api.js'; // Sesuaikan path api.js
+import api from '@/services/api.js'; 
 
 const reviews = ref([]);
 const baseUrl = 'http://localhost:3000'; 
@@ -9,28 +9,42 @@ const staticPrefix = '/uploads';
 
 const fetchReviews = async () => {
   try {
-    const response = await api.getLocationReviews();
+    const response = await api.getPublicReviews();
     
-    reviews.value = response.data.map(item => {
-      // Logic URL Avatar
+    const originalData = response.data.map(item => {
       let avatarUrl = item.avatar_img;
       if (avatarUrl && !avatarUrl.startsWith('http')) {
          const cleanPath = avatarUrl.startsWith('/') ? avatarUrl.substring(1) : avatarUrl;
          avatarUrl = `${baseUrl}${staticPrefix}/${cleanPath}`;
       } else if (!avatarUrl) {
-         // Avatar default jika user belum pasang foto
          avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(item.user_name)}&background=random`;
       }
 
       return {
         id: item.id,
-        author: item.user_name,     // Nama User
-        title: item.location_name,  // Nama Lokasi (menggantikan jabatan)
+        author: item.user_name,
+        title: item.location_name,
         avatar: avatarUrl,
         rating: item.rating,
         content: item.comment
       };
     });
+
+    // --- PERBAIKAN UTAMA: DUPLIKASI DATA ---
+    // Kita gandakan data 4x agar list menjadi panjang dan tidak putus saat scroll
+    let multipliedData = [...originalData];
+    for (let i = 1; i <= 4; i++) {
+        multipliedData = [
+            ...multipliedData, 
+            ...originalData.map(item => ({
+                ...item,
+                // Buat ID unik dummy agar Vue tidak error (key duplicate)
+                id: `${item.id}_copy_${i}` 
+            }))
+        ];
+    }
+
+    reviews.value = multipliedData;
 
   } catch (error) {
     console.error("Gagal memuat reviews:", error);
@@ -41,7 +55,7 @@ onMounted(() => {
   fetchReviews();
 });
 
-// --- LOGIKA SPLIT KOLOM & STYLE (TIDAK PERLU DIUBAH) ---
+// --- LOGIKA SPLIT KOLOM & STYLE (TIDAK DIUBAH) ---
 const column1Reviews = computed(() => reviews.value.filter((_, i) => i % 3 === 0));
 const column2Reviews = computed(() => reviews.value.filter((_, i) => i % 3 === 1));
 const column3Reviews = computed(() => reviews.value.filter((_, i) => i % 3 === 2));
@@ -67,17 +81,17 @@ const column3Reviews = computed(() => reviews.value.filter((_, i) => i % 3 === 2
         
         <div class="flex flex-col gap-6 animate-scroll-down"> 
           <ReviewCard v-for="review in column1Reviews" :key="review.id" :review="review" />
-          <ReviewCard v-for="review in column1Reviews" :key="`${review.id}-dup`" :review="review" />
+          <ReviewCard v-for="review in column1Reviews" :key="`${review.id}-dup-anim`" :review="review" />
         </div>
         
         <div class="flex flex-col gap-6 animate-scroll-up"> 
           <ReviewCard v-for="review in column2Reviews" :key="review.id" :review="review" />
-          <ReviewCard v-for="review in column2Reviews" :key="`${review.id}-dup`" :review="review" />
+          <ReviewCard v-for="review in column2Reviews" :key="`${review.id}-dup-anim`" :review="review" />
         </div>
         
         <div class="flex flex-col gap-6 animate-scroll-down"> 
           <ReviewCard v-for="review in column3Reviews" :key="review.id" :review="review" />
-          <ReviewCard v-for="review in column3Reviews" :key="`${review.id}-dup`" :review="review" />
+          <ReviewCard v-for="review in column3Reviews" :key="`${review.id}-dup-anim`" :review="review" />
         </div>
 
       </div>
@@ -88,10 +102,10 @@ const column3Reviews = computed(() => reviews.value.filter((_, i) => i % 3 === 2
 </template>
 
 <style scoped>
-/* STYLE TETAP SAMA */
 @keyframes scroll-up { from { transform: translateY(0); } to { transform: translateY(-50%); } }
 @keyframes scroll-down { from { transform: translateY(-50%); } to { transform: translateY(0); } }
-.animate-scroll-up { animation: scroll-up 45s linear infinite; }
-.animate-scroll-down { animation: scroll-down 45s linear infinite; }
+
+.animate-scroll-up { animation: scroll-up 100s linear infinite; } /* Diperlambat sedikit biar smooth */
+.animate-scroll-down { animation: scroll-down 100s linear infinite; }
 .animate-scroll-up:hover, .animate-scroll-down:hover { animation-play-state: paused; }
 </style>

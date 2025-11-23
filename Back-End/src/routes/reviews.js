@@ -16,7 +16,7 @@ export default async function (fastify, options) {
                 JOIN users u ON lr.id_user = u.id
                 JOIN locations l ON lr.id_location = l.id
                 ORDER BY lr.created_at DESC
-                LIMIT 15
+                LIMIT 20
             `);
             return rows;
         } catch (error) {

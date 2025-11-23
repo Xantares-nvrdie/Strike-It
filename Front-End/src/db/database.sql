@@ -516,3 +516,78 @@ CREATE TABLE shopping_cart (
     FOREIGN KEY (id_product) REFERENCES products(id) ON DELETE CASCADE,
     UNIQUE KEY unique_cart_item (id_user, id_product)
 );
+
+
+-- ============================================
+INSERT INTO users (name, email, password, bio, avatar_img, id_payment_method, id_membership) 
+VALUES ('Budi Santoso', 'budi.review@test.com', '12345', 'Hobi mancing galatama', 'https://randomuser.me/api/portraits/men/32.jpg', 1, 1);
+SET @uid1 = LAST_INSERT_ID();
+
+-- Buat Booking Selesai
+INSERT INTO bookings (id_user, id_location, spot_number, booking_date, booking_start, booking_end, duration, total_price, status, payment_status, payment_method, invoice_number) 
+VALUES (@uid1, 1, 'T1', DATE_SUB(NOW(), INTERVAL 10 DAY), NOW(), NOW(), 3, 45000, 'completed', 'paid', 1, 'INV-REV-001');
+SET @bid1 = LAST_INSERT_ID();
+
+-- Buat Review
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating) 
+VALUES (@uid1, 1, @bid1, "Tempatnya luas dan sangat bersih. Ikan mas-nya juga lumayan gampang makan. Fasilitas toilet oke, mushola bersih. Recommended buat ajak keluarga!", 5);
+
+
+-- ============================================
+-- 2. INSERT REVIEWER 2: Siti Aminah (Lokasi 2: Bandung)
+-- ============================================
+INSERT INTO users (name, email, password, bio, avatar_img, id_payment_method, id_membership) 
+VALUES ('Siti Aminah', 'siti.review@test.com', '12345', 'Pemula casting', 'https://randomuser.me/api/portraits/women/44.jpg', 1, 1);
+SET @uid2 = LAST_INSERT_ID();
+
+INSERT INTO bookings (id_user, id_location, spot_number, booking_date, booking_start, booking_end, duration, total_price, status, payment_status, payment_method, invoice_number) 
+VALUES (@uid2, 2, 'B5', DATE_SUB(NOW(), INTERVAL 5 DAY), NOW(), NOW(), 4, 80000, 'completed', 'paid', 1, 'INV-REV-002');
+SET @bid2 = LAST_INSERT_ID();
+
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating) 
+VALUES (@uid2, 2, @bid2, "Suasananya sejuk banget khas Bandung. Ikannya besar-besar (babon), tarikannya mantap! Cuma parkiran mobil agak sempit kalau weekend.", 4);
+
+
+-- ============================================
+-- 3. INSERT REVIEWER 3: Rudi Hermawan (Lokasi 3: Bekasi)
+-- ============================================
+INSERT INTO users (name, email, password, bio, avatar_img, id_payment_method, id_membership) 
+VALUES ('Rudi Hermawan', 'rudi.review@test.com', '12345', 'Mancing mania mantap', 'https://randomuser.me/api/portraits/men/85.jpg', 1, 2);
+SET @uid3 = LAST_INSERT_ID();
+
+INSERT INTO bookings (id_user, id_location, spot_number, booking_date, booking_start, booking_end, duration, total_price, status, payment_status, payment_method, invoice_number) 
+VALUES (@uid3, 3, 'L2', DATE_SUB(NOW(), INTERVAL 2 DAY), NOW(), NOW(), 2, 50000, 'completed', 'paid', 1, 'INV-REV-003');
+SET @bid3 = LAST_INSERT_ID();
+
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating) 
+VALUES (@uid3, 3, @bid3, "Pelayanan ramah, saungnya nyaman buat ngopi sambil nunggu strike. Cocok buat yang mau mancing santai.", 5);
+
+
+-- ============================================
+-- 4. INSERT REVIEWER 4: Dewi Sartika (Lokasi 4: Banten)
+-- ============================================
+INSERT INTO users (name, email, password, bio, avatar_img, id_payment_method, id_membership) 
+VALUES ('Dewi Sartika', 'dewi.review@test.com', '12345', 'Healing fishing', 'https://randomuser.me/api/portraits/women/68.jpg', 1, 1);
+SET @uid4 = LAST_INSERT_ID();
+
+INSERT INTO bookings (id_user, id_location, spot_number, booking_date, booking_start, booking_end, duration, total_price, status, payment_status, payment_method, invoice_number) 
+VALUES (@uid4, 4, 'R1', DATE_SUB(NOW(), INTERVAL 1 DAY), NOW(), NOW(), 5, 150000, 'completed', 'paid', 1, 'INV-REV-004');
+SET @bid4 = LAST_INSERT_ID();
+
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating) 
+VALUES (@uid4, 4, @bid4, "Tempatnya benar-benar alami dan tenang. Jauh dari kebisingan kota. Akses jalan masuk agak berbatu tapi terbayar dengan suasananya.", 5);
+
+
+-- ============================================
+-- 5. INSERT REVIEWER 5: Andi Pratama (Lokasi 5: Tangerang)
+-- ============================================
+INSERT INTO users (name, email, password, bio, avatar_img, id_payment_method, id_membership) 
+VALUES ('Andi Pratama', 'andi.review@test.com', '12345', 'Casting lover', 'https://randomuser.me/api/portraits/men/11.jpg', 1, 1);
+SET @uid5 = LAST_INSERT_ID();
+
+INSERT INTO bookings (id_user, id_location, spot_number, booking_date, booking_start, booking_end, duration, total_price, status, payment_status, payment_method, invoice_number) 
+VALUES (@uid5, 5, 'T5', DATE_SUB(NOW(), INTERVAL 20 DAY), NOW(), NOW(), 2, 36000, 'completed', 'paid', 1, 'INV-REV-005');
+SET @bid5 = LAST_INSERT_ID();
+
+INSERT INTO location_reviews (id_user, id_location, id_booking, comment, rating) 
+VALUES (@uid5, 5, @bid5, "Harga tiket masuk terjangkau. Kolamnya luas, lapaknya juga berjarak jadi nggak sempit-sempitan. Sayang kantinnya tutup pas saya datang.", 4);
