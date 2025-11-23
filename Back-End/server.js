@@ -58,7 +58,7 @@ await fastify.register(cors, {
 fastify.decorate('db', db);
 
 fastify.register(jwt, {
-    secret: process.env.JWT_SECRET || 'rahasia-super-aman-strike-it'
+    secret: process.env.JWT_SECRET
 });
 
 fastify.decorate('authenticate', async function (request, reply) {
