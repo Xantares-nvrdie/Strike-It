@@ -1,10 +1,10 @@
 <script setup>
-import { ref, watch, defineEmits } from 'vue';
+import { ref, watch } from 'vue';
 
-const emit = defineEmits(['update:paymentMethod']);
+// Menggunakan event 'select' agar cocok dengan BookingPage.vue
+const emit = defineEmits(['select']);
 
 // Tab aktif (default: transfer)
-// Pilihan: 'transfer', 'qris', 'card', 'cod'
 const activeTab = ref('transfer');
 
 // State untuk pilihan spesifik (UX Only)
@@ -13,27 +13,31 @@ const selectedBank = ref('bca');
 // Form Kartu
 const cardInfo = ref({ number: '', expiry: '', cvv: '', name: '' });
 
-// Logic Mapping ke ID Database
-// 1: Debit Card, 2: Bank Transfer, 3: QRIS, 4: Cash on Delivery
-const getPaymentMethodId = () => {
+// Logic Mapping ke ID Database (Sesuaikan ID ini dengan isi tabel payment_methods Anda)
+const getPaymentMethodInfo = () => {
     switch (activeTab.value) {
-        case 'card': return 1;
-        case 'transfer': return 2;
-        case 'qris': return 3;
-        case 'cod': return 4;
-        default: return 2;
+        // ID 1: Kartu Kredit/Debit
+        case 'card': return { id: 1, name: 'Kartu Debit/Kredit' }; 
+        // ID 2: Bank Transfer
+        case 'transfer': return { id: 2, name: 'Bank Transfer' };
+        // ID 3: QRIS
+        case 'qris': return { id: 3, name: 'QRIS' };
+        // ID 4: COD
+        case 'cod': return { id: 4, name: 'Cash on Delivery' };
+        default: return { id: 2, name: 'Bank Transfer' };
     }
 };
 
-// Pantau perubahan tab dan kirim ID ke parent (BookingPage)
+// Pantau perubahan tab dan kirim Object ke parent
 watch(activeTab, () => {
-    const methodId = getPaymentMethodId();
-    emit('update:paymentMethod', methodId);
+    const methodData = getPaymentMethodInfo();
+    // Kita emit object lengkap agar BookingPage bisa membaca .id
+    emit('select', methodData);
 }, { immediate: true });
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8">
     <h3 class="text-2xl font-medium text-gray-900 mb-6 border-b pb-4">
       Metode Pembayaran
     </h3>
@@ -91,33 +95,33 @@ watch(activeTab, () => {
         <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
           :class="{'border-blue-600 ring-1 ring-blue-600 bg-blue-50': selectedBank === 'bca'}">
           <div class="flex items-center gap-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" alt="BCA" class="h-8 w-auto">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg" alt="BCA" class="h-8 w-auto object-contain">
             <span class="font-medium text-gray-900">BCA Virtual Account</span>
           </div>
-          <input type="radio" value="bca" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300">
+          <input type="radio" value="bca" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
         </label>
 
         <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
           :class="{'border-blue-600 ring-1 ring-blue-600 bg-blue-50': selectedBank === 'mandiri'}">
           <div class="flex items-center gap-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" alt="Mandiri" class="h-8 w-auto">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Bank_Mandiri_logo_2016.svg" alt="Mandiri" class="h-8 w-auto object-contain">
             <span class="font-medium text-gray-900">Mandiri Virtual Account</span>
           </div>
-          <input type="radio" value="mandiri" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300">
+          <input type="radio" value="mandiri" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
         </label>
 
         <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
           :class="{'border-blue-600 ring-1 ring-blue-600 bg-blue-50': selectedBank === 'bri'}">
           <div class="flex items-center gap-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg" alt="BRI" class="h-8 w-auto">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/68/BANK_BRI_logo.svg" alt="BRI" class="h-8 w-auto object-contain">
             <span class="font-medium text-gray-900">BRI Virtual Account</span>
           </div>
-          <input type="radio" value="bri" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300">
+          <input type="radio" value="bri" v-model="selectedBank" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
         </label>
       </div>
 
       <div v-if="activeTab === 'qris'" class="flex flex-col items-center justify-center space-y-6 py-4 animate-fade-in">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" alt="QRIS" class="h-12 mb-2">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png" alt="QRIS" class="h-8 mb-2">
         
         <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-200">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=StrikeItPayment" alt="QR Code" class="w-48 h-48">
@@ -157,13 +161,13 @@ watch(activeTab, () => {
       </div>
 
       <div v-if="activeTab === 'cod'" class="flex flex-col items-center justify-center space-y-4 py-8 animate-fade-in">
-        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331941.png" alt="COD" class="w-24 h-24 opacity-80">
+        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331941.png" alt="COD" class="w-20 h-20 opacity-70">
         <h4 class="text-lg font-semibold text-gray-900">Bayar di Tempat</h4>
         <p class="text-center text-gray-600 text-sm max-w-sm">
           Anda dapat melakukan pembayaran secara tunai di lokasi pemancingan saat melakukan registrasi ulang / check-in.
         </p>
         <div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg text-sm border border-yellow-200">
-          Pastikan membawa uang pas untuk mempercepat proses.
+          <span class="font-bold">Catatan:</span> Pastikan membawa uang pas untuk mempercepat proses.
         </div>
       </div>
 

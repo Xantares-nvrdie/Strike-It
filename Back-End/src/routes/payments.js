@@ -1,5 +1,6 @@
 export default async function (fastify, options) {
 
+
     // 1. BAYAR BOOKING (Simulasi)
     fastify.post('/pay/booking/:id', { onRequest: [fastify.authenticate] }, async (req, reply) => {
         const bookingId = req.params.id;

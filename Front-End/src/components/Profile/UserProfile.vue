@@ -217,7 +217,6 @@ const getStatusClass = (s) => {
 };
 
 
-
 onMounted(fetchData);
 </script>
 

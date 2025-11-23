@@ -11,12 +11,14 @@ const baseUrl = 'http://localhost:3000/uploads';
 
 // --- STATE ---
 const cartItems = ref([]);
+const paymentMethods = ref([]); // State untuk menampung data dari Database
+const isLoadingPayment = ref(false);
 const isSubmitting = ref(false);
-const selectedPayment = ref('bank_transfer'); 
+const selectedPayment = ref(null); // Menyimpan ID payment method yang dipilih
 
-// Form Data (Disederhanakan: fullName)
+// Form Data
 const billingDetails = ref({
-  fullName: '', // Gabungan nama depan & belakang
+  fullName: '',
   phone: '',
   email: '',
   address: '',
@@ -46,13 +48,34 @@ const loadData = async () => {
         // 2. Auto-fill Data User
         const userRes = await api.getMyProfile();
         const u = userRes.data;
-        billingDetails.value.fullName = u.name; // Langsung nama lengkap
+        billingDetails.value.fullName = u.name;
         billingDetails.value.email = u.email;
         billingDetails.value.phone = '08123456789'; 
+        billingDetails.value.address = u.address || '';
+
+        // 3. Ambil Metode Pembayaran dari Database
+        fetchPaymentMethods();
 
     } catch (error) {
         console.error(error);
         toast.error("Gagal memuat data checkout.");
+    }
+};
+
+const fetchPaymentMethods = async () => {
+    isLoadingPayment.value = true;
+    try {
+        const res = await api.getPaymentMethods();
+        paymentMethods.value = res.data;
+        
+        // Auto-select metode pertama jika ada
+        if (paymentMethods.value.length > 0) {
+            selectedPayment.value = paymentMethods.value[0].id;
+        }
+    } catch (error) {
+        console.error("Gagal load payment methods:", error);
+    } finally {
+        isLoadingPayment.value = false;
     }
 };
 
@@ -87,7 +110,6 @@ const applyVoucher = async () => {
         if (res.data.valid) {
             const valStr = res.data.discount_value;
             
-            // Hitung diskon (Persen atau Nominal)
             if (valStr.includes('%')) {
                 const percent = parseInt(valStr.replace('%', ''));
                 discountAmount.value = cartTotal.value * (percent / 100);
@@ -109,6 +131,13 @@ const applyVoucher = async () => {
 const submitCheckout = async () => {
     if (isSubmitting.value) return;
     
+    // Validasi Payment
+    if (!selectedPayment.value) {
+        toast.warning("Silakan pilih metode pembayaran!");
+        return;
+    }
+    
+    // Validasi Form
     if (!billingDetails.value.address || !billingDetails.value.city || !billingDetails.value.phone) {
         toast.warning("Mohon lengkapi alamat dan nomor HP.");
         return;
@@ -118,17 +147,14 @@ const submitCheckout = async () => {
     try {
         const fullAddress = `${billingDetails.value.address}, ${billingDetails.value.city}, ${billingDetails.value.province} ${billingDetails.value.postcode}`;
 
-        let paymentId = 2; 
-        if (selectedPayment.value === 'qris') paymentId = 3;
-        if (selectedPayment.value === 'cod') paymentId = 4;
-
         const payload = {
             shipping_address: fullAddress,
-            payment_method: paymentId,
+            // Sambungkan ID payment yang dipilih dari DB
+            payment_method: selectedPayment.value, 
             notes: billingDetails.value.notes,
             shipping_cost: shippingCost,
             tax_amount: 0,
-            discount_amount: discountAmount.value // Kirim nilai diskon ke backend
+            discount_amount: discountAmount.value
         };
 
         const res = await api.createOrder(payload);
@@ -137,6 +163,7 @@ const submitCheckout = async () => {
         router.push('/history'); 
 
     } catch (error) {
+        console.error(error);
         toast.error(error.response?.data?.message || "Gagal membuat pesanan.");
     } finally {
         isSubmitting.value = false;
@@ -265,20 +292,28 @@ const submitCheckout = async () => {
             <div class="border-t border-gray-200 pt-6 space-y-3">
                 <h3 class="font-medium text-gray-800">Metode Pembayaran</h3>
                 
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'bank_transfer'}">
-                    <input type="radio" value="bank_transfer" v-model="selectedPayment" class="h-4 w-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">Bank Transfer</span>
+                <div v-if="isLoadingPayment" class="text-sm text-gray-500 animate-pulse">
+                    Memuat metode pembayaran...
+                </div>
+
+                <label 
+                    v-for="method in paymentMethods" 
+                    :key="method.id"
+                    class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" 
+                    :class="{'border-blue-500 bg-blue-50': selectedPayment === method.id}"
+                >
+                    <input 
+                        type="radio" 
+                        :value="method.id" 
+                        v-model="selectedPayment" 
+                        class="h-4 w-4 text-blue-600"
+                    >
+                    <span class="ml-3 text-sm font-medium text-gray-700">{{ method.name }}</span>
                 </label>
 
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'qris'}">
-                    <input type="radio" value="qris" v-model="selectedPayment" class="h-4 w-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">QRIS</span>
-                </label>
-
-                <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors" :class="{'border-blue-500 bg-blue-50': selectedPayment === 'cod'}">
-                    <input type="radio" value="cod" v-model="selectedPayment" class="h-4 w-4 text-blue-600">
-                    <span class="ml-3 text-sm font-medium text-gray-700">COD (Bayar di Tempat)</span>
-                </label>
+                <div v-if="!isLoadingPayment && paymentMethods.length === 0" class="text-red-500 text-xs">
+                    Tidak ada metode pembayaran tersedia.
+                </div>
             </div>
 
             <button 

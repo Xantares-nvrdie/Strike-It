@@ -45,7 +45,8 @@ export default async function (fastify, options) {
         const { 
             id_location, booking_date, booking_start, duration, 
             spot_number, first_name, last_name, phone,
-            voucher_code // Terima kode voucher dari frontend
+            voucher_code,
+            payment_method // FIX: Terima payment_method dari frontend
         } = req.body;
 
         // Kita gunakan connection (bukan pool langsung) untuk fitur Transaction
@@ -112,12 +113,27 @@ export default async function (fastify, options) {
             const booking_end = endObj.toISOString().slice(0, 19).replace('T', ' ');
 
             // E. Simpan Booking ke Database
-            // Note: Kita menyimpan 'finalTotal' ke dalam 'total_price'
+            // FIX: Tambahkan payment_method ke query INSERT
             await connection.query(`
                 INSERT INTO bookings 
-                (id_user, id_location, spot_number, first_name, last_name, phone, booking_date, booking_start, booking_end, duration, total_price, tax_amount, invoice_number, status, payment_status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unpaid')
-            `, [userId, id_location, spot_number, first_name, last_name, phone, booking_date, booking_start, booking_end, duration, finalTotal, tax, invoiceNumber]);
+                (id_user, id_location, spot_number, first_name, last_name, phone, booking_date, booking_start, booking_end, duration, total_price, tax_amount, invoice_number, status, payment_status, payment_method)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'unpaid', ?)
+            `, [
+                userId, 
+                id_location, 
+                spot_number, 
+                first_name, 
+                last_name, 
+                phone, 
+                booking_date, 
+                booking_start, 
+                booking_end, 
+                duration, 
+                finalTotal, 
+                tax, 
+                invoiceNumber,
+                payment_method // FIX: Masukkan value payment_method
+            ]);
 
             // Commit Transaksi (Simpan Perubahan)
             await connection.commit();

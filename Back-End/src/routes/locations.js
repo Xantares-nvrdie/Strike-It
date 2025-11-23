@@ -3,17 +3,70 @@ export default async function (fastify, options) {
 
     // 1. GET ALL LOCATIONS (List)
     // URL: GET /locations
-    fastify.get('/', async (request, reply) => {
+    // URL: GET /locations/:id/availability?date=2025-11-24
+    fastify.get('/:id/availability', async (req, reply) => {
+        const { id } = req.params;
+        const { date } = req.query;
+
         try {
-            const [rows] = await fastify.db.query('SELECT * FROM locations ORDER BY id ASC');
+            // 1. Hitung Total Spot di Lokasi ini
+            const [spots] = await fastify.db.query(
+                'SELECT COUNT(*) as total FROM location_spots WHERE id_location = ?',
+                [id]
+            );
+            const totalCapacity = spots[0].total;
+
+            // 2. Ambil semua booking aktif di tanggal tersebut
+            // Kita ambil jam mulainya saja dan durasinya
+            const [bookings] = await fastify.db.query(`
+                SELECT booking_start, duration 
+                FROM bookings 
+                WHERE id_location = ? 
+                AND booking_date = ? 
+                AND status != 'cancelled' 
+                AND payment_status != 'failed'
+            `, [id, date]);
+
+            // 3. Logic Penghitungan (Mapping jam 08:00 - 18:00)
+            // Kita buat array counter untuk setiap jam operasional
+            const hoursUsage = {};
             
-            if (rows.length === 0) {
-                 return []; 
+            // Inisialisasi jam operasional (misal 08 - 18)
+            for (let h = 8; h < 18; h++) {
+                hoursUsage[h] = 0;
             }
-            return rows;
+
+            // Loop setiap booking untuk mengisi counter
+            bookings.forEach(b => {
+                const startHour = new Date(b.booking_start).getHours();
+                const duration = b.duration;
+
+                // Tandai jam-jam yang terpakai oleh booking ini
+                for (let i = 0; i < duration; i++) {
+                    const hour = startHour + i;
+                    if (hoursUsage[hour] !== undefined) {
+                        hoursUsage[hour]++;
+                    }
+                }
+            });
+
+            // 4. Format respon ke Frontend
+            // Jika usage >= capacity, maka status = full
+            const availability = [];
+            for (let h = 8; h < 18; h++) {
+                const timeString = `${h.toString().padStart(2, '0')}:00`;
+                availability.push({
+                    time: timeString,
+                    is_full: hoursUsage[h] >= totalCapacity,
+                    remaining: totalCapacity - hoursUsage[h]
+                });
+            }
+
+            return availability;
+
         } catch (error) {
-            request.log.error(error);
-            return reply.code(500).send({ message: 'Gagal mengambil data lokasi' });
+            req.log.error(error);
+            return reply.code(500).send({ message: 'Gagal memuat ketersediaan' });
         }
     });
 

@@ -8,15 +8,30 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import db from './src/config/db.js'; 
+import oauthPlugin from '@fastify/oauth2';
+
 
 //setup __dirname untuk ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
-
 const fastify = Fastify({ logger: true });
 
+
+fastify.register(oauthPlugin, {
+    name: 'googleOAuth2',
+    scope: ['profile', 'email'],
+    credentials: {
+    client: {
+        id: process.env.GOOGLE_CLIENT_ID,     // Masukkan di .env
+        secret: process.env.GOOGLE_CLIENT_SECRET // Masukkan di .env
+    },
+    auth: oauthPlugin.GOOGLE_CONFIGURATION
+    },
+    startRedirectPath: '/auth/google',
+    callbackUri: 'http://localhost:3000/auth/google/callback' // Harus sama dengan di Google Console
+});
 // cek dir uploads
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)){
@@ -67,7 +82,7 @@ import cartRoutes from './src/routes/cart.js';
 import paymentsRoutes from './src/routes/payments.js';
 import uploadRoutes from './src/routes/upload.js'; 
 import eventsRoutes from './src/routes/events.js';
-
+import authRoutes from './src/routes/auth.js';
 
 fastify.register(usersRoutes);
 fastify.register(productsRoutes, { prefix: '/products' });
@@ -81,6 +96,7 @@ fastify.register(cartRoutes, { prefix: "/cart" });
 fastify.register(paymentsRoutes);
 fastify.register(uploadRoutes);
 fastify.register(eventsRoutes);
+fastify.register(authRoutes);
 
 
 // --- 5. START SERVER ---

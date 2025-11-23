@@ -156,8 +156,8 @@ const handleLogout = () => {
               </router-link>
               <button
                 @click="handleLogout"
-                class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-red-500/20 hover:bg-red-500/40 text-red-100 hover:text-white transition-colors">
-                Log Out
+                class="w-full text-center px-3 py-2 rounded-[1.5rem] bg-red-500/70 hover:bg-red-500/90 text-red-100 hover:text-white transition-colors">
+                Keluar
               </button>
             </div>
           </div>
@@ -244,7 +244,7 @@ const handleLogout = () => {
           <div v-if="isLoggedIn" class="w-full">
             <button
               @click="handleLogout"
-              class="w-full bg-red-500/20 border border-red-500/30 text-red-100 rounded-[1.5rem] py-3 font-semibold hover:bg-red-500/40 transition flex items-center justify-center gap-2">
+              class="w-full bg-red-500/70 border border-red-500/90 text-red-100 rounded-[1.5rem] py-3 font-semibold hover:bg-red-500/40 transition flex items-center justify-center gap-2">
               <Icon icon="heroicons:arrow-left-on-rectangle" class="w-5 h-5" /> Keluar
             </button>
           </div>

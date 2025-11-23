@@ -606,3 +606,13 @@ WHERE id = 2;
 UPDATE memberships 
 SET benefits = 'Anda dapat menghentikan atau membatalkan kapan saja.\nDiskon 10% untuk sewa alat pancing.\nDiskon 20% untuk pembelian umpan.\nKesempatan mengikuti turnamen bulanan secara gratis.\nSatu sesi konsultasi mingguan dengan pemandu mancing profesional.'
 WHERE id = 3;
+
+ALTER TABLE orders
+ADD COLUMN payment_method INT,
+ADD CONSTRAINT fk_orders_payment_method FOREIGN KEY (payment_method) REFERENCES payment_methods(id);
+
+
+
+ALTER TABLE users 
+ADD COLUMN google_id VARCHAR(255) UNIQUE NULL AFTER email,
+MODIFY COLUMN password VARCHAR(255) NULL;
