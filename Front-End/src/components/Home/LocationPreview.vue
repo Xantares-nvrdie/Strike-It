@@ -1,12 +1,16 @@
 <script setup>
   import { ref, computed, onMounted } from 'vue';
-  import api from '@/services/api'; // Import API
+  import api from '@/services/api'; 
 
   // State data
   const locations = ref([]);
   const selectedIndex = ref(0);
 
-  // 1. Fetch Data dari Database
+  // 1. Definisi URL Backend
+  const baseUrl = 'http://localhost:3000'; 
+  const staticPrefix = '/uploads';
+
+  // 2. Fetch Data
   const fetchLocations = async () => {
     try {
       const res = await api.getLocations();
@@ -16,23 +20,26 @@
     }
   };
 
-  // 2. Computed Property untuk Lokasi Terpilih
+  // 3. Computed Property (Update Logic Gambar)
   const selectedLocation = computed(() => {
-    // Fallback loading jika data belum masuk
     if (locations.value.length === 0) return { 
       name: 'Loading...', 
+      city: 'Loading...',
       img: 'https://placehold.co/800x400?text=Loading' 
     };
 
     const loc = locations.value[selectedIndex.value];
     
-    // LOGIC PENTING: 
-    // Jika path dari DB tidak diawali HTTP (bukan link luar) dan tidak diawali '/',
-    // Kita tambahkan '/' agar mengarah ke folder PUBLIC.
-    // Contoh DB: "locationimg/jakarta.jpg" -> Jadi: "/locationimg/jakarta.jpg"
     let imagePath = loc.img;
-    if (imagePath && !imagePath.startsWith('http') && !imagePath.startsWith('/')) {
-        imagePath = '/' + imagePath;
+    
+    // LOGIC BARU:
+    // Jika path dari DB bukan link eksternal (http), kita rakit jadi URL backend.
+    // Contoh DB: "locationimg/jakarta.jpg" 
+    // Menjadi: "http://localhost:3000/uploads/locationimg/jakarta.jpg"
+    if (imagePath && !imagePath.startsWith('http')) {
+        // Hapus slash di depan jika ada agar tidak double slash
+        const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
+        imagePath = `${baseUrl}${staticPrefix}/${cleanPath}`;
     }
 
     return {
@@ -53,7 +60,6 @@
       }
   };
 
-  // Ambil data saat komponen dimuat
   onMounted(fetchLocations);
 </script>
 
@@ -66,13 +72,12 @@
         </h2>
         <p class="max-w-2xl mx-auto mt-5 text-lg leading-relaxed text-gray-600">
           Jelajahi destinasi pemancingan terbaik di sekitar Anda. Temukan tempat favorit baru untuk petualangan
-          memancing Anda selanjutnya, mulai dari kolam harian hingga galatama.
+          memancing Anda selanjutnya.
         </p>
       </div>
 
       <div class="px-4 mt-12">
-        <ul
-          class="flex items-center px-2 py-2 space-x-3 overflow-x-auto md:space-x-5 md:px-0 scrollbar-hide justify-center">
+        <ul class="flex items-center px-2 py-2 space-x-3 overflow-x-auto md:space-x-5 md:px-0 scrollbar-hide justify-center">
           <li>
             <button @click="prev"
               class="flex items-center justify-center w-10 h-10 text-gray-600 transition-all duration-200 border border-gray-200 rounded-full shadow-md bg-gray-100/70 hover:bg-gray-200">
@@ -83,7 +88,6 @@
             </button>
           </li>
 
-          <!-- Mobile View -->
           <li class="flex-shrink-0 block md:hidden">
             <button
               class="flex items-center justify-center w-24 h-10 px-4 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out text-sm font-semibold bg-blue-600 text-white shadow-blue-500/50">
@@ -91,8 +95,6 @@
             </button>
           </li>
 
-          <!-- Desktop List -->
-          <!-- Kita gunakan v-for untuk me-loop data dari database -->
           <template v-for="(location, index) in locations" :key="location.id || index">
             <li class="hidden md:flex flex-shrink-0">
               <button @click="selectedIndex = index" :class="[
@@ -120,18 +122,13 @@
       </div>
 
       <div class="flex flex-col items-center p-4 mx-auto mt-10">
-        <!-- 
-            Image Source sekarang dinamis dari computed property 'selectedLocation'.
-            Juga menambahkan link dinamis ke halaman booking berdasarkan ID lokasi.
-        -->
         <img :src="selectedLocation.img" :alt="selectedLocation.name"
           class="object-cover w-full max-w-4xl transition duration-300 shadow-2xl h-72 rounded-t-2xl hover:shadow-3xl"
-          @error="(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x400/9CA3AF/FFFFFF?text=Image+Not+Found'; }" />
+          @error="(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x400/9CA3AF/FFFFFF?text=No+Image'; }" />
 
-        <!-- Link Booking Dinamis (menggunakan ID lokasi) -->
-        <router-link :to="selectedLocation.id ? `/location/${selectedLocation.id}/book` : '/location'" class="w-full">
+        <router-link :to="selectedLocation.id ? `/location/${selectedLocation.id}/book` : '/location'" class="w-full max-w-4xl">
           <button
-            class="w-full max-w-4xl py-4 text-xl font-bold tracking-wider text-white uppercase transition duration-300 ease-in-out bg-blue-600 shadow-xl font-outfit rounded-b-2xl hover:bg-blue-700 hover:shadow-2xl">
+            class="w-full py-4 text-xl font-bold tracking-wider text-white uppercase transition duration-300 ease-in-out bg-blue-600 shadow-xl font-outfit rounded-b-2xl hover:bg-blue-700 hover:shadow-2xl">
             Booking Sekarang
           </button>
         </router-link>
@@ -147,15 +144,12 @@ body {
   font-family: 'Outfit', sans-serif;
 }
 
-/* Custom CSS untuk menyembunyikan scrollbar horizontal di mobile (Digunakan oleh kelas .scrollbar-hide) */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
 .scrollbar-hide {
   -ms-overflow-style: none;
-  /* IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
 }
 </style>
