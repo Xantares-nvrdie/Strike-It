@@ -70,14 +70,14 @@ import eventsRoutes from './src/routes/events.js';
 
 
 fastify.register(usersRoutes);
-fastify.register(productsRoutes);
+fastify.register(productsRoutes, { prefix: '/products' });
 fastify.register(locationsRoutes, { prefix: '/locations' });
 fastify.register(bookingsRoutes, { prefix: '/bookings'});
 fastify.register(ordersRoutes);
 fastify.register(referencesRoutes);
 fastify.register(communityRoutes, { prefix: '/community'});
 fastify.register(reviewsRoutes, { prefix: '/reviews'});
-fastify.register(cartRoutes);
+fastify.register(cartRoutes, { prefix: "/cart" });
 fastify.register(paymentsRoutes);
 fastify.register(uploadRoutes);
 fastify.register(eventsRoutes);

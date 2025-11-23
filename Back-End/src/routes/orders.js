@@ -1,85 +1,80 @@
-// routes/orders.js
 export default async function (fastify, options) {
 
-    // CREATE Order (Checkout)
-    fastify.post('/orders', { onRequest: [fastify.authenticate] }, async (req, reply) => {
-        const userId = req.user.id;
-        const { items, shipping_address, shipping_cost = 0 } = req.body; 
-        // items adalah array: [{ id_product: 1, quantity: 2 }, ...]
-
-        if (!items || items.length === 0) {
-            return reply.code(400).send({ message: 'Keranjang kosong' });
-        }
-
-        const connection = await fastify.db.getConnection(); // Ambil koneksi manual untuk transaction
-
+    // POST /orders (Checkout dari Cart)
+    fastify.post('/', { onRequest: [fastify.authenticate] }, async (request, reply) => {
+        const connection = await fastify.db.getConnection();
         try {
-            await connection.beginTransaction(); // Mulai Transaksi
+            const userId = request.user.id;
+            const { 
+                shipping_address, payment_method, notes, 
+                shipping_cost = 0, tax_amount = 0, discount_amount = 0 
+            } = request.body;
 
-            // 1. Hitung Total Belanja (Validasi harga dari Server, bukan dari Frontend!)
+            await connection.beginTransaction();
+
+            // 1. Ambil semua item di keranjang user
+            // Join dengan produk untuk dapat harga terupdate
+            const [cartItems] = await connection.query(`
+                SELECT sc.*, p.price_sale, p.price_rent 
+                FROM shopping_cart sc
+                JOIN products p ON sc.id_product = p.id
+                WHERE sc.id_user = ?
+            `, [userId]);
+
+            if (cartItems.length === 0) {
+                throw new Error('Keranjang kosong');
+            }
+
+            // 2. Hitung Total
             let totalAmount = 0;
             const orderItemsData = [];
 
-            for (const item of items) {
-                const [products] = await connection.execute(
-                    'SELECT price, stock FROM products WHERE id = ?', [item.id_product]
-                );
-                
-                if (products.length === 0) throw new Error(`Produk ID ${item.id_product} tidak ditemukan`);
-                
-                const product = products[0];
-                const subtotal = product.price * item.quantity;
+            for (const item of cartItems) {
+                // Tentukan harga berdasarkan tipe transaksi (sewa/beli)
+                const price = item.transaction_type === 'sewa' ? item.price_rent : item.price_sale;
+                const subtotal = price * item.quantity;
                 totalAmount += subtotal;
 
-                // Siapkan data untuk dimasukkan ke order_items nanti
                 orderItemsData.push({
                     id_product: item.id_product,
                     quantity: item.quantity,
-                    unit_price: product.price,
-                    subtotal: subtotal
+                    unit_price: price,
+                    subtotal: subtotal,
+                    transaction_type: item.transaction_type // Simpan tipe di order_items juga (perlu update tabel jika belum ada)
                 });
             }
 
-            totalAmount += shipping_cost;
+            // 3. Buat Order Utama
             const orderNumber = `ORD-${Date.now()}`;
-
-            // 2. Insert ke tabel ORDERS
-            const [orderResult] = await connection.execute(`
-                INSERT INTO orders (id_user, order_number, total_amount, shipping_address, shipping_cost)
-                VALUES (?, ?, ?, ?, ?)
-            `, [userId, orderNumber, totalAmount, shipping_address, shipping_cost]);
+            const [orderResult] = await connection.query(`
+                INSERT INTO orders 
+                (id_user, order_number, total_amount, shipping_cost, shipping_address, status, payment_status, created_at, tax_amount, discount_amount, notes)
+                VALUES (?, ?, ?, ?, ?, 'pending', 'unpaid', NOW(), ?, ?, ?)
+            `, [userId, orderNumber, totalAmount, shipping_cost, shipping_address, tax_amount, discount_amount, notes]);
 
             const orderId = orderResult.insertId;
 
-            // 3. Insert ke tabel ORDER_ITEMS (Looping)
-            for (const data of orderItemsData) {
-                await connection.execute(`
+            // 4. Pindahkan Item Keranjang ke Order Items
+            for (const item of orderItemsData) {
+                await connection.query(`
                     INSERT INTO order_items (id_order, id_product, quantity, unit_price, subtotal)
                     VALUES (?, ?, ?, ?, ?)
-                `, [orderId, data.id_product, data.quantity, data.unit_price, data.subtotal]);
-                
-                // Optional: Kurangi Stock Produk di sini jika mau
+                `, [orderId, item.id_product, item.quantity, item.unit_price, item.subtotal]);
             }
 
-            await connection.commit(); // Simpan permanen jika semua lancar
-            return { message: 'Order berhasil', order_number: orderNumber };
+            // 5. Kosongkan Keranjang
+            await connection.query('DELETE FROM shopping_cart WHERE id_user = ?', [userId]);
 
-        } catch (err) {
-            await connection.rollback(); // Batalkan semua jika ada error
-            fastify.log.error(err);
-            return reply.code(500).send({ message: 'Gagal membuat order', error: err.message });
-        } finally {
-            connection.release(); // Lepas koneksi
+            await connection.commit();
+            connection.release();
+
+            return { message: 'Pesanan berhasil dibuat', order_number: orderNumber };
+
+        } catch (error) {
+            await connection.rollback();
+            connection.release();
+            request.log.error(error);
+            return reply.code(500).send({ message: error.message || 'Gagal membuat pesanan' });
         }
-    });
-
-    // GET My Orders
-    fastify.get('/my-orders', { onRequest: [fastify.authenticate] }, async (req) => {
-        const userId = req.user.id;
-        const [rows] = await fastify.db.execute(
-            'SELECT * FROM orders WHERE id_user = ? ORDER BY created_at DESC', 
-            [userId]
-        );
-        return rows;
     });
 }

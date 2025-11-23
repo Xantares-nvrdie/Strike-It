@@ -453,3 +453,66 @@ INSERT INTO location_spots (id_location, spot_name, spot_type) VALUES
 (5, 'B6', 'general'), (5, 'B7', 'general'), (5, 'B8', 'general'), (5, 'B9', 'general'),
 (5, 'L1', 'general'), (5, 'L2', 'general'), (5, 'L3', 'general'),
 (5, 'R1', 'general'), (5, 'R2', 'general'), (5, 'R3', 'general');
+
+
+CREATE TABLE product_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_product INT NOT NULL,
+    img_path VARCHAR(255) NOT NULL,
+    img_type ENUM('main', 'gallery') DEFAULT 'gallery',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_product) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- 2. Isi Data Dummy (Contoh untuk Produk ID 1: Joran Shimano)
+-- Kita pakai gambar yang sama dulu untuk testing
+INSERT INTO product_images (id_product, img_path, img_type) VALUES 
+(1, 'alatimg/joran1.png', 'main'),
+(1, 'alatimg/joran2.png', 'gallery'),
+(1, 'alatimg/joran3.png', 'gallery'),
+(1, 'alatimg/joran4.png', 'gallery');
+
+-- 3. Isi Data Dummy (Contoh untuk Produk ID 2: Joran Carbon)
+INSERT INTO product_images (id_product, img_path, img_type) VALUES 
+(2, 'alatimg/joran2.png', 'main'),
+(2, 'alatimg/joran1.png', 'gallery'),
+(2, 'alatimg/reels1.png', 'gallery');
+
+
+ALTER TABLE products
+DROP COLUMN method, -- Hapus kolom lama
+CHANGE COLUMN price price_sale DECIMAL(10,2) DEFAULT NULL, -- Ubah price jadi price_sale
+ADD COLUMN price_rent DECIMAL(10,2) DEFAULT NULL AFTER price_sale; -- Tambah kolom price_rent
+
+-- 2. Update Data Dummy (Contoh)
+-- Set produk ID 1 (Joran Shimano) bisa SEWA dan BELI
+UPDATE products 
+SET price_sale = 489000, price_rent = 50000 
+WHERE id = 1;
+
+-- Set produk ID 2 (Joran Carbon) cuma bisa SEWA
+UPDATE products 
+SET price_sale = NULL, price_rent = 35000 
+WHERE id = 2;
+
+-- Set produk ID 5 (Reel) cuma bisa BELI
+UPDATE products 
+SET price_sale = 550000, price_rent = NULL 
+WHERE id = 5;
+
+
+
+DROP TABLE IF EXISTS shopping_cart;
+
+-- 2. Buat Tabel Baru (Sesuai Kode Backend Terbaru)
+CREATE TABLE shopping_cart (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_user INT NOT NULL,
+    id_product INT NOT NULL,
+    quantity INT DEFAULT 1,
+    transaction_type ENUM('sewa', 'beli') DEFAULT 'beli', -- Kolom ini WAJIB ADA
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_user) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_product) REFERENCES products(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_cart_item (id_user, id_product)
+);

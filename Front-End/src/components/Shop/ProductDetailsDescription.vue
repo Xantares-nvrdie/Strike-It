@@ -1,50 +1,44 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
-const activeTab = ref("deskripsi"); // default tab aktif
+import { useRoute } from "vue-router"; // Import useRoute
+import api from "@/services/api.js";   // Import API
+
+const route = useRoute();
+const activeTab = ref("deskripsi");
 
 const setTab = (tabName) => {
     activeTab.value = tabName;
 };
 
-// Data penilaian (ulasan)
-const reviesws = ref([
-    {
-        id: 1,
-        username: "User1",
-        rating: 1,
-        date: "2024-06-15",
-        comment: "Produk ini sangat bagus!",
-    },
-    {
-        id: 2,
-        username: "Bintang",
-        rating: 4,
-        date: "2024-06-10",
-        comment: "Saya puas dengan pembelian ini.",
-    },
-    {
-        id: 3,
-        username: "Bintang Fajar",
-        rating: 4,
-        date: "2024-06-10",
-        comment: "Saya puas dengan pembelian ini.",
-    },
-    {
-        id: 4,
-        username: "Bintang Putra",
-        rating: 4,
-        date: "2024-06-10",
-        comment: "Saya puas dengan pembelian ini.",
-    },
-    {
-        id: 5,
-        username: "Iqbal",
-        rating: 4,
-        date: "2024-06-10",
-        comment: "Saya puas dengan pembelian ini.",
-    },
-]);
+// State Review (Ganti dari data dummy)
+const reviews = ref([]); 
+
+// Fetch Data Review dari Database
+const fetchReviews = async () => {
+    const productId = route.params.id; // Ambil ID dari URL
+    if (!productId) return;
+
+    try {
+        const res = await api.getProductReviews(productId);
+        
+        // Mapping data DB ke format UI
+        reviews.value = res.data.map(r => ({
+            id: r.id,
+            username: r.username,
+            rating: r.rating,
+            comment: r.comment,
+            // Format tanggal: YYYY-MM-DD
+            date: new Date(r.created_at).toISOString().split('T')[0] 
+        }));
+    } catch (error) {
+        console.error("Gagal memuat review:", error);
+    }
+};
+
+onMounted(() => {
+    fetchReviews();
+});
 </script>
 
 <template>
@@ -76,7 +70,7 @@ const reviesws = ref([
                 ? 'font-bold text-black border-b-2 border-black'
                 : 'font-normal text-stone-500 hover:text-black hover:border-b hover:border-gray-400'"
             >
-                PENILAIAN ({{ reviesws.length }})
+                PENILAIAN ({{ reviews.length }})
             </button>
         </div>
 
@@ -93,7 +87,7 @@ const reviesws = ref([
 
             <div v-else-if="activeTab === 'penilaian'" class="w-full">
                 <div
-                    v-if="reviesws.length === 0"
+                    v-if="reviews.length === 0"
                     class="text-center text-gray-600 text-lg font-outfit"
                 >
                     Belum ada ulasan. Jadilah yang pertama memberikan penilaian!
@@ -103,7 +97,7 @@ const reviesws = ref([
                     class="flex flex-col divide-y divide-gray-200/50 w-full max-w-5xl mx-auto"
                 >
                     <li
-                        v-for="review in reviesws"
+                        v-for="review in reviews"
                         :key="review.id"
                         class="p-6 flex items-start gap-4"
                     >
