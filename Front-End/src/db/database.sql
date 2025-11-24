@@ -650,3 +650,8 @@ INSERT INTO products (name, description, img, price_sale, price_rent, specificat
 ('Reel Daiwa BG Spinning', 'Tahan banting untuk petualangan ekstrim', 'alatimg/reels13.png', NULL, 95000, 'Air Rotor Technology', 9, 2),
 ('Reel Abu Garcia Black Max', 'Kualitas Abu Garcia dengan harga terjangkau', 'alatimg/reels14.png', 550000, NULL, 'C6 Carbon Frame', 30, 2),
 ('Reel Okuma Helios SX', 'Desain futuristik dan ringan', 'alatimg/reels15.png', NULL, 110000, 'Lightweight Magnesium Body', 13, 2);
+
+
+
+ALTER TABLE order_items
+ADD COLUMN transaction_type ENUM('sewa','beli') DEFAULT 'beli';
