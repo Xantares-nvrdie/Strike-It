@@ -346,7 +346,9 @@ INSERT INTO category_products (name) VALUES ('Joran'), ('Reel'), ('Umpan'), ('Ka
 
 -- Products
 INSERT INTO products (name, description, img, price, specification, method, stock, id_category) VALUES
+-- Joran
 ('Joran Shimano FX', 'Joran berkualitas', 'alatimg/joran1.png', 489000, 'Spec A', 'sewa', 10, 1),
+-- Reel
 ('Reel Daiwa BG', 'Reel kuat', 'alatimg/reels2.png', 450000, 'Spec B', 'beli', 18, 2);
 
 -- Users
@@ -611,8 +613,40 @@ ALTER TABLE orders
 ADD COLUMN payment_method INT,
 ADD CONSTRAINT fk_orders_payment_method FOREIGN KEY (payment_method) REFERENCES payment_methods(id);
 
-
-
 ALTER TABLE users 
 ADD COLUMN google_id VARCHAR(255) UNIQUE NULL AFTER email,
 MODIFY COLUMN password VARCHAR(255) NULL;
+
+-- Jorans
+INSERT INTO products (name, description, img, price_sale, price_rent, specification, stock, id_category) VALUES
+('Joran Daiwa Crossfire', 'Joran ringan dan sensitif', 'alatimg/joran2.png', 550000, NULL, 'Carbon Composite, 6-14lbs', 15, 1),
+('Joran Maguro Ottoman', 'Joran khusus galatama', 'alatimg/joran3.png', NULL, 45000, 'Hard Action, 180cm', 20, 1),
+('Joran Abu Garcia Vengeance', 'Desain modern Amerika', 'alatimg/joran4.png', 675000, NULL, 'Graphite Blank, Medium Heavy', 8, 1),
+('Joran Relix Nusantara', 'Karya anak bangsa, ultralight', 'alatimg/joran5.png', 850000, NULL, 'Ultralight 2-6lbs', 12, 1),
+('Joran Shimano Cruzar', 'Pilihan terbaik pemula', 'alatimg/joran6.png', NULL, 35000, 'Solid Glass, Strong Blank', 25, 1),
+('Joran Kenzi Toray', 'Material carbon berkualitas', 'alatimg/joran7.png', 490000, NULL, 'Carbon Solid, 10-20lbs', 10, 1),
+('Joran Ryobi Kukri', 'Gagang ergonomis EVA', 'alatimg/joran8.png', NULL, 50000, 'Medium Light, 702 section', 14, 1),
+('Joran Penn Squadron', 'Tahan air asin (Saltwater)', 'alatimg/joran9.png', 950000, NULL, 'Saltwater Grade, Heavy', 6, 1),
+('Joran Daido Manta', 'Sangat kuat angkat beban', 'alatimg/joran10.png', NULL, 30000, 'Solid Fiber, 15kg Drag', 30, 1),
+('Joran Ugly Stik GX2', 'Joran legendaris tahan banting', 'alatimg/joran11.png', 1100000, NULL, 'Ugly Tech Construction', 5, 1),
+('Joran Pioneer Fire', 'Warna cerah, aksi medium', 'alatimg/joran12.png', 315000, NULL, 'E-Glass, Medium Action', 18, 1),
+('Joran Sougayilang Portable', 'Mudah dibawa kemana saja', 'alatimg/joran13.png', NULL, 25000, 'Telescopic, Compact', 40, 1),
+('Joran KastKing Perigee', 'Kualitas turnamen profesional', 'alatimg/joran14.png', 890000, NULL, 'Twin-Tip, Carbon Fiber', 7, 1),
+('Joran Fenwick Eagle', 'Sensitivitas klasik', 'alatimg/joran15.png', NULL, 125000, 'Cork Handle, Fast Action', 3, 1);
+
+-- Reels
+INSERT INTO products (name, description, img, price_sale, price_rent, specification, stock, id_category) VALUES
+('Reel Shimano Stradic', 'Reel halus untuk casting', 'alatimg/reels1.png', 1250000, NULL, 'Hagane Body, X-Ship', 10, 2),
+('Reel Abu Garcia Revo', 'Reel ringan dan kuat', 'alatimg/reels3.png', 950000, NULL, 'Carbon Matrix Drag System', 12, 2),
+('Reel Penn Battle II', 'Tahan karat air asin', 'alatimg/reels4.png', 1350000, NULL, 'Full Metal Body, HT-100 Drag', 8, 2),
+('Reel Okuma Ceymar', 'Pilihan ekonomis berkualitas', 'alatimg/reels5.png', NULL, 60000, 'Lightweight Graphite Frame', 20, 2),
+('Reel Lews Mach Crush', 'Performa tinggi untuk turnamen', 'alatimg/reels6.png', 1450000, NULL, 'Carbon Fiber Spool', 5, 2),
+('Reel KastKing Valiant', 'Teknologi anti-penggumpalan line', 'alatimg/reels7.png', NULL, 70000, 'Superline Spool Design', 18, 2),
+('Reel Ryobi Ecusima', 'Desain klasik Jepang', 'alatimg/reels8.png', 850000, NULL, 'Aluminum Body, Smooth Drag', 14, 2),
+('Reel Quantum Smoke S3', 'Ringan dan seimbang', 'alatimg/reels9.png', NULL, 90000, 'Carbon Matrix Drag System', 16, 2),
+('Reel Mitchell Avocet III', 'Reel legendaris harga terjangkau', 'alatimg/reels10.png', 400000, NULL, 'Graphite Frame and Rotor', 25, 2),
+('Reel Pflueger President XT', 'Kinerja halus dan andal', 'alatimg/reels11.png', NULL, 85000, 'Durable Aluminum Body', 22, 2),
+('Reel Shimano Sedona', 'Reel serbaguna untuk semua teknik', 'alatimg/reels12.png', 750000, NULL, 'G-Free Body Design', 11, 2),
+('Reel Daiwa BG Spinning', 'Tahan banting untuk petualangan ekstrim', 'alatimg/reels13.png', NULL, 95000, 'Air Rotor Technology', 9, 2),
+('Reel Abu Garcia Black Max', 'Kualitas Abu Garcia dengan harga terjangkau', 'alatimg/reels14.png', 550000, NULL, 'C6 Carbon Frame', 30, 2),
+('Reel Okuma Helios SX', 'Desain futuristik dan ringan', 'alatimg/reels15.png', NULL, 110000, 'Lightweight Magnesium Body', 13, 2);
