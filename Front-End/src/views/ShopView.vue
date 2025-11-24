@@ -10,6 +10,13 @@ import api from '@/services/api.js';
 const products = ref([]); 
 const isLoading = ref(true);
 
+// Tambahan: Simpan filter yang aktif dari Sidebar
+const activeFilters = ref({
+    alat: [],
+    status: null,
+    harga: { min: null, max: null }
+});
+
 const route = useRoute();
 const currentCategorySlug = computed(() => route.params.categorySlug);
 
@@ -18,7 +25,11 @@ const fetchProducts = async (filters = {}) => {
     isLoading.value = true;
     try {
         const params = {};
-        if (filters.alat && filters.alat.length > 0) params.category = filters.alat[0];
+        
+        // REVISI: Jangan filter kategori 'alat' di sini agar data tidak terbatas cuma 1 kategori.
+        // Kita biarkan semua kategori termuat (atau filter harga/status saja), 
+        // lalu kita filter kategori spesifiknya menggunakan Computed Property di bawah.
+        
         if (filters.harga?.min) params.minPrice = filters.harga.min;
         if (filters.harga?.max) params.maxPrice = filters.harga.max;
         
@@ -35,23 +46,43 @@ const fetchProducts = async (filters = {}) => {
     }
 };
 
-// --- LOGIKA GROUPING OTOMATIS (KUNCI DINAMISNYA DISINI) ---
+// --- HELPER: MAPPING NAMA KATEGORI ---
+const getCategoryName = (p) => {
+    if (p.category_name) return p.category_name;
+    // Fallback manual jika backend belum join table category
+    if (p.id_category == 1) return 'Joran';
+    if (p.id_category == 2) return 'Reel';
+    if (p.id_category == 3) return 'Umpan';
+    if (p.id_category == 4) return 'Kail';
+    if (p.id_category == 5) return 'Senar';
+    return 'Lainnya';
+};
+
+// --- LOGIKA FILTER CLIENT-SIDE (UTAMA) ---
+const filteredProductsList = computed(() => {
+    let result = products.value;
+
+    // 1. Filter Kategori (Multiple Select)
+    // Jika user memilih alat di sidebar, kita cek apakah produk ini termasuk di dalamnya
+    if (activeFilters.value.alat && activeFilters.value.alat.length > 0) {
+        result = result.filter(p => {
+            const catName = getCategoryName(p);
+            // Cek apakah nama kategori produk ini ADA di dalam array pilihan user
+            return activeFilters.value.alat.includes(catName);
+        });
+    }
+
+    return result;
+});
+
+// --- LOGIKA GROUPING OTOMATIS ---
 const groupedProducts = computed(() => {
     const groups = {};
     
-    products.value.forEach(p => {
-        // 1. Cek nama kategori dari Backend (p.category_name)
-        // 2. Jika belum ada (backend belum update), pakai mapping manual ID -> Nama
-        let catName = p.category_name;
-        
-        if (!catName) {
-            if (p.id_category == 1) catName = 'Joran';
-            else if (p.id_category == 2) catName = 'Reel';
-            else if (p.id_category == 3) catName = 'Umpan';
-            else if (p.id_category == 4) catName = 'Kail';
-            else if (p.id_category == 5) catName = 'Senar';
-            else catName = 'Lainnya';
-        }
+    // REVISI: Gunakan 'filteredProductsList' bukan raw 'products'
+    // Agar hasil grouping mengikuti filter sidebar
+    filteredProductsList.value.forEach(p => {
+        const catName = getCategoryName(p);
 
         if (!groups[catName]) {
             groups[catName] = [];
@@ -62,30 +93,20 @@ const groupedProducts = computed(() => {
     return groups;
 });
 
+// --- FILTER HALAMAN KATEGORI (DETAIL VIEW / URL) ---
 const categoryFilteredProducts = computed(() => {
     if (!currentCategorySlug.value) return [];
     const slug = currentCategorySlug.value.toLowerCase();
     
-    return products.value.filter(p => {
-        // Cek nama kategori (dari backend atau manual mapping di atas)
-        let catName = p.category_name;
-        if (!catName) {
-             if (p.id_category == 1) catName = 'Joran';
-             else if (p.id_category == 2) catName = 'Reel';
-             else if (p.id_category == 3) catName = 'Umpan';
-             else if (p.id_category == 4) catName = 'Kail';
-             else if (p.id_category == 5) catName = 'Senar';
-             else catName = 'Lainnya';
-        }
-        
-        // Cocokkan slug dengan nama kategori ATAU nama produk
+    // Gunakan filteredProductsList juga agar filter sidebar (harga/status) tetap jalan di halaman detail
+    return filteredProductsList.value.filter(p => {
+        const catName = getCategoryName(p);
         return (catName && catName.toLowerCase() === slug) || p.name.toLowerCase().includes(slug);
     });
 });
 
 const pageTitle = computed(() => {
     if (!currentCategorySlug.value) return 'Toko Strike It!';
-    // Ubah slug 'joran' jadi 'Kategori: Joran'
     return 'Kategori: ' + currentCategorySlug.value.charAt(0).toUpperCase() + currentCategorySlug.value.slice(1);
 });
 
@@ -97,7 +118,13 @@ const handleScroll = () => showScrollToTop.value = window.scrollY > 200;
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
 const handleFilter = (filterData) => {
+    // 1. Simpan state filter untuk Logic Computed
+    activeFilters.value = filterData;
+    
+    // 2. Fetch ulang ke server (untuk filter Harga & Status)
+    // Note: Kategori (alat) akan dihandle otomatis oleh computed 'filteredProductsList' setelah data sampai
     fetchProducts(filterData);
+    
     isFilterVisible.value = false; 
 };
 
@@ -154,9 +181,9 @@ onUnmounted(() => {
                             />
                         </div>
 
-                        <div v-if="products.length === 0" class="text-center py-10 text-gray-400 bg-white rounded-xl w-full p-8">
-                            <p class="text-lg font-semibold">Belum ada data produk.</p>
-                            <p class="text-sm">Coba reset filter atau cek database.</p>
+                        <div v-if="filteredProductsList.length === 0" class="text-center py-10 text-gray-400 bg-white rounded-xl w-full p-8">
+                            <p class="text-lg font-semibold">Produk tidak ditemukan.</p>
+                            <p class="text-sm">Coba atur ulang filter Anda.</p>
                         </div>
                     </div>
 
@@ -169,7 +196,7 @@ onUnmounted(() => {
                         />
                         
                         <div v-if="categoryFilteredProducts.length === 0" class="text-center py-10 text-gray-500">
-                            Tidak ada produk di kategori ini.
+                            Tidak ada produk di kategori ini dengan filter tersebut.
                         </div>
                     </div>
 
