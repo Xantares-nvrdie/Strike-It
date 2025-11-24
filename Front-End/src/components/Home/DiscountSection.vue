@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import api from "@/services/api.js";
-import DiscountCard from "./DiscountCard.vue";
+import DiscountCard from "./DiscountCard.vue"; // Import komponen anak
 
 // State untuk data diskon
 const discounts = ref([]);
@@ -12,11 +12,10 @@ const activeIndex = ref(0); // Ubah default ke 0 (array index start)
 const touchStartX = ref(0);
 const touchStartY = ref(0);
 
-
 const fetchDiscounts = async () => {
   try {
     const response = await api.getDiscounts();
-    
+
     // Mapping data dari database (snake_case) ke prop component
     discounts.value = response.data.map((item) => ({
       id: item.id,
@@ -38,7 +37,6 @@ onMounted(() => {
 });
 
 // --- LOGIKA KARUSEL (Touch Handler) ---
-
 function handleTouchStart(e) {
   touchStartX.value = e.touches[0].clientX;
   touchStartY.value = e.touches[0].clientY;
@@ -56,9 +54,9 @@ function handleTouchEnd(e) {
     return;
   }
 
-  const threshold = 50; 
+  const threshold = 50;
   const totalDiscounts = discounts.value.length;
-  
+
   // Hindari error division by zero jika data belum dimuat
   if (totalDiscounts === 0) return;
 
@@ -70,7 +68,8 @@ function handleTouchEnd(e) {
       activeIndex.value = (currentTabIndex + 1) % totalDiscounts;
     } else {
       // Swipe ke kanan (Prev)
-      activeIndex.value = (currentTabIndex - 1 + totalDiscounts) % totalDiscounts;
+      activeIndex.value =
+        (currentTabIndex - 1 + totalDiscounts) % totalDiscounts;
     }
   }
 }
@@ -82,16 +81,16 @@ function handleTouchEnd(e) {
     class="min-h-screen/2 bg-white text-center pt-24 pb-16 font-['Outfit'] overflow-x-hidden"
   >
     <div class="px-4 header-diskon">
-      <h2 class="text-4xl font-medium text-black md:text-6xl">Diskon Spesial</h2>
+      <h2 class="text-4xl font-medium text-black md:text-6xl">
+        Diskon Spesial
+      </h2>
       <p class="max-w-xl mx-auto mt-5 text-base leading-relaxed text-gray-600">
         Lebih dari 1.300 orang telah menghemat lebih dari Rp.50.000.000 dengan
         kupon Strike It.
       </p>
     </div>
 
-    <div v-if="isLoading" class="mt-12 text-gray-400">
-      Memuat diskon...
-    </div>
+    <div v-if="isLoading" class="mt-12 text-gray-400">Memuat diskon...</div>
 
     <div v-else>
       <div class="md:hidden mt-12">
@@ -129,7 +128,9 @@ function handleTouchEnd(e) {
         </div>
       </div>
 
-      <div class="hidden md:flex flex-wrap justify-center gap-6 px-4 mt-12 md:px-10">
+      <div
+        class="hidden md:flex flex-wrap justify-center gap-6 px-4 mt-12 md:px-10"
+      >
         <DiscountCard
           v-for="discount in discounts"
           :key="discount.id"
