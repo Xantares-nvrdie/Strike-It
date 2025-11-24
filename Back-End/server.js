@@ -100,16 +100,18 @@ fastify.register(authRoutes);
 
 
 // --- 5. START SERVER ---
-const start = async () => {
-    try {
-        // Gunakan host: '0.0.0.0' agar terdeteksi oleh semua network (atasi ERR_NETWORK)
-        await fastify.listen({ port: process.env.PORT || 3000, host: '0.0.0.0' });
-        console.log(`Server running on port ${process.env.PORT || 3000}`);
-        console.log(fastify.printRoutes()); // Cek route tree di terminal
-    } catch (err) {
-        fastify.log.error(err);
-        process.exit(1);
-    }
-};
+export { fastify };
 
-start();
+// Jalankan server HANYA jika file ini dieksekusi langsung
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    const start = async () => {
+        try {
+            await fastify.listen({ port: process.env.PORT || 3000, host: '0.0.0.0' });
+            console.log(`Server running on port ${process.env.PORT || 3000}`);
+        } catch (err) {
+            fastify.log.error(err);
+            process.exit(1);
+        }
+    };
+    start();
+}

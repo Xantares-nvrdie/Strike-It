@@ -20,5 +20,9 @@ export default defineConfig({
   server: {
     host: '0.0.0.0', // Memaksa Vite mendengarkan di semua IP lokal (termasuk yang digunakan Live Share)
     port: 5173,      // Opsional: Tetapkan port default
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom', 
   }
 })
