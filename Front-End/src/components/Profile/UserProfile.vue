@@ -42,6 +42,16 @@ const editForm = reactive({
     avatar: ''
 });
 
+
+const formatTransactionDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(Date.parse(dateString));
+    if (isNaN(date)) return dateString;
+    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+
+
+
 const subscription = ref({ type: 'Free User', daysLeft: 0, benefits: [] });
 const transactions = ref([]);
 
@@ -95,7 +105,7 @@ const fetchData = async () => {
         transactions.value = bookingRes.data.map(tx => ({
             id: tx.id,
             name: tx.location_name,
-            date: new Date(tx.booking_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
+            date: tx.booking_start ? formatTransactionDate(tx.booking_start) : '-',
             status: mapBackendStatus(tx.payment_status),
             statusText: mapStatusText(tx.payment_status)
         }));

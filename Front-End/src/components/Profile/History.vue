@@ -74,29 +74,29 @@ const fetchHistory = async () => {
 
     // 2. Order
     const orders = orderRes.data.map(item => {
-       const statusInfo = mapStatus(item);
-       let title = item.first_product_name || 'Produk';
-       if (item.total_items > 1) title += ` (+ ${item.total_items - 1} barang lainnya)`;
+      const statusInfo = mapStatus(item);
+      let title = item.first_product_name || 'Produk';
+      if (item.total_items > 1) title += ` (+ ${item.total_items - 1} barang lainnya)`;
 
-       return {
-         id: `ORD-${item.id}`,
-         originalId: item.id,
-         type: 'order', 
-         title: title,
-         dateTime: formatDate(item.created_at),
-         rawDate: new Date(item.created_at),
-         price: formatRupiah(item.total_amount),
-         status: statusInfo.id,
-         statusText: statusInfo.text,
-         statusClass: statusInfo.class,
-         
-         // Data Review Order
-         targetId: item.first_product_id, // Product ID (untuk di-review)
-         hasReviewed: item.review_count > 0, // Cek dari backend
-         isRatingVisible: false,
-         rating: 0,
-         reviewText: ""
-       };
+      return {
+        id: `ORD-${item.id}`,
+        originalId: item.id,
+        type: 'order', 
+        title: title,
+        dateTime: formatDate(item.created_at),
+        rawDate: new Date(item.created_at),
+        price: formatRupiah(item.total_amount),
+        status: statusInfo.id,
+        statusText: statusInfo.text,
+        statusClass: statusInfo.class,
+        
+        // Data Review Order
+        targetId: item.first_product_id, // Product ID (untuk di-review)
+        hasReviewed: item.review_count > 0, // Cek dari backend
+        isRatingVisible: false,
+        rating: 0,
+        reviewText: ""
+      };
     });
 
     const combined = [...bookings, ...orders].sort((a, b) => b.rawDate - a.rawDate);

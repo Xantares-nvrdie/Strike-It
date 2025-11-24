@@ -164,7 +164,7 @@ export default {
         return api.post('/upgrade-membership', { id_membership: membershipId });
     },
     getPaymentMethods() {
-        return api.get('/payments-methods'); // Ini akan memanggil route yang baru kita buat di backend
+        return api.get('/payment-methods'); // Ini akan memanggil route yang baru kita buat di backend
     },
     updatePaymentMethod(id_payment_method) {
         // Kita gunakan endpoint update profile yang sudah ada, tapi kirim data spesifik

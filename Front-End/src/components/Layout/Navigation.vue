@@ -1,34 +1,79 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router'; // Tambah useRouter
 import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router'; 
 import { Icon } from '@iconify/vue';
+import api from '@/services/api.js'; // Import API service
+import { useToast } from "vue-toastification"; // Opsional: untuk notifikasi error
 
 const route = useRoute();
-const router = useRouter(); // Inisialisasi router
+const router = useRouter(); 
+const toast = useToast();
 
-// --- STATE LOGIN ---
+// --- STATE ---
 const isLoggedIn = ref(false);
 const userName = ref('Guest');
+const userAvatarUrl = ref('../../assets/user.png'); // Default Fallback
 
-// Cek status login saat komponen dimuat
-onMounted(() => {
-  const token = localStorage.getItem('token');
-  const userString = localStorage.getItem('user');
-  
-  if (token && userString) {
-    isLoggedIn.value = true;
-    try {
-      const user = JSON.parse(userString);
-      userName.value = user.name || 'User';
-    } catch (e) {
-      userName.value = 'User';
+const isMenuOpen = ref(false);
+const isProfileOpen = ref(false);
+
+const isMainPage = computed(() => route.name === 'Home');
+
+// --- HELPER URL ---
+const getAvatarUrl = (path) => {
+    if (!path || path === 'avatar/default.png') return 'https://ui-avatars.com/api/?name=User&background=random';
+    // Asumsi Backend serve di localhost:3000/uploads/
+    const baseUrl = 'http://localhost:3000/uploads';
+    return path.startsWith('http') ? path : `${baseUrl}/${path}`;
+};
+
+
+// --- FETCH PROFILE ON MOUNT ---
+const checkAuthAndFetchAvatar = async () => {
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+        try {
+            // Panggil API untuk mendapatkan data profil lengkap
+            const res = await api.getMyProfile();
+            const data = res.data;
+            
+            isLoggedIn.value = true;
+            userName.value = data.name || 'User';
+            
+            // UPDATE: Ambil URL avatar yang benar dari database
+            userAvatarUrl.value = getAvatarUrl(data.avatar_img);
+
+            // Simpan nama user ke LocalStorage agar tidak perlu parse/fetch ulang saat refresh
+            localStorage.setItem('user', JSON.stringify({ name: data.name })); 
+
+        } catch (e) {
+            // Jika token kadaluwarsa (401), Interceptor sudah akan redirect.
+            // Tapi kita pastikan state disini bersih.
+            localStorage.removeItem('token');
+            isLoggedIn.value = false;
+        }
     }
-  } else {
-    isLoggedIn.value = false;
-  }
-});
+};
 
-// --- DATA NAVIGASI ---
+onMounted(checkAuthAndFetchAvatar); // Ganti logika onMounted lama dengan yang baru.
+
+
+// --- FUNGSI TOGGLE & LOGOUT (TETAP SAMA) ---
+const toggleMenu = () => { isMenuOpen.value = !isMenuOpen.value };
+const toggleProfileMenu = () => { isProfileOpen.value = !isProfileOpen.value };
+
+const handleLogout = () => {
+  if(confirm("Yakin ingin keluar?")) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    isLoggedIn.value = false;
+    isProfileOpen.value = false;
+    router.push('/login');
+  }
+};
+
+// Data Navigasi (tetap sama)
 const navigationItems = ref([
   { name: 'Beranda', icon: 'heroicons:home', path: '/' },
   { name: 'Lokasi', icon: 'heroicons:map-pin', path: '/home/#preview' },
@@ -43,31 +88,6 @@ const navigationItemsShop = ref([
   { name: 'Alat', icon: 'heroicons:shopping-bag', path: '/shop' },
   { name: 'Acara', icon: 'heroicons:calendar', path: '/event' }
 ]);
-
-const isMenuOpen = ref(false)
-const isProfileOpen = ref(false)
-
-const isMainPage = computed(() => route.name === 'Home');
-
-// --- FUNGSI TOGGLE ---
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
-}
-
-const toggleProfileMenu = () => {
-  isProfileOpen.value = !isProfileOpen.value
-}
-
-// --- FUNGSI LOGOUT ---
-const handleLogout = () => {
-  if(confirm("Yakin ingin keluar?")) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    isLoggedIn.value = false;
-    isProfileOpen.value = false;
-    router.push('/login');
-  }
-}
 </script>
 
 <template>
@@ -79,71 +99,30 @@ const handleLogout = () => {
     }
   ]">
     
-    <!-- LOGO -->
     <div class="logo cursor-pointer" @click="router.push('/home')">
       <img src="../../assets/strikeit_logo.png" alt="Logo Strike It" class="w-[50px] h-[50px] object-contain" />
     </div>
 
-    <!-- MENU DESKTOP -->
     <ul v-if="isMainPage" class="hidden lg:flex list-none gap-x-[30px]">
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/home">
-          <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/home/#preview">
-          <button class="btn-glass group-hover:text-[#122f4f]">Lokasi</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/home/#langganan">
-          <button class="btn-glass group-hover:text-[#122f4f]">Langganan</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/home/#diskon">
-          <button class="btn-glass group-hover:text-[#122f4f]">Diskon</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/home/#penilaian">
-          <button class="btn-glass group-hover:text-[#122f4f]">Penilaian</button>
-        </router-link>
-      </li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/home"><button class="btn-glass group-hover:text-[#122f4f]">Beranda</button></router-link></li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/home/#preview"><button class="btn-glass group-hover:text-[#122f4f]">Lokasi</button></router-link></li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/home/#langganan"><button class="btn-glass group-hover:text-[#122f4f]">Langganan</button></router-link></li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/home/#diskon"><button class="btn-glass group-hover:text-[#122f4f]">Diskon</button></router-link></li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/home/#penilaian"><button class="btn-glass group-hover:text-[#122f4f]">Penilaian</button></router-link></li>
     </ul>
-
     <ul v-else class="hidden lg:flex list-none gap-x-[30px]">
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/home">
-          <button class="btn-glass group-hover:text-[#122f4f]">Beranda</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/location">
-          <button class="btn-glass group-hover:text-[#122f4f]">Booking</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/shop">
-          <button class="btn-glass group-hover:text-[#122f4f]">Alat</button>
-        </router-link>
-      </li>
-      <li class="transition-colors duration-300 ease-in-out cursor-pointer group">
-        <router-link to="/event">
-          <button class="btn-glass group-hover:text-[#122f4f]">Event</button>
-        </router-link>
-      </li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/home"><button class="btn-glass group-hover:text-[#122f4f]">Beranda</button></router-link></li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/location"><button class="btn-glass group-hover:text-[#122f4f]">Booking</button></router-link></li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/shop"><button class="btn-glass group-hover:text-[#122f4f]">Alat</button></router-link></li>
+      <li class="transition-colors duration-300 ease-in-out cursor-pointer group"><router-link to="/event"><button class="btn-glass group-hover:text-[#122f4f]">Event</button></router-link></li>
     </ul>
 
-    <!-- USER AREA (DESKTOP) -->
     <div class="hidden lg:block w-48 relative">
       
-      <!-- KONDISI 1: SUDAH LOGIN -->
       <div v-if="isLoggedIn" class="btn-glass text-white font-semibold">
         <button @click="toggleProfileMenu"
           class="flex items-center justify-center gap-2 w-full rounded-lg transition-colors">
-          <img src="../../assets/user.png" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
+          <img :src="userAvatarUrl" alt="Foto Profile" class="object-cover w-9 h-9 rounded-full" />
           <span class="text-lg truncate max-w-[100px]">{{ userName }}</span>
         </button>
 
@@ -164,7 +143,6 @@ const handleLogout = () => {
         </transition>
       </div>
 
-      <!-- KONDISI 2: BELUM LOGIN (GUEST) -->
       <div v-else class="flex gap-3 justify-end">
         <router-link to="/login">
           <button class="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 transition-all text-white font-medium backdrop-blur-sm">
@@ -180,7 +158,6 @@ const handleLogout = () => {
 
     </div>
 
-    <!-- HAMBURGER MENU (MOBILE) -->
     <button @click="toggleMenu"
       class="lg:hidden flex flex-col justify-center items-center gap-[4px] w-10 h-10 rounded-md hover:bg-white/10 transition">
       <span class="w-6 h-[2px] bg-white transition-all" :class="{ 'rotate-45 translate-y-[6px]': isMenuOpen }"></span>
@@ -188,18 +165,16 @@ const handleLogout = () => {
       <span class="w-6 h-[2px] bg-white transition-all" :class="{ '-rotate-45 -translate-y-[6px]': isMenuOpen }"></span>
     </button>
 
-    <!-- MOBILE MENU DROPDOWN -->
     <transition name="fade">
       <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden px-4">
         <div
           class="w-full max-w-md bg-[#406691]/90 backdrop-blur-md rounded-[2rem] border border-white/20 p-5 flex flex-col items-center gap-3 text-white shadow-2xl">
           
-          <!-- USER INFO MOBILE -->
           <div
             class="w-full bg-white/10 rounded-[1.5rem] border border-white/10 flex flex-col items-center gap-2 py-4">
             
             <template v-if="isLoggedIn">
-                <img src='../../assets/user.png' alt="Foto Profile"
+                <img :src='userAvatarUrl' alt="Foto Profile"
                 class="object-cover w-[80px] h-[80px] rounded-full border-2 border-white/30" />
                 <p class="font-semibold text-lg">{{ userName }}</p>
                 <router-link to="/profile" class="text-sm opacity-80 hover:opacity-100 underline">
@@ -220,7 +195,6 @@ const handleLogout = () => {
 
           </div>
 
-          <!-- NAVIGATION LINKS MOBILE -->
           <div
             class="w-full bg-white/10 rounded-[1.5rem] border border-white/10 flex flex-col items-start gap-3 px-5 py-5">
             <template v-if="isMainPage">
@@ -240,7 +214,6 @@ const handleLogout = () => {
             </template>
           </div>
 
-          <!-- LOGOUT BUTTON MOBILE (Hanya muncul jika login) -->
           <div v-if="isLoggedIn" class="w-full">
             <button
               @click="handleLogout"
@@ -267,6 +240,4 @@ const handleLogout = () => {
   opacity: 0;
   transform: translateY(-10px);
 }
-
-
 </style>
