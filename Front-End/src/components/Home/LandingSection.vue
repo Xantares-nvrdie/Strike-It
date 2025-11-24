@@ -1,15 +1,30 @@
+<script>
+import mancing from "@/assets/mancing.png";
+import wave1 from "@/assets/wave1.png";
+
+export default {
+    name: "ProfileSection",
+    data() {
+        return {
+        mancing,
+        wave1
+        };
+    }
+};
+</script>
+
 <template>
     <section class="relative flex items-center justify-center w-screen h-screen gap-5 p-12 overflow-hidden bg-gradient-to-b from-[#003bb3] to-white">
 
         <div class="absolute bottom-0 left-0 w-full h-[25vh] sm:h-[28vh] md:h-[30vh] z-20" :style="{
-            backgroundImage: 'url(/src/assets/wave1.png)',
+            backgroundImage: `url(${wave1})`,
             backgroundRepeat: 'repeat-x',
             backgroundSize: 'cover'
         }">
         </div>
 
         <div class="absolute bottom-0 lg:right-[10vw] md:right-[2vw] sm:right-[1vw] h-[80vh] sm:h-[85vh] md:h-[90vh] lg:h-[100vh] w-[110vw] sm:w-[80vw] md:w-[60vw] lg:w-[40vw] aspect-[3/4] bg-no-repeat bg-right bg-contain z-10"
-            :style="{ backgroundImage: 'url(/src/assets/mancing.png)' }">
+            :style="{ backgroundImage: `url(${mancing})` }"
         </div>
 
         <div class="absolute z-40 w-full p-5 text-center text-white transform -translate-x-1/2 
@@ -40,8 +55,3 @@
     </section>
 </template>
 
-<script>
-export default {
-    name: "ProfileSection",
-};
-</script>
