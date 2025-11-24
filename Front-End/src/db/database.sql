@@ -310,7 +310,7 @@ VALUES
 "Suasananya hening dan menyatu dengan alam, seringkali hanya ditemani suara aliran air. Tempat yang cocok untuk mencari ketenangan.",
 "Jl. Pegangsaan Timur No 55",
 18000,
-"locationimg/tangerang.jpg",
+"locationimg/tangerang.png",
 -6.178300, 106.631900,
 4.6,
 10);
