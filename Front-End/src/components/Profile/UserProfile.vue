@@ -173,14 +173,14 @@ onMounted(fetchData);
     <section class="w-full h-full bg-zinc-200 flex flex-col justify-start gap-6 overflow-y-auto relative font-['Outfit']">
         
         <input type="file" ref="fileInput" class="hidden" accept="image/*" @change="onFileSelected" />
-
+        
         <div v-if="isLoading" class="w-full h-96 flex items-center justify-center">
             <Icon icon="eos-icons:loading" class="w-10 h-10 text-blue-600 animate-spin" />
         </div>
 
         <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-8 py-8">
 
-            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 from-[#0f172a] via-[#1e1a78] to-[#0f172a] backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline-2 outline-white p-6 flex flex-col gap-5 relative">
+            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline-2 outline-white p-6 flex flex-col gap-5 relative">
                 <button v-if="isEditing" @click="saveProfile" :disabled="isSaving" class="absolute top-6 right-6 bg-green-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg z-10 hover:bg-green-600 transition">
                     {{ isSaving ? 'Menyimpan...' : 'Simpan' }}
                 </button>
@@ -231,7 +231,7 @@ onMounted(fetchData);
                 </div>
             </div>
 
-            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 from-[#0f172a] via-[#1e1a78] to-[#0f172a] backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
+            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
                 <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-bold text-white">Detail Langganan</h2>
                     <button @click="isMembershipModalOpen = true" class="text-xs bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full transition cursor-pointer">
@@ -260,7 +260,7 @@ onMounted(fetchData);
                 </div>
             </div>
 
-            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 from-[#0f172a] via-[#1e1a78] to-[#0f172a] backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col justify-between">
+            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col justify-between">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold text-white">Statistik Aktivitas</h2>
                     <Icon icon="mdi:chart-box-outline" class="w-6 h-6 text-blue-200" />
@@ -290,7 +290,7 @@ onMounted(fetchData);
                 </div>
             </div>
 
-            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 from-[#0f172a] via-[#1e1a78] to-[#0f172a] backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
+            <div class="bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 backdrop-blur-sm rounded-[37px] shadow-[5px_6px_22px_rgba(0,0,0,0.13)] outline outline-2 outline-white p-6 flex flex-col gap-4">
                 <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-bold text-white">Riwayat Booking</h2>
                     <router-link to="/history" class="text-xs font-semibold text-blue-100 uppercase hover:text-white transition-colors">Lihat semua</router-link>
