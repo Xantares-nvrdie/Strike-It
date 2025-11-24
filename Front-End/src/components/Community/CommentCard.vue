@@ -26,9 +26,9 @@ defineProps({
       {{ comment.content }}
     </p>
 
-    <div class="mt-4 flex space-x-6 text-xs font-medium text-gray-500">
+    <!-- <div class="mt-4 flex space-x-6 text-xs font-medium text-gray-500">
       <button class="hover:text-gray-900">Sembunyikan balasan</button>
       <button class="hover:text-gray-900">Berikan balasan</button>
-    </div>
+    </div> -->
   </div>
 </template>

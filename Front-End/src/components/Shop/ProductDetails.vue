@@ -197,7 +197,7 @@ onMounted(fetchDetail);
                             Beli Sekarang
                         </button>
 
-                        <!-- Tombol sewa hanya muncul bila produk bisa BELI + SEWA -->
+                        <!-- Tombol sewa hanya muncul bila produk bisa BELI + SEWA
                         <button 
                             v-if="canRent && canBuy"
                             @click="handleTransaction('sewa')"
@@ -206,7 +206,7 @@ onMounted(fetchDetail);
                         >
                             <Icon icon="mdi:clock-time-four-outline" class="w-5 h-5" />
                             Sewa Sekarang
-                        </button>
+                        </button> -->
                     </div>
                 </div>
                 
