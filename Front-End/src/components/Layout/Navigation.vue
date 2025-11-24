@@ -168,7 +168,7 @@ const navigationItemsShop = ref([
     <transition name="fade">
       <div v-if="isMenuOpen" class="absolute top-[70px] left-0 w-full flex justify-center lg:hidden px-4">
         <div
-          class="w-full max-w-md bg-[#406691]/90 backdrop-blur-md rounded-[2rem] border border-white/20 p-5 flex flex-col items-center gap-3 text-white shadow-2xl">
+          class="w-full max-w-md bg-[#003bb3]/70 backdrop-blur-md rounded-[2rem] border border-white/20 p-5 flex flex-col items-center gap-3 text-white shadow-2xl">
           
           <div
             class="w-full bg-white/10 rounded-[1.5rem] border border-white/10 flex flex-col items-center gap-2 py-4">

@@ -40,7 +40,7 @@ const handleLogout = () => {
 
 <template>
     <aside
-        class="h-full fixed p-4 md:p-6 flex flex-col bg-zinc-100 w-20 md:w-64 transition-all duration-300"
+        class="h-full fixed z-40 p-4 md:p-6 flex flex-col bg-zinc-100 w-20 md:w-64 transition-all duration-300"
     >
         <div
         class="flex items-center gap-3 mb-10 px-2 justify-center md:justify-start"

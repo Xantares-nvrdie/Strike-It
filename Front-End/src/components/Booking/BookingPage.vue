@@ -401,70 +401,77 @@ const getStepClass = (step) => {
             <p class="mt-4 text-gray-600 font-medium">Memuat data booking...</p>
         </div>
 
-        <div v-if="currentStep === 2" class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-8 w-full max-w-4xl animate-fade-in">
-          <div class="flex justify-between items-start mb-6">
+        <div v-if="currentStep === 2" class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-4 md:p-8 w-full max-w-4xl animate-fade-in">
+          
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
              <div>
-                <h2 class="text-2xl font-semibold text-gray-800">Pilih Spot Mancing</h2>
-                <p class="text-gray-500 mt-1 flex items-center gap-2">
+                <h2 class="text-xl md:text-2xl font-semibold text-gray-800">Pilih Spot Mancing</h2>
+                <p class="text-sm md:text-base text-gray-500 mt-1 flex items-center gap-2">
                     <Icon icon="mdi:calendar-clock" /> 
                     {{ selectedDate }} | {{ selectedStartHour }} - {{ parseInt(selectedStartHour) + duration }}:00
                 </p>
              </div>
-             <div class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-bold text-lg">
+             <div class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-bold text-sm md:text-lg self-start">
                  {{ duration }} Jam
              </div>
           </div>
 
-          <div class="flex flex-col items-center w-full bg-white rounded-xl p-6 border border-gray-200 shadow-inner">
-            <div class="flex flex-wrap justify-center gap-2 mb-4">
-              <div v-for="seat in topSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
-                class="w-10 h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform hover:scale-105 border-2">
-                <Icon icon="mdi:fish" class="w-6 h-6" />
-              </div>
+          <div class="flex flex-col items-center w-full bg-white rounded-xl p-4 md:p-6 border border-gray-200 shadow-inner">
+            
+            <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mb-2 md:mb-4 w-full">
+              <button v-for="seat in topSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
+                class="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform active:scale-95 border-2 relative group">
+                <Icon icon="mdi:fish" class="w-4 h-4 md:w-6 md:h-6" />
+              </button>
             </div>
 
-            <div class="flex justify-between w-full px-4 gap-4">
-              <div class="flex flex-col gap-2">
-                <div v-for="seat in leftSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
-                  class="w-10 h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform hover:scale-105 border-2">
-                  <Icon icon="mdi:fish" class="w-6 h-6" />
+            <div class="grid grid-cols-[auto_1fr_auto] w-full gap-2 md:gap-4 h-auto md:h-48">
+              
+              <div class="flex flex-col justify-center gap-1.5 md:gap-2">
+                <button v-for="seat in leftSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
+                  class="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform active:scale-95 border-2">
+                  <Icon icon="mdi:fish" class="w-4 h-4 md:w-6 md:h-6" />
+                </button>
+              </div>
+
+              <div class="relative rounded-xl bg-blue-50 border-2 border-blue-200 w-full flex flex-col items-center justify-center text-blue-400 overflow-hidden min-h-[120px]">
+                <Icon icon="mdi:water" class="w-16 h-16 md:w-24 md:h-24 opacity-20 absolute" />
+                <div class="relative z-10 text-center px-1">
+                    <span class="block font-bold text-sm md:text-lg text-blue-400">KOLAM PEMANCINGAN</span>
+                    <span class="block text-[10px] md:text-xs text-blue-300">Area Air Tenang</span>
                 </div>
               </div>
 
-              <div class="flex-1 h-48 rounded-xl bg-blue-50 border-2 border-blue-200 flex flex-col items-center justify-center text-blue-400 relative overflow-hidden">
-                <Icon icon="mdi:water" class="w-24 h-24 opacity-20 absolute" />
-                <span class="font-bold text-lg z-10">KOLAM PEMANCINGAN</span>
-                <span class="text-xs z-10">Area Air Tenang</span>
+              <div class="flex flex-col justify-center gap-1.5 md:gap-2">
+                 <button v-for="seat in rightSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
+                  class="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform active:scale-95 border-2">
+                  <Icon icon="mdi:fish" class="w-4 h-4 md:w-6 md:h-6" />
+                </button>
               </div>
 
-              <div class="flex flex-col gap-2">
-                <div v-for="seat in rightSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
-                  class="w-10 h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform hover:scale-105 border-2">
-                  <Icon icon="mdi:fish" class="w-6 h-6" />
-                </div>
-              </div>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-2 mt-4">
-              <div v-for="seat in bottomSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
-                class="w-10 h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform hover:scale-105 border-2">
-                <Icon icon="mdi:fish" class="w-6 h-6" />
-              </div>
+            <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mt-2 md:mt-4 w-full">
+               <button v-for="seat in bottomSeats" :key="seat.id" @click="selectSeat(seat)" :class="getSeatClass(seat)"
+                class="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg shadow-sm cursor-pointer transition-all transform active:scale-95 border-2">
+                <Icon icon="mdi:fish" class="w-4 h-4 md:w-6 md:h-6" />
+              </button>
             </div>
+
           </div>
 
-          <div class="flex flex-wrap justify-center gap-6 mt-6 text-sm font-medium">
-            <div class="flex items-center gap-2"><div class="w-5 h-5 rounded bg-blue-600 border border-blue-700"></div><span class="text-gray-800">Pilihan Anda: {{ selectedSeatName || '-' }}</span></div>
-            <div class="flex items-center gap-2"><div class="w-5 h-5 rounded bg-white border border-gray-300"></div><span class="text-gray-800">Tersedia</span></div>
-            <div class="flex items-center gap-2"><div class="w-5 h-5 rounded bg-red-500 border border-red-600"></div><span class="text-gray-800">Terisi</span></div>
+          <div class="flex flex-wrap justify-center gap-4 md:gap-6 mt-6 text-xs md:text-sm font-medium">
+            <div class="flex items-center gap-2"><div class="w-4 h-4 md:w-5 md:h-5 rounded bg-blue-600 border border-blue-700"></div><span class="text-gray-800">Pilihan: {{ selectedSeatName || '-' }}</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 md:w-5 md:h-5 rounded bg-white border border-gray-300"></div><span class="text-gray-800">Tersedia</span></div>
+            <div class="flex items-center gap-2"><div class="w-4 h-4 md:w-5 md:h-5 rounded bg-red-500 border border-red-600"></div><span class="text-gray-800">Terisi</span></div>
           </div>
 
           <div class="mt-8 flex flex-col-reverse sm:flex-row sm:justify-between gap-3">
-            <button @click="goToStep(1)" class="bg-gray-200 text-gray-700 font-bold py-3 px-8 rounded-xl hover:bg-gray-300 transition duration-300">Kembali</button>
-            <button @click="handleStep2Submit" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg shadow-blue-200">Lanjut Pembayaran</button>
+            <button @click="goToStep(1)" class="w-full sm:w-auto bg-gray-200 text-gray-700 font-bold py-3.5 px-8 rounded-xl hover:bg-gray-300 transition duration-300">Kembali</button>
+            <button @click="handleStep2Submit" class="w-full sm:w-auto bg-blue-600 text-white font-bold py-3.5 px-8 rounded-xl hover:bg-blue-700 transition duration-300 shadow-lg shadow-blue-200">Lanjut Pembayaran</button>
           </div>
-        </div>
 
+        </div>
         <div v-if="currentStep === 3" class="w-full max-w-5xl animate-fade-in">
           <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Pembayaran</h2>
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
