@@ -59,11 +59,9 @@ const groupedProducts = computed(() => {
         groups[catName].push(p);
     });
     
-    // Contoh Hasil: { "Joran": [...], "Reel": [...] }
     return groups;
 });
 
-// --- FILTER HALAMAN KATEGORI (DETAIL VIEW) ---
 const categoryFilteredProducts = computed(() => {
     if (!currentCategorySlug.value) return [];
     const slug = currentCategorySlug.value.toLowerCase();
@@ -74,7 +72,10 @@ const categoryFilteredProducts = computed(() => {
         if (!catName) {
              if (p.id_category == 1) catName = 'Joran';
              else if (p.id_category == 2) catName = 'Reel';
-             // ... dst
+             else if (p.id_category == 3) catName = 'Umpan';
+             else if (p.id_category == 4) catName = 'Kail';
+             else if (p.id_category == 5) catName = 'Senar';
+             else catName = 'Lainnya';
         }
         
         // Cocokkan slug dengan nama kategori ATAU nama produk

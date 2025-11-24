@@ -1,11 +1,12 @@
 <script setup>
 import { ref, defineEmits } from "vue";
 
-// 1. Definisikan data reaktif untuk filter
+// State filter
 const selectedTime = ref("bulan_ini"); // Default filter
 const startDate = ref(""); 
 const endDate = ref("");   
 
+// Status options
 const allStatuses = [
   { id: "terbayar", text: "Terbayar", class: "bg-green-100 text-green-800" },
   {
@@ -17,20 +18,19 @@ const allStatuses = [
 ];
 const selectedStatuses = ref(["terbayar", "belum_dibayar", "dibatalkan"]); 
 
-// 2. Definisikan 'emit'
+// Emit event ke parent
 const emit = defineEmits(["apply-filters"]);
 
-// 3. Fungsi untuk tombol-tombol Waktu Preset
+// Fungsi pilih preset waktu
 const selectTime = (time) => {
   selectedTime.value = time;
-  // UX: Jika pilih preset (Hari ini dll), kosongkan tanggal manual agar tidak bentrok
   startDate.value = "";
   endDate.value = "";
 };
 
 // Fungsi jika user mengubah tanggal manual, matikan preset
 const onDateChange = () => {
-    selectedTime.value = ""; // Matikan highlight tombol preset
+    selectedTime.value = ""; 
 };
 
 // Fungsi toggle status
@@ -47,7 +47,7 @@ const isStatusActive = (statusId) => {
   return selectedStatuses.value.includes(statusId);
 };
 
-// 4. Fungsi tombol "Tampilkan Hasil"
+// Fungsi apply filters
 const handleApplyFilters = () => {
   const filters = {
     time: selectedTime.value,
@@ -58,11 +58,11 @@ const handleApplyFilters = () => {
   emit("apply-filters", filters);
 };
 
-// 5. Fungsi tombol "Hapus" (Clear) - PERBAIKAN UTAMA DISINI
+// Fungsi clear filters
 const handleClearFilters = () => {
   selectedTime.value = "bulan_ini";
-  startDate.value = ""; // Perbaikan: Jangan pakai 'const', langsung set value
-  endDate.value = "";   // Perbaikan: Jangan pakai 'const', langsung set value
+  startDate.value = ""; 
+  endDate.value = "";  
   selectedStatuses.value = ["terbayar", "belum_dibayar", "dibatalkan"];
   
   // Otomatis apply setelah clear

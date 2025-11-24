@@ -10,16 +10,16 @@ const route = useRoute();
 // State Form
 const email = ref('');
 const password = ref('');
-const showPassword = ref(false); // <--- 1. State baru untuk toggle password
+const showPassword = ref(false); 
 const isLoading = ref(false);
 const errorMessage = ref('');
 
-// --- 1. LOGIC LOGIN GOOGLE ---
+// login dengan Google
 const loginWithGoogle = () => {
   window.location.href = 'http://localhost:3000/auth/google';
 };
 
-// --- 2. TANGKAP TOKEN GOOGLE ---
+// Proses callback dari Google
 onMounted(() => {
   const token = route.query.token;
   const userDataStr = route.query.user;
@@ -40,7 +40,7 @@ onMounted(() => {
   }
 });
 
-// --- 3. LOGIC LOGIN MANUAL ---
+// login manual
 const handleLogin = async () => {
   errorMessage.value = '';
   isLoading.value = true;

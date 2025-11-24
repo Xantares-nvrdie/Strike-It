@@ -6,11 +6,11 @@
   const locations = ref([]);
   const selectedIndex = ref(0);
 
-  // 1. Definisi URL Backend
+  // Definisi URL Backend
   const baseUrl = 'http://localhost:3000'; 
   const staticPrefix = '/uploads';
 
-  // 2. Fetch Data
+  // Fetch Data
   const fetchLocations = async () => {
     try {
       const res = await api.getLocations();
@@ -20,7 +20,7 @@
     }
   };
 
-  // 3. Computed Property (Update Logic Gambar)
+  // Computed Property (Update Logic Gambar)
   const selectedLocation = computed(() => {
     if (locations.value.length === 0) return { 
       name: 'Loading...', 
@@ -31,13 +31,7 @@
     const loc = locations.value[selectedIndex.value];
     
     let imagePath = loc.img;
-    
-    // LOGIC BARU:
-    // Jika path dari DB bukan link eksternal (http), kita rakit jadi URL backend.
-    // Contoh DB: "locationimg/jakarta.jpg" 
-    // Menjadi: "http://localhost:3000/uploads/locationimg/jakarta.jpg"
     if (imagePath && !imagePath.startsWith('http')) {
-        // Hapus slash di depan jika ada agar tidak double slash
         const cleanPath = imagePath.startsWith('/') ? imagePath.substring(1) : imagePath;
         imagePath = `${baseUrl}${staticPrefix}/${cleanPath}`;
     }

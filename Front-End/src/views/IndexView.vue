@@ -1,10 +1,8 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import { Icon } from '@iconify/vue';
-import { ref } from 'vue'; // <-- DITAMBAHKAN: 'ref' diperlukan untuk 'routes'
+import { ref } from 'vue';
 
-// Asumsi rute-rute ini ada di router/index.js Anda.
-// Sesuaikan path-nya jika berbeda.
 const routes = ref([
     { 
         path: '/home', 
@@ -97,7 +95,6 @@ const routes = ref([
 <template>
     <div class="w-screen min-h-screen bg-zinc-100 p-4 py-16 md:py-24 font-outfit">
         
-        <!-- Kontainer utama, sempit dan di tengah -->
         <div class="w-full max-w-md mx-auto">
         
         <!-- Header: Avatar & Judul -->

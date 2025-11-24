@@ -24,13 +24,13 @@ const formatDate = (dateString) => {
 
 // Mapping Status
 const mapStatus = (item) => {
-    // A. Booking (Sewa)
+    // Booking (Sewa)
     if (item.spot_number) { 
         if (item.status === 'cancelled') return { id: 'dibatalkan', text: 'Dibatalkan', class: 'text-red-600 bg-red-50' };
         if (item.payment_status === 'paid') return { id: 'terbayar', text: 'Sewa Selesai', class: 'text-green-600 bg-green-50' };
         return { id: 'belum_dibayar', text: 'Belum Bayar', class: 'text-yellow-600 bg-yellow-50' };
     }
-    // B. Order (Belanja)
+    // Order (Belanja)
     switch (item.status) {
         case 'pending': return { id: 'belum_dibayar', text: 'Menunggu Pembayaran', class: 'text-yellow-600 bg-yellow-50' };
         case 'processing': return { id: 'diproses', text: 'Sedang Dikemas', class: 'text-blue-600 bg-blue-50' };
@@ -48,7 +48,7 @@ const fetchHistory = async () => {
         api.getMyOrders()    
     ]);
 
-    // 1. Booking
+    // Booking
     const bookings = bookingRes.data.map(item => {
       const statusInfo = mapStatus(item);
       return {
@@ -72,7 +72,7 @@ const fetchHistory = async () => {
       };
     });
 
-    // 2. Order
+    // Order
     const orders = orderRes.data.map(item => {
       const statusInfo = mapStatus(item);
       let title = item.first_product_name || 'Produk';
@@ -108,19 +108,17 @@ const fetchHistory = async () => {
   }
 };
 
-// --- LOGIC TOGGLE & SUBMIT (UPDATED) ---
-
 const toggleRating = (clickedItem) => {
-    // 1. Validasi Pembayaran
+    // Validasi Pembayaran
     if (clickedItem.status !== 'terbayar') { // Status 'terbayar' kita set untuk paid/completed/delivered
         toast.warning("Selesaikan transaksi untuk memberi ulasan.");
         return;
     }
     
-    // 2. Validasi Sudah Review
+    // Validasi Sudah Review
     if (clickedItem.hasReviewed) return;
 
-    // 3. Buka Form
+    // Buka Form
     const newVisibility = !clickedItem.isRatingVisible;
     historyItems.value.forEach(item => item.isRatingVisible = false);
     clickedItem.isRatingVisible = newVisibility;

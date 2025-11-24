@@ -23,7 +23,7 @@ const handleRegister = async () => {
     isLoading.value = true;
 
     try {
-        // 1. Panggil API Register
+        // Panggil API Register
         // Sesuai backend: butuh name, email, password
         await api.register({
         name: name.value,
@@ -31,7 +31,7 @@ const handleRegister = async () => {
         password: password.value
         });
 
-        // 2. Jika sukses
+        // Jika sukses
         successMessage.value = 'Registrasi berhasil! Mengalihkan ke halaman login...';
         
         // Tunggu 2 detik biar user baca pesan, lalu pindah ke login
@@ -40,7 +40,7 @@ const handleRegister = async () => {
         }, 2000);
 
     } catch (error) {
-        // 3. Tangkap error (misal: Email sudah terdaftar)
+        // Tangkap error (misal: Email sudah terdaftar)
         console.error('Register Error:', error);
         if (error.response && error.response.data) {
         errorMessage.value = error.response.data.message;

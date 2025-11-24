@@ -23,16 +23,16 @@ const mainNavigationItems = ref([
     },
 ]);
 
-// --- FUNGSI LOGOUT ---
+// logout
 const handleLogout = () => {
-    // 1. Konfirmasi User (Opsional tapi disarankan)
+    // Konfirmasi User (Opsional tapi disarankan)
     if (confirm("Apakah Anda yakin ingin keluar?")) {
         
-        // 2. Hapus Token & Data User dari Penyimpanan Browser
+        // Hapus Token & Data User dari Penyimpanan Browser
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
-        // 3. Arahkan kembali ke halaman Login
+        // Arahkan kembali ke halaman Login
         router.push("/login");
     }
 };

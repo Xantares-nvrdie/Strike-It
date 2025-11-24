@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRouter } from 'vue-router';
 import api from '@/services/api.js'; // Import API
-import { useToast } from "vue-toastification"; // Optional: buat notif kalau belum login
+import { useToast } from "vue-toastification";
 
 const props = defineProps({
   post: Object,
@@ -23,7 +23,7 @@ function goToPost() {
   }
 }
 
-// LOGIKA LIKE BERFUNGSI
+// Handle Like Post
 const handleLike = async (event) => {
     // Stop propagasi agar tidak masuk ke detail post saat klik tombol like
     event.stopPropagation(); 

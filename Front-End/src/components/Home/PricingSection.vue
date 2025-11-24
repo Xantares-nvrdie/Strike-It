@@ -14,7 +14,7 @@ const userMembership = ref('');
 // --- Fetch Data Logic ---
 const fetchAllData = async () => {
   try {
-    // 1. Cek Login & Ambil Paket Aktif User
+    // Cek Login & Ambil Paket Aktif User
     const token = localStorage.getItem('token');
     if (token) {
         isLoggedIn.value = true;
@@ -27,7 +27,7 @@ const fetchAllData = async () => {
         }
     }
 
-    // 2. Ambil List Paket dari Backend
+    // Ambil List Paket dari Backend
     const response = await api.getMemberships();
     
     // Mapping data DB ke format Frontend
@@ -45,7 +45,7 @@ const fetchAllData = async () => {
   }
 };
 
-// --- Logika Sorting Plan (Populer di Tengah) ---
+// Logika Sorting Plan (Populer di Tengah)
 const sortedPlans = computed(() => {
   if (pricingPlans.value.length === 0) return [];
   
@@ -59,7 +59,7 @@ const sortedPlans = computed(() => {
   return pricingPlans.value;
 });
 
-// --- Logika Slider Mobile ---
+// Logika Slider Mobile
 const activeIndex = ref(1);
 const touchStartX = ref(0);
 const touchStartY = ref(0);
@@ -94,7 +94,7 @@ function handleTouchEnd(e) {
   }
 }
 
-// --- Logika Modal & Checkout ---
+// Logika Modal & Checkout
 function openModal(plan) {
   if (!isLoggedIn.value) {
       if (confirm("Silakan login terlebih dahulu untuk berlangganan.")) {

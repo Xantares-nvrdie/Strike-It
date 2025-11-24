@@ -7,7 +7,7 @@ import api from '@/services/api.js';
 
 const router = useRouter();
 const posts = ref([]);
-const baseUrl = 'http://localhost:3000/uploads'; // Sesuaikan jika perlu
+const baseUrl = 'http://localhost:3000/uploads'; 
 
 function navigateToCreatePost() {
   router.push('/community/create-post');
@@ -27,6 +27,7 @@ const timeAgo = (dateString) => {
     return "Baru saja";
 };
 
+// Fetch Posts dari Backend
 const fetchPosts = async () => {
     try {
         const response = await api.getAllPosts();
@@ -40,7 +41,6 @@ const fetchPosts = async () => {
             time: timeAgo(p.created_at),
             title: p.title,
             content: p.body,
-            // DB punya kolom 'category', kita masukkan ke array tags
             tags: [p.category], 
             stats: { 
                 views: p.views_count || 0, 

@@ -31,7 +31,6 @@ const getPaymentMethodInfo = () => {
 // Pantau perubahan tab dan kirim Object ke parent
 watch(activeTab, () => {
     const methodData = getPaymentMethodInfo();
-    // Kita emit object lengkap agar BookingPage bisa membaca .id
     emit('select', methodData);
 }, { immediate: true });
 </script>

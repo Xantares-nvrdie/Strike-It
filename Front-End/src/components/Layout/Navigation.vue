@@ -9,7 +9,7 @@ const route = useRoute();
 const router = useRouter(); 
 const toast = useToast();
 
-// --- STATE ---
+// state
 const isLoggedIn = ref(false);
 const userName = ref('Guest');
 const userAvatarUrl = ref('../../assets/user.png'); // Default Fallback
@@ -19,7 +19,7 @@ const isProfileOpen = ref(false);
 
 const isMainPage = computed(() => route.name === 'Home');
 
-// --- HELPER URL ---
+// helper URL
 const getAvatarUrl = (path) => {
     if (!path || path === 'avatar/default.png') return 'https://ui-avatars.com/api/?name=User&background=random';
     // Asumsi Backend serve di localhost:3000/uploads/
@@ -28,7 +28,7 @@ const getAvatarUrl = (path) => {
 };
 
 
-// --- FETCH PROFILE ON MOUNT ---
+// fungsi cek auth dan fetch avatar
 const checkAuthAndFetchAvatar = async () => {
     const token = localStorage.getItem('token');
     

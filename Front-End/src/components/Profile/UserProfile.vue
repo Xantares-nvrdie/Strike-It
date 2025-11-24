@@ -84,7 +84,7 @@ const fetchData = async () => {
         
         editForm.avatar = user.value.avatar;
 
-        // Setup Statistik (Isi data pengganti)
+        // Setup Statistik Aktivitas
         stats.value = {
             totalBookings: bookingRes.data.length,
             totalOrders: orderRes.data.length
@@ -101,7 +101,7 @@ const fetchData = async () => {
             subscription.value = { type: 'Free User', daysLeft: 0, benefits: [] };
         }
 
-        // Setup Transaksi (Gabungan Booking untuk preview)
+        // Setup Transaksi
         transactions.value = bookingRes.data.map(tx => ({
             id: tx.id,
             name: tx.location_name,
@@ -117,7 +117,6 @@ const fetchData = async () => {
     }
 };
 
-// ... (Sisa logic edit profile, upload, dan payment modal tidak berubah) ...
 const triggerFileInput = () => { fileInput.value.click(); };
 const onFileSelected = async (event) => {
     const file = event.target.files[0];

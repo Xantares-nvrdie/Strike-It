@@ -29,7 +29,7 @@ const timeAgo = (dateString) => {
 const loadData = async () => {
     const postId = route.params.id;
     try {
-        // 1. Fetch Post Detail
+        // Fetch Post Detail
         const postRes = await api.getPostDetail(postId);
         const p = postRes.data;
         post.value = {
@@ -40,7 +40,7 @@ const loadData = async () => {
             }
         };
 
-        // 2. Fetch Comments
+        // Fetch Comments
         const commentsRes = await api.getPostComments(postId);
         comments.value = commentsRes.data.map(c => ({
             id: c.id,

@@ -33,7 +33,7 @@ const voucherCode = ref('');
 const discountAmount = ref(0);
 const isVoucherApplied = ref(false);
 
-// --- FETCH DATA ---
+// Fetch data
 const loadData = async () => {
     try {
         // 1. Cek Keranjang
@@ -83,7 +83,6 @@ onMounted(() => {
     loadData();
 });
 
-// --- COMPUTED PRICES ---
 const cartTotal = computed(() => {
     return cartItems.value.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
 });
@@ -97,7 +96,6 @@ const grandTotal = computed(() => {
 
 const getFullUrl = (path) => path ? (path.startsWith('http') ? path : `${baseUrl}/${path}`) : 'https://placehold.co/100';
 
-// --- LOGIC VOUCHER ---
 const applyVoucher = async () => {
     if (!voucherCode.value) {
         toast.warning("Masukkan kode voucher!");
@@ -127,7 +125,6 @@ const applyVoucher = async () => {
     }
 };
 
-// --- SUBMIT ORDER ---
 const submitCheckout = async () => {
     if (isSubmitting.value) return;
     
@@ -149,7 +146,6 @@ const submitCheckout = async () => {
 
         const payload = {
             shipping_address: fullAddress,
-            // Sambungkan ID payment yang dipilih dari DB
             payment_method: selectedPayment.value, 
             notes: billingDetails.value.notes,
             shipping_cost: shippingCost,
@@ -178,6 +174,7 @@ const submitCheckout = async () => {
 
       <div class="flex flex-col lg:flex-row gap-8 items-start">
 
+        <!-- Form checkout -->
         <div class="flex-1 w-full text-black bg-white p-6 md:p-8 rounded-2xl shadow-lg">
           <h2 class="text-2xl font-semibold mb-6">Alamat Pengiriman</h2>
           
@@ -199,6 +196,7 @@ const submitCheckout = async () => {
                 </div>
             </div>
 
+            <!-- Detail lokasi -->
             <div class="pt-4 border-t border-gray-100">
                 <h3 class="text-lg font-medium text-gray-900 mb-3">Detail Lokasi</h3>
                 <div class="space-y-4">
@@ -223,6 +221,7 @@ const submitCheckout = async () => {
                 </div>
             </div>
 
+            <!-- Catatan tambahan -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
               <textarea rows="3" v-model="billingDetails.notes" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Pesan khusus untuk kurir..."></textarea>
@@ -232,6 +231,7 @@ const submitCheckout = async () => {
 
         <div class="w-full lg:w-2/5 space-y-6">
           
+        <!-- Ringkasan pesanan -->
           <div class="bg-white p-6 md:p-8 rounded-2xl shadow-lg space-y-6 sticky top-24">
             <h2 class="text-2xl text-black font-semibold">Pesanan Anda</h2>
 
@@ -248,6 +248,7 @@ const submitCheckout = async () => {
               </div>
             </div>
 
+            <!-- Kode voucher -->
             <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
                 <label class="text-sm font-medium text-gray-700 mb-2 block">Kode Voucher</label>
                 <div class="flex gap-2">
@@ -268,6 +269,7 @@ const submitCheckout = async () => {
                 </div>
             </div>
 
+            <!-- Pentotalan -->
             <div class="border-t border-gray-200 pt-4 space-y-2">
                 <div class="flex justify-between text-sm text-gray-600">
                     <span>Subtotal</span>
@@ -289,6 +291,7 @@ const submitCheckout = async () => {
                 </div>
             </div>
 
+            <!-- Payment Method -->
             <div class="border-t border-gray-200 pt-6 space-y-3">
                 <h3 class="font-medium text-gray-800">Metode Pembayaran</h3>
                 

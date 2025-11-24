@@ -30,8 +30,6 @@ const fetchReviews = async () => {
       };
     });
 
-    // --- PERBAIKAN UTAMA: DUPLIKASI DATA ---
-    // Kita gandakan data 4x agar list menjadi panjang dan tidak putus saat scroll
     let multipliedData = [...originalData];
     for (let i = 1; i <= 4; i++) {
         multipliedData = [

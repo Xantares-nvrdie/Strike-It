@@ -1,12 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import EventCard from './EventCard.vue'; 
-import api from '@/services/api.js'; // Pastikan path ini sesuai dengan lokasi api.js Anda
+import api from '@/services/api.js';
 
+// State untuk menyimpan daftar event
 const events = ref([]);
-const baseUrl = 'http://localhost:3000'; // Sesuaikan dengan port backend Anda
+const baseUrl = 'http://localhost:3000';
 const staticPrefix = '/uploads';
 
+// Fetch Events dari Backend
 const fetchEvents = async () => {
     try {
         const response = await api.getEvents();
@@ -22,12 +24,12 @@ const fetchEvents = async () => {
             }
             
             return {
-                id: evt.id,
+                id: evt.id, 
                 imageUrl: imgPath,
-                title: evt.name,        // DB: name -> Component: title
-                author: 'Admin Strike It', // Default value (karena tidak ada di DB)
-                date: 'Segera Hadir',      // Default value (karena tidak ada di DB)
-                externalLink: evt.link_url // DB: link_url -> Component: externalLink
+                title: evt.name,        
+                author: 'Admin Strike It', 
+                date: 'Segera Hadir',     
+                externalLink: evt.link_url 
             };
         });
     } catch (error) {
