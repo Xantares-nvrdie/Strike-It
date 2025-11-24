@@ -651,7 +651,27 @@ INSERT INTO products (name, description, img, price_sale, price_rent, specificat
 ('Reel Abu Garcia Black Max', 'Kualitas Abu Garcia dengan harga terjangkau', 'alatimg/reels14.png', 550000, NULL, 'C6 Carbon Frame', 30, 2),
 ('Reel Okuma Helios SX', 'Desain futuristik dan ringan', 'alatimg/reels15.png', NULL, 110000, 'Lightweight Magnesium Body', 13, 2);
 
+-- Kail
+INSERT INTO products (name, description, img, price_sale, price_rent, specification, stock, id_category) VALUES
+('Kail Size 6', 'Kail tajam untuk ikan kecil', 'alatimg/kail1.png', 5000, NULL, 'Material Carbon Steel, Size 6', 100, 4),
+('Kail Size 8', 'Kail serbaguna untuk berbagai ikan', 'alatimg/kail2.png', 6000, NULL, 'Material High Carbon, Size 8', 150, 4),
+('Kail Size 10', 'Kail kuat untuk ikan sedang', 'alatimg/kail3.png', 7000, NULL, 'Material Stainless Steel, Size 10', 120, 4),
+('Kail Size 12', 'Kail tahan karat untuk air tawar', 'alatimg/kail4.png', 8000, NULL, 'Material Alloy Steel, Size 12', 130, 4),
+('Kail Size 14', 'Kail ultra tajam untuk ikan kecil hingga sedang', 'alatimg/kail5.png', 9000, NULL, 'Material High Carbon Steel, Size 14', 110, 4);
 
+-- Umpan
+INSERT INTO products (name, description, img, price_sale, price_rent, specification, stock, id_category) VALUES
+('Umpan FS10 5g', 'Umpan buatan untuk ikan air tawar', 'alatimg/umpan1.png', 15000, NULL, 'Soft Plastic, 5g', 200, 3),
+('Umpan Crankbait 5g', 'Umpan keras dengan aksi renang realistis', 'alatimg/umpan2.png', 25000, NULL, 'Hard Bait, 10g', 180, 3),
+('Umpan Caperlan 20g', 'Umpan berputar untuk menarik perhatian ikan', 'alatimg/umpan3.png', 30000, NULL, 'Metal Blade, 15g', 160, 3),
+('Umpan Caperlan 10g', 'Umpan agresif untuk ikan predator', 'alatimg/umpan4.png', 28000, NULL, 'Floating Bait, 12g', 170, 3),
+('Umpan Caperlan 8g', 'Umpan lentur untuk berbagai teknik mancing', 'alatimg/umpan5.png', 12000, NULL, 'Soft Plastic, 8g', 220, 3),
+('Umpan Udang Galah', 'Umpan alami favorit ikan air tawar', 'alatimg/umpan6.png', 20000, NULL, 'Natural Shrimp Bait, 50g', 140, 3);
+
+-- Senar
+INSERT INTO products (name, description, img, price_sale, price_rent, specification, stock, id_category) VALUES
+('Senar Monofilament 0.25mm', 'Senar serbaguna untuk berbagai teknik', 'alatimg/senar1.png', 40000, NULL, 'Monofilament, 0.25mm, 100m', 80, 5),
+('Senar Braided 0.20mm', 'Senar kuat dengan diameter tipis', 'alatimg/senar2.png', 60000, NULL, 'Braided, 0.20mm, 100m', 70, 5);
 
 ALTER TABLE order_items
 ADD COLUMN transaction_type ENUM('sewa','beli') DEFAULT 'beli';
