@@ -1,27 +1,28 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 import { Icon } from "@iconify/vue";
-import api from '@/services/api.js';
+import api from "@/services/api.js";
 import { useToast } from "vue-toastification";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 
 const toast = useToast();
 const router = useRouter();
 
-// State Form
+// State Form: Data yang akan dikirim ke backend
 const form = ref({
-  category: '', // Default kosong
-  title: '',
-  body: ''
+  category: "", // Default kosong
+  title: "",
+  body: "",
 });
 
 const isSubmitting = ref(false);
 
+// Navigasi kembali ke halaman komunitas
 const goToCommunity = () => {
   router.push("/community");
 };
 
-// Handle Submit
+// Handle Submit Postingan
 const handleSubmit = async () => {
   // Validasi: Pastikan semua field terisi
   if (!form.value.category || !form.value.title || !form.value.body) {
@@ -31,16 +32,17 @@ const handleSubmit = async () => {
 
   isSubmitting.value = true;
   try {
+    // Request API Create Post
     // Kirim data ke backend
     // category langsung dikirim apa adanya karena value option sudah sesuai DB (lowercase)
     await api.createPost({
       title: form.value.title,
       body: form.value.body,
-      category: form.value.category
+      category: form.value.category,
     });
 
     toast.success("Postingan berhasil dibuat!");
-    goToCommunity();
+    goToCommunity(); // Redirect jika sukses
   } catch (error) {
     console.error(error);
     toast.error("Gagal membuat postingan.");
@@ -54,7 +56,7 @@ const handleSubmit = async () => {
   <div class="min-h-screen bg-gray-100">
     <main class="max-w-3xl mx-auto py-4 sm:py-8 px-4">
       <form
-        @submit.prevent="handleSubmit" 
+        @submit.prevent="handleSubmit"
         class="bg-zinc-100 border-white shadow-md border-4 rounded-[2rem] p-4 sm:p-8"
       >
         <div class="space-y-6">
@@ -99,14 +101,23 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between sm:items-center space-y-4 sm:space-y-0">
-          <button type="button" class="inline-flex items-center justify-center sm:justify-start space-x-2 border border-blue-600 text-blue-600 font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-50">
+        <div
+          class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between sm:items-center space-y-4 sm:space-y-0"
+        >
+          <button
+            type="button"
+            class="inline-flex items-center justify-center sm:justify-start space-x-2 border border-blue-600 text-blue-600 font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-50"
+          >
             <Icon icon="heroicons-solid:photo" class="h-5 w-5" />
             <span>Berikan gambar</span>
           </button>
 
           <div class="flex space-x-3 justify-center sm:justify-end">
-            <button type="button" @click="goToCommunity" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm">
+            <button
+              type="button"
+              @click="goToCommunity"
+              class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm"
+            >
               Kembali
             </button>
             <button
@@ -114,7 +125,7 @@ const handleSubmit = async () => {
               :disabled="isSubmitting"
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg text-sm disabled:opacity-50"
             >
-              {{ isSubmitting ? 'Memproses...' : 'Publikasikan' }}
+              {{ isSubmitting ? "Memproses..." : "Publikasikan" }}
             </button>
           </div>
         </div>
