@@ -1,6 +1,5 @@
 # --- Dependencies ---
 node_modules/
-# JANGAN ignore package-lock.json, itu penting!
 
 # --- Environment (RAHASIA - JANGAN DIHAPUS) ---
 .env
