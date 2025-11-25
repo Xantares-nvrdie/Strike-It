@@ -318,8 +318,8 @@ VALUES
 -- Insert Location Images (Gallery) untuk Lokasi 1 (Jakarta)
 INSERT INTO location_images (id_location, img_path, img_type) VALUES 
 (1, 'locationimg/jakarta.jpg', 'main'),
-(1, 'locationimg/jakarta_thumb1.jpg', 'gallery'),
-(1, 'locationimg/jakarta_thumb2.jpg', 'gallery');
+(1, 'locationimg/banten.png', 'gallery'),
+(1, 'locationimg/bekasi.png', 'gallery');
 
 -- Insert Spots untuk Lokasi 1 (Jakarta)
 INSERT INTO location_spots (id_location, spot_name, spot_type) VALUES 
@@ -401,12 +401,12 @@ INSERT INTO location_images (id_location, img_path, img_type) VALUES
 -- Gambar untuk Lokasi 4 (Banten)
 INSERT INTO location_images (id_location, img_path, img_type) VALUES 
 (4, 'locationimg/banten.png', 'main'),
-(4, 'locationimg/tangerang.jpg', 'gallery'),
+(4, 'locationimg/tangerang.png', 'gallery'),
 (4, 'locationimg/jakarta.jpg', 'gallery');
 
 -- Gambar untuk Lokasi 5 (Tangerang)
 INSERT INTO location_images (id_location, img_path, img_type) VALUES 
-(5, 'locationimg/tangerang.jpg', 'main'),
+(5, 'locationimg/tangerang.png', 'main'),
 (5, 'locationimg/banten.png', 'gallery'),
 (5, 'locationimg/bandung.png', 'gallery');
 
