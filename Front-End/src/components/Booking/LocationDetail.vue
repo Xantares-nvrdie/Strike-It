@@ -21,10 +21,29 @@ const tabContentRef = ref(null);
 const touchStartX = ref(0); // Koordinat awal sentuhan layar
 const touchStartY = ref(0);
 
+// --- NEW: Image Slider State ---
+const currentImageIndex = ref(0);
+
 // Helper URL Gambar
 const getFullUrl = (path) => {
   if (!path) return "https://placehold.co/800x600?text=No+Image";
   return path.startsWith("http") ? path : `${baseUrl}/${path}`;
+};
+
+// --- NEW: Navigation Logic for Slider ---
+const nextImage = () => {
+  if (!locationData.value?.allImages) return;
+  // Increment index, loop back to 0 if at end
+  currentImageIndex.value =
+    (currentImageIndex.value + 1) % locationData.value.allImages.length;
+};
+
+const prevImage = () => {
+  if (!locationData.value?.allImages) return;
+  // Decrement index, loop to last item if at 0
+  currentImageIndex.value =
+    (currentImageIndex.value - 1 + locationData.value.allImages.length) %
+    locationData.value.allImages.length;
 };
 
 // --- FETCH DATA ---
@@ -36,18 +55,24 @@ const fetchData = async () => {
     const loc = locRes.data;
 
     // --- LOGIKA GAMBAR (Main + Gallery) ---
-    // Backend mengirim array 'images' via JOIN (jika sudah diupdate)
-    // Jika belum, pakai fallback ke loc.img utama
-    const allImages = loc.images || [];
+    const allImagesRaw = loc.images || [];
 
     // Cari gambar tipe 'main' (atau pakai cover default)
-    const mainImgObj = allImages.find((i) => i.img_type === "main") || {
+    const mainImgObj = allImagesRaw.find((i) => i.img_type === "main") || {
       img_path: loc.img,
     };
 
-    // Cari gambar tipe 'gallery' untuk thumbnail
-    const galleryImages = allImages.filter((i) => i.img_type === "gallery");
-    // Ambil 2 gambar pertama dari gallery, jika tidak ada pakai gambar utama sebagai fallback
+    // Cari gambar tipe 'gallery'
+    const galleryImages = allImagesRaw.filter((i) => i.img_type === "gallery");
+
+    // --- NEW: Create a comprehensive list for the slider ---
+    // Combine Main Image + All Gallery Images
+    const sliderList = [
+      getFullUrl(mainImgObj.img_path),
+      ...galleryImages.map((img) => getFullUrl(img.img_path)),
+    ];
+
+    // Ambil 2 gambar pertama dari gallery untuk thumbnail desktop
     const thumb1Obj = galleryImages[0] || { img_path: loc.img };
     const thumb2Obj = galleryImages[1] || { img_path: loc.img };
 
@@ -59,14 +84,17 @@ const fetchData = async () => {
       description: loc.description,
       price: loc.price_per_hour,
 
-      // Koordinat Peta (Default Monas jika database kosong/null)
+      // Koordinat Peta
       lat: loc.lat || -6.175392,
       lng: loc.lng || 106.827152,
 
-      // Assign URL Gambar
+      // Assign URL Gambar Individual (Desktop)
       mainImage: getFullUrl(mainImgObj.img_path),
       thumb1: getFullUrl(thumb1Obj.img_path),
       thumb2: getFullUrl(thumb2Obj.img_path),
+
+      // NEW: Array for the Mobile Slider
+      allImages: sliderList,
     };
 
     // 2. Ambil Review Lokasi dari Backend
@@ -74,7 +102,6 @@ const fetchData = async () => {
     reviews.value = revRes.data.map((r) => ({
       id: r.id,
       username: r.username,
-      // Handle avatar user
       avatarUrl: r.avatarUrl
         ? getFullUrl(r.avatarUrl)
         : `https://ui-avatars.com/api/?name=${r.username}&background=random`,
@@ -96,8 +123,7 @@ onMounted(() => {
   fetchData();
 });
 
-// --- LOGIKA SWIPE (MOBILE ONLY) ---
-// Mendeteksi geseran jari kiri/kanan untuk ganti tab
+// --- LOGIKA SWIPE TABS (MOBILE ONLY) ---
 function handleTouchStart(e) {
   touchStartX.value = e.touches[0].clientX;
   touchStartY.value = e.touches[0].clientY;
@@ -107,17 +133,13 @@ function handleTouchEnd(e) {
   const diffX = e.changedTouches[0].clientX - touchStartX.value;
   const diffY = e.changedTouches[0].clientY - touchStartY.value;
 
-  // Jika user scroll vertikal (atas-bawah), abaikan swipe tab
   if (Math.abs(diffY) > Math.abs(diffX)) return;
 
-  // Jika geseran horizontal > 50px, ganti tab
   if (Math.abs(diffX) > 50) {
     const current = tabs.indexOf(activeTab.value);
     if (diffX < 0) {
-      // Swipe Kiri -> Next Tab
       activeTab.value = tabs[(current + 1) % tabs.length];
     } else {
-      // Swipe Kanan -> Prev Tab
       activeTab.value = tabs[(current - 1 + tabs.length) % tabs.length];
     }
   }
@@ -159,13 +181,11 @@ function handleTouchEnd(e) {
               alt="Lokasi Utama"
               class="w-full h-auto object-cover rounded-2xl shadow-lg col-span-2 aspect-video"
             />
-
             <img
               :src="locationData.thumb1"
               alt="Galeri 1"
               class="w-full h-48 object-cover rounded-2xl shadow-lg"
             />
-
             <img
               :src="locationData.thumb2"
               alt="Galeri 2"
@@ -210,23 +230,30 @@ function handleTouchEnd(e) {
       </div>
 
       <div class="block md:hidden space-y-4">
-        <div class="relative w-full">
+        <div class="relative w-full group">
           <img
-            :src="locationData.mainImage"
+            :src="locationData.allImages[currentImageIndex]"
             alt="Main Location"
-            class="w-full h-64 object-cover rounded-2xl shadow-lg"
+            class="w-full h-64 object-cover rounded-2xl shadow-lg transition-all duration-300"
           />
+          
+          <div class="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-lg backdrop-blur-sm">
+             {{ currentImageIndex + 1 }} / {{ locationData.allImages.length }}
+          </div>
 
           <div
+            v-if="locationData.allImages.length > 1"
             class="absolute inset-0 flex justify-between items-center px-2 pointer-events-none"
           >
             <button
-              class="bg-white/70 rounded-full p-1 text-black shadow-md pointer-events-auto hover:bg-white"
+              @click.prevent="prevImage"
+              class="bg-white/70 rounded-full p-1 text-black shadow-md pointer-events-auto hover:bg-white active:scale-95 transition-transform"
             >
               <Icon icon="mdi:chevron-left" class="size-6" />
             </button>
             <button
-              class="bg-white/70 rounded-full p-1 text-black shadow-md pointer-events-auto hover:bg-white"
+              @click.prevent="nextImage"
+              class="bg-white/70 rounded-full p-1 text-black shadow-md pointer-events-auto hover:bg-white active:scale-95 transition-transform"
             >
               <Icon icon="mdi:chevron-right" class="size-6" />
             </button>
