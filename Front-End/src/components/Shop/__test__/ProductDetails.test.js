@@ -12,7 +12,7 @@ vi.mock("@/services/api.js", () => ({
           name: "Joran Shimano",
           price_sale: 450000,
         },
-      })
+      }),
     ),
   },
 }));
@@ -23,7 +23,7 @@ const router = createRouter({
 });
 
 // helper untuk menunggu update async
-const wait = () => new Promise(resolve => setTimeout(resolve));
+const wait = () => new Promise((resolve) => setTimeout(resolve));
 
 describe("ProductDetails.vue", () => {
   test("menampilkan nama produk setelah fetch API", async () => {

@@ -1,13 +1,14 @@
 <script setup>
-  import { Icon } from '@iconify/vue';
+import { Icon } from "@iconify/vue";
 </script>
 
 <template>
   <footer class="relative w-full py-12 text-white bg-[#003bb3] font-['Outfit']">
-    <div class="absolute top-[-8rem] left-0 w-full h-32 bg-gradient-to-t from-[#003bb3] to-transparent z-10"></div>
+    <div
+      class="absolute top-[-8rem] left-0 w-full h-32 bg-gradient-to-t from-[#003bb3] to-transparent z-10"
+    ></div>
 
     <div class="relative w-full px-6 z-20">
-      
       <div class="grid gap-8 text-sm md:grid-cols-3">
         <div class="glass-box">
           <h3 class="mb-3 text-lg font-semibold">Contact Us!</h3>
@@ -15,18 +16,22 @@
             <i class="text-blue-400 fas fa-phone"></i> +62 822 9000 5464
           </p>
           <p class="flex items-center gap-2 mt-2">
-            <i class="text-blue-400 fas fa-map-marker-alt"></i> Jl. Dr. Setiabudi No.229, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat 40154
+            <i class="text-blue-400 fas fa-map-marker-alt"></i> Jl. Dr.
+            Setiabudi No.229, Isola, Kec. Sukasari, Kota Bandung, Jawa Barat
+            40154
           </p>
         </div>
 
         <div class="glass-box">
           <h3 class="mb-3 text-lg font-semibold">About Us!</h3>
           <p class="text-sm leading-relaxed text-gray-200">
-            Kami adalah komunitas pemancing yang berdedikasi untuk menciptakan pengalaman memancing yang menyenangkan.
-            Kami percaya bahwa memancing adalah proses dan perjalanan, bukan sekadar hasil tangkapan.
+            Kami adalah komunitas pemancing yang berdedikasi untuk menciptakan
+            pengalaman memancing yang menyenangkan. Kami percaya bahwa memancing
+            adalah proses dan perjalanan, bukan sekadar hasil tangkapan.
           </p>
           <p class="mt-2 text-sm text-gray-300">
-            Misi kami adalah membantu Anda menciptakan kenangan berharga yang akan bertahan seumur hidup.
+            Misi kami adalah membantu Anda menciptakan kenangan berharga yang
+            akan bertahan seumur hidup.
           </p>
         </div>
 
@@ -34,10 +39,10 @@
           <h3 class="mb-3 text-lg font-semibold">Reach Us</h3>
           <div class="flex justify-center gap-4 mt-2 md:justify-start">
             <a href="https://web.facebook.com/" class="icon-btn w-10 h-10">
-              <Icon icon="ic:round-facebook" class="z-10 w-full h-full"/>
+              <Icon icon="ic:round-facebook" class="z-10 w-full h-full" />
             </a>
             <a href="https://www.instagram.com/" class="icon-btn w-10 h-10">
-              <Icon icon="ri:instagram-line" class="z-10 w-full h-full"/>
+              <Icon icon="ri:instagram-line" class="z-10 w-full h-full" />
             </a>
             <a href="https://x.com/" class="icon-btn w-10 h-10">
               <Icon icon="ri:twitter-x-fill" class="z-10 w-full h-full" />
@@ -47,18 +52,15 @@
             </a>
           </div>
         </div>
-
       </div>
 
       <div class="mt-10 text-sm text-center text-gray-300">
-        © 2025 <span class="font-semibold text-white">Strike It</span>. All rights reserved.
+        © 2025 <span class="font-semibold text-white">Strike It</span>. All
+        rights reserved.
       </div>
     </div>
-
   </footer>
 </template>
-
-
 
 <style scoped>
 .glass-box {

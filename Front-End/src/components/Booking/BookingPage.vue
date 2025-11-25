@@ -27,7 +27,7 @@ const seats = ref([]);
 // Contoh URL: /location/1/book?duration=3&date=2025-11-25
 const duration = ref(parseInt(route.query.duration) || 2);
 const selectedDate = ref(
-  route.query.date || new Date().toISOString().split("T")[0]
+  route.query.date || new Date().toISOString().split("T")[0],
 );
 const selectedSeatId = ref(null);
 const selectedSeatName = ref(""); // Disimpan untuk dikirim ke Backend (misal: "A1")
@@ -87,12 +87,12 @@ const isSlotSelected = (slotTime) => {
   if (!selectedStartHour.value) return false;
 
   const startIndex = availableTimeSlots.value.findIndex(
-    (s) => s.time === selectedStartHour.value
+    (s) => s.time === selectedStartHour.value,
   );
   if (startIndex === -1) return false;
 
   const targetIndex = availableTimeSlots.value.findIndex(
-    (s) => s.time === slotTime
+    (s) => s.time === slotTime,
   );
 
   // Return true jika slot ini berada dalam range (start) sampai (start + duration)
@@ -102,7 +102,7 @@ const isSlotSelected = (slotTime) => {
 // Validasi Logic: Mencegah user memilih jam yang durasinya menabrak jam tutup atau jam penuh
 const isValidSelection = (slotTime) => {
   const startIndex = availableTimeSlots.value.findIndex(
-    (s) => s.time === slotTime
+    (s) => s.time === slotTime,
   );
   if (startIndex === -1) return false;
 
@@ -127,7 +127,7 @@ const selectTime = (slot) => {
 
   if (!isValidSelection(slot.time)) {
     toast.warning(
-      `Durasi ${duration.value} jam tidak cukup atau melewati jam tutup.`
+      `Durasi ${duration.value} jam tidak cukup atau melewati jam tutup.`,
     );
     return;
   }
@@ -139,7 +139,7 @@ const selectTime = (slot) => {
 // Mengambil harga dari data lokasi, hitung subtotal, dan pajak
 const pricePerJam = computed(() => locationData.value?.price_per_hour || 0);
 const formattedPrice = computed(() =>
-  pricePerJam.value.toLocaleString("id-ID")
+  pricePerJam.value.toLocaleString("id-ID"),
 );
 const subtotal = computed(() => pricePerJam.value * duration.value);
 const taxRate = 0.1; // Pajak 10%
@@ -173,7 +173,7 @@ const applyVoucher = async () => {
       appliedVoucherCode.value = voucherCode.value;
       isVoucherApplied.value = true;
       toast.success(
-        `Voucher diterapkan! Hemat Rp. ${discountValue.value.toLocaleString("id-ID")}`
+        `Voucher diterapkan! Hemat Rp. ${discountValue.value.toLocaleString("id-ID")}`,
       );
     }
   } catch (error) {
@@ -195,7 +195,7 @@ const fetchSeatsStatus = async () => {
     // agar kursi yang "occupied" benar-benar spesifik untuk jam yang dipilih
     const res = await api.getLocationSpots(
       locationData.value.id,
-      selectedDate.value
+      selectedDate.value,
     );
     seats.value = res.data;
   } catch (error) {
@@ -331,16 +331,16 @@ function decreaseDuration() {
 
 // Filter kursi berdasarkan posisi untuk dirender di layout visual (Atas, Bawah, Kiri, Kanan)
 const topSeats = computed(() =>
-  seats.value.filter((s) => s.name.startsWith("T"))
+  seats.value.filter((s) => s.name.startsWith("T")),
 );
 const bottomSeats = computed(() =>
-  seats.value.filter((s) => s.name.startsWith("B"))
+  seats.value.filter((s) => s.name.startsWith("B")),
 );
 const leftSeats = computed(() =>
-  seats.value.filter((s) => s.name.startsWith("L"))
+  seats.value.filter((s) => s.name.startsWith("L")),
 );
 const rightSeats = computed(() =>
-  seats.value.filter((s) => s.name.startsWith("R"))
+  seats.value.filter((s) => s.name.startsWith("R")),
 );
 
 // Dynamic Class untuk warna kursi (Merah=Isi, Biru=Dipilih, Putih=Kosong)

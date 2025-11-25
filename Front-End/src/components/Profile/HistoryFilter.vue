@@ -3,8 +3,8 @@ import { ref, defineEmits } from "vue";
 
 // State filter
 const selectedTime = ref("bulan_ini"); // Default filter
-const startDate = ref(""); 
-const endDate = ref("");   
+const startDate = ref("");
+const endDate = ref("");
 
 // Status options
 const allStatuses = [
@@ -16,7 +16,7 @@ const allStatuses = [
   },
   { id: "dibatalkan", text: "Dibatalkan", class: "bg-red-100 text-red-800" },
 ];
-const selectedStatuses = ref(["terbayar", "belum_dibayar", "dibatalkan"]); 
+const selectedStatuses = ref(["terbayar", "belum_dibayar", "dibatalkan"]);
 
 // Emit event ke parent
 const emit = defineEmits(["apply-filters"]);
@@ -30,7 +30,7 @@ const selectTime = (time) => {
 
 // Fungsi jika user mengubah tanggal manual, matikan preset
 const onDateChange = () => {
-    selectedTime.value = ""; 
+  selectedTime.value = "";
 };
 
 // Fungsi toggle status
@@ -61,10 +61,10 @@ const handleApplyFilters = () => {
 // Fungsi clear filters
 const handleClearFilters = () => {
   selectedTime.value = "bulan_ini";
-  startDate.value = ""; 
-  endDate.value = "";  
+  startDate.value = "";
+  endDate.value = "";
   selectedStatuses.value = ["terbayar", "belum_dibayar", "dibatalkan"];
-  
+
   // Otomatis apply setelah clear
   handleApplyFilters();
 };
@@ -127,7 +127,7 @@ const handleClearFilters = () => {
         <input
           type="date"
           v-model="startDate"
-          @change="onDateChange" 
+          @change="onDateChange"
           class="w-full p-2.5 border border-gray-300 rounded-lg text-sm text-gray-700"
         />
         <span class="text-gray-500 rotate-90 md:rotate-0">-</span>

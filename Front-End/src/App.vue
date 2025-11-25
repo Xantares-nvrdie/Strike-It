@@ -1,15 +1,14 @@
 <template>
   <div class="font-outfit antialiased">
     <Navigation v-if="!$route.meta.hideNavbar" />
-      <router-view />
+    <router-view />
     <Footer v-if="!$route.meta.hideFooter" />
   </div>
 </template>
 
 <script setup>
-import Navigation from './components/Layout/Navigation.vue';
-import Footer from './components/Layout/Footer.vue'; 
-
+import Navigation from "./components/Layout/Navigation.vue";
+import Footer from "./components/Layout/Footer.vue";
 </script>
 
 <style>

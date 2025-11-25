@@ -127,7 +127,7 @@ async function confirmCheckout() {
     isModalOpen.value = false;
 
     alert(
-      `Pembayaran Berhasil! Anda sekarang berlangganan paket ${selectedPlan.value.title}.`
+      `Pembayaran Berhasil! Anda sekarang berlangganan paket ${selectedPlan.value.title}.`,
     );
 
     // Refresh data agar status membership terupdate

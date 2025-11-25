@@ -29,7 +29,7 @@ function decreaseDuration() {
 // Menghitung Total Harga = Harga per jam (props) x Durasi (state).
 // Menggunakan .toLocaleString('id-ID') untuk format Rupiah (titik pemisah ribuan).
 const totalPrice = computed(() =>
-  (props.price * duration.value).toLocaleString("id-ID")
+  (props.price * duration.value).toLocaleString("id-ID"),
 );
 const formattedPrice = computed(() => props.price.toLocaleString("id-ID")); // Memformat harga dasar untuk tampilan UI saja.
 

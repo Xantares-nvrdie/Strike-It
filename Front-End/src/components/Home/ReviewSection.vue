@@ -60,13 +60,13 @@ onMounted(() => {
 
 // Membagi review menjadi 3 kolom
 const column1Reviews = computed(() =>
-  reviews.value.filter((_, i) => i % 3 === 0)
+  reviews.value.filter((_, i) => i % 3 === 0),
 );
 const column2Reviews = computed(() =>
-  reviews.value.filter((_, i) => i % 3 === 1)
+  reviews.value.filter((_, i) => i % 3 === 1),
 );
 const column3Reviews = computed(() =>
-  reviews.value.filter((_, i) => i % 3 === 2)
+  reviews.value.filter((_, i) => i % 3 === 2),
 );
 </script>
 

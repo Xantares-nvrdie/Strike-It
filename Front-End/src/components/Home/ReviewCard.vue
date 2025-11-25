@@ -1,20 +1,20 @@
 <script setup>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
-  review: Object
+  review: Object,
 });
 
 // Fungsi untuk menghasilkan bintang rating
 const getStars = computed(() => {
   const stars = [];
   for (let i = 0; i < props.review.rating; i++) {
-    stars.push('★'); // Bintang penuh
+    stars.push("★"); // Bintang penuh
   }
   for (let i = props.review.rating; i < 5; i++) {
-    stars.push('☆'); // Bintang kosong
+    stars.push("☆"); // Bintang kosong
   }
-  return stars.join('');
+  return stars.join("");
 });
 </script>
 
@@ -23,9 +23,9 @@ const getStars = computed(() => {
     class="bg-white rounded-xl shadow-lg p-6 flex flex-col border border-gray-100 relative"
   >
     <div class="flex items-center mb-4">
-      <img 
-        :src="review.avatar" 
-        :alt="review.author" 
+      <img
+        :src="review.avatar"
+        :alt="review.author"
         class="w-10 h-10 rounded-full object-cover mr-3"
       />
       <div>
@@ -42,7 +42,9 @@ const getStars = computed(() => {
       "{{ review.content }}"
     </p>
 
-    <div class="absolute top-4 right-4 text-gray-200 text-6xl font-serif select-none pointer-events-none opacity-80">
+    <div
+      class="absolute top-4 right-4 text-gray-200 text-6xl font-serif select-none pointer-events-none opacity-80"
+    >
       ”
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script setup>
-import Sidebar from '@/components/Layout/Sidebar.vue';
-import CreatePost from '@/components/Community/CreatePost.vue';
+import Sidebar from "@/components/Layout/Sidebar.vue";
+import CreatePost from "@/components/Community/CreatePost.vue";
 </script>
 
 <template>
@@ -9,7 +9,6 @@ import CreatePost from '@/components/Community/CreatePost.vue';
     <CreatePost class="ml-16 md:ml-64 flex-1" />
   </div>
 </template>
-
 
 <style>
 .font-outfit {

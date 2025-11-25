@@ -42,7 +42,7 @@ watch(
     const methodData = getPaymentMethodInfo();
     emit("select", methodData);
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 
