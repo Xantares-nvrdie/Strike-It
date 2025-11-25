@@ -1,16 +1,16 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import api from "@/services/api"; // Import API service
+import api from "@/services/api";
 
 // State data
-const locations = ref([]); // Menyimpan list lokasi dari backend
-const selectedIndex = ref(0); // Index lokasi yang sedang aktif/ditampilkan
+const locations = ref([]);
+const selectedIndex = ref(0);
 
-// Definisi URL Backend untuk gambar
+// Definisi URL Backend
 const baseUrl = "http://localhost:3000";
 const staticPrefix = "/uploads";
 
-// Fetch Data Lokasi
+// Fetch Data
 const fetchLocations = async () => {
   try {
     const res = await api.getLocations();
@@ -20,10 +20,8 @@ const fetchLocations = async () => {
   }
 };
 
-// Computed Property: Mengambil data lokasi yang SEDANG DIPILIH
-// Logic ini otomatis update jika selectedIndex berubah
+// Computed Property (Update Logic Gambar)
 const selectedLocation = computed(() => {
-  // Fallback jika data belum ada
   if (locations.value.length === 0)
     return {
       name: "Loading...",
@@ -33,7 +31,6 @@ const selectedLocation = computed(() => {
 
   const loc = locations.value[selectedIndex.value];
 
-  // Normalisasi URL Gambar (tambahkan localhost jika perlu)
   let imagePath = loc.img;
   if (imagePath && !imagePath.startsWith("http")) {
     const cleanPath = imagePath.startsWith("/")
@@ -48,10 +45,21 @@ const selectedLocation = computed(() => {
   };
 });
 
-// Fungsi Navigasi Next/Prev
+// --- PERBAIKAN: Memindahkan logika Link Booking ke Computed ---
+const bookingLink = computed(() => {
+  return selectedLocation.value.id
+    ? `/location/${selectedLocation.value.id}/book`
+    : "/location";
+});
+
+// --- PERBAIKAN: Memindahkan logika Error Gambar ke Fungsi ---
+const handleImageError = (e) => {
+  e.target.onerror = null;
+  e.target.src = "https://placehold.co/800x400/9CA3AF/FFFFFF?text=No+Image";
+};
+
 const next = () => {
   if (locations.value.length > 0) {
-    // Modulo (%) digunakan agar index berputar (looping)
     selectedIndex.value = (selectedIndex.value + 1) % locations.value.length;
   }
 };
@@ -64,7 +72,6 @@ const prev = () => {
   }
 };
 
-// Lifecycle Hook
 onMounted(fetchLocations);
 </script>
 
@@ -76,7 +83,8 @@ onMounted(fetchLocations);
           Lokasi Tempat Pemancingan
         </h2>
         <p class="max-w-2xl mx-auto mt-5 text-lg leading-relaxed text-gray-600">
-          Jelajahi destinasi pemancingan terbaik di sekitar Anda.
+          Jelajahi destinasi pemancingan terbaik di sekitar Anda. Temukan tempat
+          favorit baru untuk petualangan memancing Anda selanjutnya.
         </p>
       </div>
 
@@ -87,14 +95,28 @@ onMounted(fetchLocations);
           <li>
             <button
               @click="prev"
-              class="flex items-center justify-center w-10 h-10..."
+              class="flex items-center justify-center w-10 h-10 text-gray-600 transition-all duration-200 border border-gray-200 rounded-full shadow-md bg-gray-100/70 hover:bg-gray-200"
             >
-              <svg ...></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m15 18-6-6 6-6" />
+              </svg>
             </button>
           </li>
 
           <li class="flex-shrink-0 block md:hidden">
-            <button class="... bg-blue-600 text-white ...">
+            <button
+              class="flex items-center justify-center w-24 h-10 px-4 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out text-sm font-semibold bg-blue-600 text-white shadow-blue-500/50"
+            >
               {{ selectedLocation.city }}
             </button>
           </li>
@@ -107,10 +129,10 @@ onMounted(fetchLocations);
               <button
                 @click="selectedIndex = index"
                 :class="[
-                  'flex items-center justify-center w-24 h-10 px-4 rounded-full ...',
+                  'flex items-center justify-center w-24 h-10 px-4 rounded-full shadow-lg cursor-pointer transition-all duration-200 ease-in-out text-sm font-semibold',
                   index === selectedIndex
-                    ? 'bg-blue-600 text-white ...' // Style Aktif
-                    : 'bg-white/10 text-gray-800 ...', // Style Tidak Aktif
+                    ? 'bg-blue-600 text-white shadow-blue-500/50'
+                    : 'bg-white/10 text-gray-800 backdrop-blur-sm border border-gray-300 hover:bg-gray-100',
                 ]"
               >
                 {{ location.city }}
@@ -121,9 +143,21 @@ onMounted(fetchLocations);
           <li>
             <button
               @click="next"
-              class="flex items-center justify-center w-10 h-10 ..."
+              class="flex items-center justify-center w-10 h-10 text-gray-600 transition-all duration-200 border border-gray-200 rounded-full shadow-md bg-gray-100/70 hover:bg-gray-200"
             >
-              <svg ...></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
             </button>
           </li>
         </ul>
@@ -134,23 +168,10 @@ onMounted(fetchLocations);
           :src="selectedLocation.img"
           :alt="selectedLocation.name"
           class="object-cover w-full max-w-4xl transition duration-300 shadow-2xl h-72 rounded-t-2xl hover:shadow-3xl"
-          @error="
-            (e) => {
-              e.target.onerror = null;
-              e.target.src =
-                'https://placehold.co/800x400/9CA3AF/FFFFFF?text=No+Image';
-            }
-          "
+          @error="handleImageError"
         />
 
-        <router-link
-          :to="
-            selectedLocation.id
-              ? `/location/${selectedLocation.id}/book`
-              : '/location'
-          "
-          class="w-full max-w-4xl"
-        >
+        <router-link :to="bookingLink" class="w-full max-w-4xl">
           <button
             class="w-full py-4 text-xl font-bold tracking-wider text-white uppercase transition duration-300 ease-in-out bg-blue-600 shadow-xl font-outfit rounded-b-2xl hover:bg-blue-700 hover:shadow-2xl"
           >
@@ -161,3 +182,20 @@ onMounted(fetchLocations);
     </section>
   </div>
 </template>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300..900&display=swap");
+
+body {
+  font-family: "Outfit", sans-serif;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
