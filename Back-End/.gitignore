@@ -1,40 +1,49 @@
-# dependencies
+# --- Dependencies ---
 node_modules/
-pnpm-lock.yaml
-yarn.lock
-package-lock.json
+# JANGAN ignore package-lock.json, itu penting!
 
-# environment
+# --- Environment (RAHASIA - JANGAN DIHAPUS) ---
 .env
 .env.*
 !.env.example
 
-# logs
+# --- Logs ---
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# build output
+# --- Build Output ---
 dist/
 build/
 .out/
 .tmp/
 
-# cache
+# --- Uploads (Agar repo tidak berat dengan gambar user) ---
+# Kita ignore isinya, tapi biarkan foldernya ada (dengan .gitkeep)
+src/uploads/*
+!src/uploads/.gitkeep
+# Jika folder images seperti 'alatimg' adalah aset statis (bukan upload user),
+# Anda bisa memberi pengecualian dengan tanda seru (!):
+!src/uploads/alatimg/
+!src/uploads/eventimg/
+!src/uploads/locationimg/
+
+# --- Cache ---
 .cache/
 .nyc_output/
 coverage/
 .eslintcache
 
-# OS / editor
+# --- OS / Editor ---
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
 *.swp
-
-# temp
 tmp/
-temp/
