@@ -9,7 +9,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import db from './src/config/db.js'; 
 import oauthPlugin from '@fastify/oauth2';
-
+import fastifyRoutes from '@fastify/routes';
 
 //setup __dirname untuk ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -68,7 +68,7 @@ fastify.decorate('authenticate', async function (request, reply) {
         reply.send(err);
     }
 });
-
+await fastify.register(fastifyRoutes);
 // --- 4. REGISTER ROUTES ---
 import usersRoutes from './src/routes/users.js'; 
 import productsRoutes from './src/routes/products.js';
@@ -106,6 +106,8 @@ export { fastify };
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const start = async () => {
         try {
+            await fastify.ready(); 
+            console.log(fastify.printRoutes()); 
             await fastify.listen({ port: process.env.PORT || 3000, host: '0.0.0.0' });
             console.log(`Server running on port ${process.env.PORT || 3000}`);
         } catch (err) {
