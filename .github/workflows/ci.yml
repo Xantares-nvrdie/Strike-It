@@ -2,13 +2,29 @@ name: Strike-It CI Pipeline
 
 on:
   push:
-    branches: ["master"]
+    branches: ["main"]
   pull_request:
-    branches: ["master"]
+    branches: ["main"]
 
 jobs:
   quality-check:
     runs-on: ubuntu-latest
+
+    # 1. SETUP SERVICE DATABASE (MySQL)
+    # GitHub akan membuatkan MySQL sementara khusus untuk tes ini
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: strike_it
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - uses: actions/checkout@v3
@@ -25,7 +41,15 @@ jobs:
         run: cd Back-End && npm ci
 
       - name: Run Backend Tests (Vitest)
-        # Ini menggantikan fungsi "node server.js" untuk tahap testing
+        # 2. INJECT ENVIRONMENT VARIABLES
+        # Memasukkan variabel .env secara manual di sini agar server bisa jalan dan terkoneksi dengan database dummy
+        env:
+          DB_HOST: 127.0.0.1 # Konek ke service MySQL di atas
+          DB_USER: root
+          DB_PASS: root # Sesuai dengan MYSQL_ROOT_PASSWORD di atas
+          DB_NAME: strike_it
+          JWT_SECRET: rahasia_untuk_testing_ci_cd_123 # Dummy secret agar tidak crash
+          PORT: 3000
         run: cd Back-End && npm test
 
       # === BAGIAN FRONTEND ===
@@ -40,11 +64,9 @@ jobs:
         run: cd Front-End && npm ci
 
       - name: Lint Frontend Code
-        # Menggunakan "npm run lint" Anda untuk cek kerapian kode
         run: cd Front-End && npm run lint
 
       - name: Build Frontend
-        # Menggunakan "npm run build" Anda untuk memastikan tidak ada error saat compile
         run: cd Front-End && npm run build
 
       - name: Run Frontend Tests
